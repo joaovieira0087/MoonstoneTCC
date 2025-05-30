@@ -1,0 +1,43 @@
+﻿@model IEnumerable<MoonstoneTCC.Models.Pedido>
+@{
+    ViewData["Title"] = "Pedidos do Usuário";
+}
+
+<h2 class="text-center mt-4 mb-4 text-primary">Pedidos de @ViewBag.EmailUsuario</h2>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info text-center">
+        Nenhum pedido encontrado para este usuário.
+    </div>
+}
+else
+{
+    <table class="table table-bordered table-hover shadow-lg">
+        <thead class="bg-dark text-white">
+            <tr>
+                <th>#</th>
+                <th>Nome</th>
+                <th>Endereço</th>
+                <th>Data</th>
+                <th>Total</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var pedido in Model)
+            {
+                <tr>
+                    <td>@pedido.PedidoId</td>
+                    <td>@pedido.Nome</td>
+                    <td>@pedido.Endereco1, @pedido.Cidade - @pedido.Estado</td>
+                    <td>@pedido.PedidoEnviado.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>R$ @pedido.PedidoTotal.ToString("F2")</td>
+                    <td>
+                        <a asp-controller="AdminPedidos" asp-action="PedidoJogos" asp-route-id="@pedido.PedidoId" class="btn btn-sm btn-secondary">Detalhes</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

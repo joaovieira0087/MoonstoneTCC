@@ -1,0 +1,249 @@
+﻿@{
+    ViewData["HideFooter"] = true;
+}
+
+@model CarrinhoCompraViewModel
+
+<style>
+    /* --- Seu CSS existente --- */
+    .cart-card {
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+    .cart-header {
+        background: linear-gradient(90deg, #7e38a2 0%, #5c1d7f 100%);
+        color: #fff;
+        padding: 1.5rem;
+    }
+    .cart-header h2 {
+        margin: 0;
+        font-size: 1.75rem;
+    }
+    .cart-table th {
+        background-color: #f3e7f9;
+        color: #5c1d7f;
+        font-weight: 600;
+        border-bottom: none;
+        text-transform: uppercase;
+    }
+    .cart-table td {
+        vertical-align: middle;
+        border-top: none;
+    }
+    .cart-table tbody tr:hover {
+        background-color: #faf5ff;
+    }
+    .cart-table img {
+        border-radius: 4px;
+    }
+    .cart-table colgroup col:nth-child(1) { width: 30%; }
+    .cart-table colgroup col:nth-child(2) { width: 20%; }
+    .cart-table colgroup col:nth-child(3) { width: 10%; }
+    .cart-table colgroup col:nth-child(4) { width: 15%; }
+    .cart-table colgroup col:nth-child(5) { width: 15%; }
+    .cart-table colgroup col:nth-child(6) { width: 10%; }
+
+    .quantity-group .btn {
+        width: 2rem;
+        height: 2rem;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #b69cd1;
+    }
+    .quantity-group .btn:hover {
+        background-color: #e8d8f5;
+    }
+    .quantity-display {
+        width: 2.5rem;
+        text-align: center;
+        font-weight: 600;
+        color: #5c1d7f;
+    }
+
+    .btn-primary-custom {
+        background-color: #7e38a2;
+        border-color: #7e38a2;
+        color: #fff;
+    }
+    .btn-primary-custom:hover {
+        background-color: #5c1d7f;
+        border-color: #5c1d7f;
+    }
+    .btn-checkout {
+        background-color: #28a745;
+        border-color: #28a745;
+        color: #fff;
+    }
+    .btn-checkout:hover {
+        background-color: #218838;
+        border-color: #1e7e34;
+    }
+
+    .total-row td {
+        border-top: 2px solid #e5e5e5;
+    }
+    .total-label {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #5c1d7f;
+    }
+    .total-value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #7e38a2;
+        white-space: nowrap;  /* impede quebra entre R$ e o valor */
+    }
+
+    .text-purple {
+        color: #5c1d7f;
+    }
+</style>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-12">
+            <div class="card cart-card">
+                <div class="cart-header d-flex align-items-center">
+                    <i class="fa-solid fa-cart-shopping fa-2x me-3"></i>
+                    <h2>Seu Carrinho de Compras</h2>
+                </div>
+
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table cart-table mb-0">
+                            <colgroup>
+                                <col />
+                                <col />
+                                <col />
+                                <col />
+                                <col />
+                                <col />
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th>Jogo</th>
+                                    <th>Plataformas</th>
+                                    <th class="text-center">Quantidade</th>
+                                    <th class="text-end">Preço</th>
+                                    <th class="text-end">Subtotal</th>
+                                    <th class="text-center">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.CarrinhoCompra.CarrinhoCompraItems)
+                                {
+                                    <tr>
+                                        <td class="d-flex align-items-center">
+                                            <img src="@item.Jogo.ImagemUrl"
+                                                 alt="@item.Jogo.Nome"
+                                                 style="width:60px;height:60px;object-fit:cover;margin-right:1rem;" />
+                                            <span class="fw-semibold text-purple">
+                                                @item.Jogo.Nome
+                                            </span>
+                                        </td>
+                                        <td>@item.Jogo.Plataformas</td>
+                                        <td class="text-center">
+                                            <div class="d-inline-flex quantity-group">
+                                                <a asp-controller="CarrinhoCompra"
+                                                   asp-action="RemoverItemDoCarrinhoCompra"
+                                                   asp-route-jogoId="@item.Jogo.JogoId"
+                                                   class="btn btn-light"
+                                                   title="Diminuir">
+                                                    <i class="fa-solid fa-minus"></i>
+                                                </a>
+                                                <span class="quantity-display">
+                                                    @item.Quantidade
+                                                </span>
+                                                <a asp-controller="CarrinhoCompra"
+                                                   asp-action="AdicionarItemNoCarrinhoCompra"
+                                                   asp-route-jogoId="@item.Jogo.JogoId"
+                                                   class="btn btn-light"
+                                                   title="Aumentar">
+                                                    <i class="fa-solid fa-plus"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                        <td class="text-end">
+                                            @($"R$ {item.Jogo.Preco:N2}")
+                                        </td>
+                                        <td class="text-end">
+                                            @($"R$ {(item.Quantidade * item.Jogo.Preco):N2}")
+                                        </td>
+                                        <td class="text-center">
+                                            <a asp-controller="CarrinhoCompra"
+                                               asp-action="RemoverItemDoCarrinhoCompra"
+                                               asp-route-jogoId="@item.Jogo.JogoId"
+                                               class="btn btn-outline-danger btn-sm"
+                                               title="Remover do carrinho">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                            <tfoot>
+                            <tfoot>
+                                <tr class="total-row">
+                                    <td colspan="4"></td>
+                                    <td class="text-end total-label">Total:</td>
+                                    <td class="text-end total-value">
+                                            @($"R$ {(Model.Desconto > 0 ? Model.TotalComDesconto : Model.CarrinhoCompraTotal):N2}")
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    <br />
+                    <br />
+                </div>
+
+              
+                <div class="row mb-4">
+                    <br />
+                    <br />
+                    <div class="col-md-5">
+                        <div class="p-3 border rounded bg-light">
+                            <form asp-action="Index"
+                                  method="post"
+                                  class="d-flex">
+                                <input name="codigoCupom"
+                                       class="form-control me-2"
+                                       placeholder="Código promocional"
+                                       value="@Model.CodigoCupom" />
+                                <button type="submit"
+                                        class="btn btn-primary-custom">
+                                    <i class="fa-solid fa-ticket me-1"></i> Aplicar
+                                </button>
+                            </form>
+
+                            @if (Model.Desconto > 0)
+                            {
+                                <div class="text-muted small mt-2">
+                                    Você economizou <strong>@Model.Desconto.ToString("C")</strong>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-footer bg-white d-flex justify-content-between">
+                    <a class="btn btn-primary-custom btn-lg"
+                       asp-controller="Jogo"
+                       asp-action="List">
+                        <i class="fa-solid fa-arrow-left me-2"></i>
+                        Continuar Comprando
+                    </a>
+                    <a class="btn btn-checkout btn-lg"
+                       asp-controller="Pedido"
+                       asp-action="Checkout">
+                        Encerrar Pedido
+                        <i class="fa-solid fa-check ms-2"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

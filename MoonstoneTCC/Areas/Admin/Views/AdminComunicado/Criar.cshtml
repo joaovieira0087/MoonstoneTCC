@@ -1,0 +1,126 @@
+﻿@using MoonstoneTCC.Models
+@model Comunicado
+
+@{
+    ViewData["Title"] = "Novo Comunicado ou Enquete";
+}
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+<div class="container mt-5 text-white">
+    <h2 class="mb-4"><i class="fas fa-bullhorn"></i> Criar Novo</h2>
+
+    <form asp-action="Criar" method="post">
+        <div class="form-group mb-3">
+            <label for="tipo">Tipo de Publicação:</label>
+            <select asp-for="Tipo" class="form-control" id="tipoSelect" onchange="mostrarCampos()">
+                <option value="0">Comunicado</option>
+                <option value="1">Enquete</option>
+                <option value="2">Pergunta + Resposta</option>
+            </select>
+        </div>
+
+        <div class="form-group mb-3">
+            <label>Título</label>
+            <input asp-for="Titulo" class="form-control" required />
+        </div>
+
+        <div class="form-group mb-3">
+            <label>Mensagem</label>
+            <textarea asp-for="Mensagem" class="form-control" rows="5" required></textarea>
+        </div>
+
+        <!-- ENQUETE -->
+        <div id="enqueteCampos" class="form-group mb-3" style="display: none;">
+            <label>Opções da Enquete (separadas por "|")</label>
+            <input asp-for="OpcoesEnquete" class="form-control" placeholder="Ex: Sim|Não|Talvez" />
+        </div>
+
+        <!-- PERGUNTAS + RESPOSTAS -->
+        <div id="perguntasCampos" class="form-group mb-3" style="display: none;">
+            <label>Perguntas:</label>
+            <div id="containerPerguntas">
+                <input type="text" name="Perguntas[0]" class="form-control mb-2" placeholder="Pergunta 1" />
+            </div>
+            <button type="button" class="btn btn-light btn-sm" onclick="adicionarPergunta()">
+                <i class="fas fa-plus"></i> Adicionar Pergunta
+            </button>
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-3">
+            <i class="fas fa-paper-plane"></i> Publicar
+        </button>
+    </form>
+</div>
+
+<style>
+    body {
+        background-color: #2A003F;
+    }
+
+    h2 {
+        color: #fff;
+        font-weight: 600;
+    }
+
+    label {
+        color: #ddd;
+        font-weight: bold;
+    }
+
+    .form-control {
+        background-color: #3B0056;
+        color: white;
+        border: none;
+        border-radius: 8px;
+    }
+
+        .form-control::placeholder {
+            color: #bbb;
+        }
+
+    .btn-primary {
+        background-color: #9F00FF;
+        border: none;
+        font-weight: bold;
+    }
+
+        .btn-primary:hover {
+            background-color: #BB33FF;
+        }
+
+    .btn-light {
+        background-color: #f5f5f5;
+        color: #333;
+    }
+
+        .btn-light:hover {
+            background-color: #e0e0e0;
+        }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let totalPerguntas = 1;
+
+        window.adicionarPergunta = function () {
+            if (totalPerguntas >= 10) return;
+            const container = document.getElementById("containerPerguntas");
+            const input = document.createElement("input");
+            input.type = "text";
+            input.name = `Perguntas[${totalPerguntas}]`;
+            input.className = "form-control mb-2";
+            input.placeholder = `Pergunta ${totalPerguntas + 1}`;
+            container.appendChild(input);
+            totalPerguntas++;
+        }
+
+        window.mostrarCampos = function () {
+            const tipo = document.getElementById("tipoSelect").value;
+            document.getElementById("enqueteCampos").style.display = tipo == "1" ? "block" : "none";
+            document.getElementById("perguntasCampos").style.display = tipo == "2" ? "block" : "none";
+        }
+
+        mostrarCampos(); // Chama ao carregar a página
+    });
+</script>

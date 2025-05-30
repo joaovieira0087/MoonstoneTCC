@@ -1,0 +1,146 @@
+﻿@model MoonstoneTCC.Models.Jogo
+
+@{
+    ViewData["Title"] = "Criar Jogo";
+}
+
+<div class="row justify-content-center">
+    <!-- Cabeçalho -->
+    <div class="card-header text-white d-flex align-items-center justify-content-between" style="background: linear-gradient(90deg, #6a0dad 0%, #3c006e 50%, #2b003f 100%); height: 80px; width: 1165px;">
+        <h1 class="mb-0">CRIAR NOVO JOGO</h1>
+    </div>
+
+    <div class="col-lg-11 bg-light p-4 rounded shadow">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Nome" class="control-label">
+                        <i class="fas fa-gamepad text-success"></i> Nome
+                    </label>
+                    <input asp-for="Nome" class="form-control" />
+                    <span asp-validation-for="Nome" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label asp-for="DescricaoCurta" class="control-label">
+                        <i class="fas fa-info-circle text-info"></i> Descrição Curta
+                    </label>
+                    <input asp-for="DescricaoCurta" class="form-control" />
+                    <span asp-validation-for="DescricaoCurta" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-12 mb-3">
+                    <label asp-for="DescricaoDetalhada" class="control-label">
+                        <i class="fas fa-align-left text-secondary"></i> Descrição Detalhada
+                    </label>
+                    <textarea asp-for="DescricaoDetalhada" class="form-control" rows="3"></textarea>
+                    <span asp-validation-for="DescricaoDetalhada" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label asp-for="Preco" class="control-label">
+                        <i class="fas fa-dollar-sign text-success"></i> Preço
+                    </label>
+                    <input asp-for="Preco" class="form-control" />
+                    <span asp-validation-for="Preco" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label asp-for="ImagemUrl" class="control-label">
+                        <i class="fas fa-image text-warning"></i> URL da Imagem
+                    </label>
+                    <input asp-for="ImagemUrl" class="form-control" />
+                    <span asp-validation-for="ImagemUrl" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label asp-for="ImagemThumbnailUrl" class="control-label">
+                        <i class="fas fa-images text-success"></i> URL da Miniatura
+                    </label>
+                    <input asp-for="ImagemThumbnailUrl" class="form-control" />
+                    <span asp-validation-for="ImagemThumbnailUrl" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Plataformas" class="control-label">
+                        <i class="fas fa-laptop text-primary"></i> Plataformas
+                    </label>
+                    <input asp-for="Plataformas" class="form-control" />
+                    <span asp-validation-for="Plataformas" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Genero" class="control-label">
+                        <i class="fas fa-tags text-warning"></i> Gênero
+                    </label>
+
+                    <input asp-for="Genero" class="form-control" />
+                    <span asp-validation-for="Genero" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label asp-for="ClassificacaoEtaria" class="control-label">
+                        <i class="fas fa-user-check text-success"></i> Classificação Etária
+                    </label>
+
+                    <input asp-for="ClassificacaoEtaria" class="form-control" />
+                    <span asp-validation-for="ClassificacaoEtaria" class="text-danger"></span>
+                </div>
+                <div class="col-md-7 mb-4">
+                    <label asp-for="CategoriaId" class="control-label">
+                        <i class="fas fa-list-alt text-primary"></i> Categoria
+                    </label>
+                    <select asp-for="CategoriaId" class="form-control" asp-items="ViewBag.CategoriaId"></select>
+                    <span asp-validation-for="CategoriaId" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label asp-for="ImagensAdicionais" class="control-label">
+                        <i class="fas fa-images text-info"></i> Imagens Adicionais
+                    </label>
+                    <input asp-for="ClassificacaoEtaria" class="form-control" />
+                    <span asp-validation-for="ClassificacaoEtaria" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-7 mb-4">
+                    <label asp-for="InformacoesExtras" class="control-label">
+                        <i class="fas fa-info-circle text-primary"></i> Informações Extras
+                    </label>
+                    <input asp-for="ClassificacaoEtaria" class="form-control" />
+                    <span asp-validation-for="ClassificacaoEtaria" class="text-danger"></span>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" asp-for="IsJogoPreferido" id="preferido" />
+                            <label class="form-check-label" for="preferido">
+                                <i class="fas fa-star text-warning"></i> Jogo Preferido
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" asp-for="EmEstoque" id="estoque" />
+                            <label class="form-check-label" for="estoque">
+                                <i class="fas fa-box-open text-success"></i> Em Estoque
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-primary px-4">
+                    <i class="fas fa-save"></i> SALVAR
+                </button>
+                <a asp-action="Index" class="btn btn-secondary px-4">
+                    <i class="fas fa-arrow-left"></i> VOLTAR
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+

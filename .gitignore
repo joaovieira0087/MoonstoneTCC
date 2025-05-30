@@ -1,0 +1,14 @@
+.vs/
+bin/
+obj/
+*.user
+*.suo
+*.vsidx
+*.dbmdl
+*.log
+*.sqlite
+.env
+node_modules/
+wwwroot/lib/
+wwwroot/img/*.webm
+

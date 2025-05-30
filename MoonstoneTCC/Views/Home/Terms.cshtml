@@ -1,0 +1,113 @@
+﻿@{
+    ViewData["Title"] = "Termos de Uso";
+    Layout = "_Layout";
+}
+
+<style>
+    .terms-container {
+        max-width: 900px;
+        width: 90%;
+        margin: 60px auto;
+        background: #3b2f63; /* tom roxo mais escuro */
+        color: #f0eafa; /* tom claro para contraste */
+        padding: 40px 50px;
+        border-radius: 10px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        line-height: 1.7;
+    }
+
+        .terms-container h1 {
+            color: #d1b3ff;
+            font-size: 32px;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #d1b3ff;
+            padding-bottom: 10px;
+        }
+
+        .terms-container h2 {
+            color: #e3cfff;
+            font-size: 22px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+
+        .terms-container p, .terms-container li {
+            margin-bottom: 18px;
+        }
+
+        .terms-container ol {
+            padding-left: 25px;
+        }
+
+        .terms-container a {
+            color: #bb94e0;
+            text-decoration: underline;
+        }
+
+            .terms-container a:hover {
+                color: #d1b3ff;
+            }
+
+        .terms-container em {
+            display: block;
+            margin-top: 40px;
+            text-align: right;
+            font-size: 14px;
+            color: #c4aad4;
+        }
+</style>
+
+<div class="terms-container">
+    <h1>Termos de Uso</h1>
+    <p>Estes Termos de Uso estabelecem os direitos e obrigações de quem acessa, navega, cadastra-se ou realiza transações em nossa plataforma de ecommerce. Ao utilizar nossos serviços, você concorda com todas as disposições aqui contidas. Caso não concorde com algum ponto, por favor, não utilize nosso site.</p>
+
+    <h2>1. Objetivo e Âmbito</h2>
+    <p>Esta plataforma destina-se à comercialização de produtos e serviços de diversos fornecedores, com atuação em território nacional. Todos os aspectos relacionados ao acesso, uso, cadastro, compra e políticas específicas regem-se por estes Termos e pela nossa Política de Privacidade.</p>
+
+    <h2>2. Definições</h2>
+    <ol>
+        <li><strong>Operadora</strong>: a empresa responsável pela manutenção técnica e operacional do site.</li>
+        <li><strong>Usuário</strong>: indivíduo ou pessoa jurídica que acessa o site, cadastra-se ou adquire produtos.</li>
+        <li><strong>Fornecedor</strong>: terceiro legalmente habilitado que oferece produtos ou serviços por meio da plataforma.</li>
+        <li><strong>Contratação</strong>: ato de compra ou aquisição de produtos/serviços finalizado com confirmação de pagamento.</li>
+    </ol>
+
+    <h2>3. Cadastro e Segurança</h2>
+    <p>Para realizar compras, o Usuário deve registrar uma conta, informando dados corretos e atuais. É de sua responsabilidade manter a confidencialidade de login e senha. Qualquer ação realizada sob sua conta será de sua inteira responsabilidade.</p>
+
+    <h2>4. Compras, Preços e Pagamentos</h2>
+    <p>Os preços exibidos são em reais (BRL) e podem ser alterados a qualquer momento sem aviso prévio. O pagamento é processado por gateway de pagamento seguro. Não armazenamos dados financeiros completos, apenas referências necessárias para confirmação.</p>
+
+    <h2>5. Disponibilidade e Entrega</h2>
+    <p>
+        A disponibilidade de produtos pode variar conforme estoque e fornecedor. O prazo de entrega é estimado e indicado no momento da contratação. Consulte nossa <a asp-controller="Home" asp-action="ShippingPolicy">Política de Envio</a>
+
+    <h2>6. Trocas, Devoluções e Cancelamentos</h2>
+    <p>Em conformidade com o Código de Defesa do Consumidor, o Usuário pode solicitar a devolução em até 7 dias corridos após o recebimento. Procedimentos e prazos adicionais estão detalhados em nossa <a asp-controller="Home" asp-action="ReturnPolicy">Política de Devolução</a>.</p>
+
+    <h2>7. Responsabilidades e Garantias</h2>
+    <p>Os produtos são oferecidos conforme especificado pelo Fornecedor. Problemas decorrentes de defeitos de fabricação devem ser comunicados diretamente ao suporte ou ao fabricante, conforme orientação.</p>
+
+    <h2>8. Direitos de Propriedade Intelectual</h2>
+    <p>Todo conteúdo disponibilizado—incluindo textos, imagens, marcas e logotipos—é protegido por lei. Sua reprodução, distribuição ou modificação sem consentimento é proibida.</p>
+
+    <h2>9. Privacidade e Proteção de Dados</h2>
+    <p>
+        Trabalhamos conforme a Lei Geral de Proteção de Dados (LGPD). Detalhes sobre tratamento de dados pessoais estão em nossa <a asp-controller="Home"
+                                                                                                                                    asp-action="PrivacyPolicy">
+            Política de Privacidade
+        </a>
+        .
+    </p>
+
+    <h2>10. Alterações nos Termos</h2>
+    <p>Reservamo-nos o direito de atualizar estes Termos a qualquer momento. A versão vigente estará sempre disponível em nosso site, com data de atualização informada no rodapé.</p>
+
+    <h2>11. Legislação Aplicável e Foro</h2>
+    <p>Estes Termos são regidos pelas leis brasileiras. Qualquer disputa será dirimida no foro da comarca de São Paulo/SP, com exclusão de quaisquer outros.</p>
+
+    <h2>12. Contato</h2>
+    <p>Para esclarecimentos, fale conosco pelo e-mail <a href="mailto:suporte@seusite.com">suporte@seusite.com</a> ou pelo telefone (11) 1234-5678.</p>
+
+    <em>Última atualização: 5 de maio de 2025</em>
+</div>

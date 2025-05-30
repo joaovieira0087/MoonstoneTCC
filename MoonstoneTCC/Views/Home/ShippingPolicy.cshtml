@@ -1,0 +1,94 @@
+﻿@{
+    ViewData["Title"] = "Política de Envio";
+    Layout = "_Layout";
+}
+
+<style>
+    .shipping-container {
+        max-width: 900px;
+        width: 90%;
+        margin: 60px auto;
+        background: #3b2f63;
+        color: #f0eafa;
+        padding: 40px 50px;
+        border-radius: 10px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        line-height: 1.7;
+    }
+
+        .shipping-container h1 {
+            color: #d1b3ff;
+            font-size: 32px;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #d1b3ff;
+            padding-bottom: 10px;
+        }
+
+        .shipping-container h2 {
+            color: #e3cfff;
+            font-size: 22px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+
+        .shipping-container p, .shipping-container li {
+            margin-bottom: 18px;
+        }
+
+        .shipping-container ol {
+            padding-left: 25px;
+        }
+
+        .shipping-container a {
+            color: #bb94e0;
+            text-decoration: underline;
+        }
+
+            .shipping-container a:hover {
+                color: #d1b3ff;
+            }
+
+        .shipping-container em {
+            display: block;
+            margin-top: 40px;
+            text-align: right;
+            font-size: 14px;
+            color: #c4aad4;
+        }
+</style>
+
+<div class="shipping-container">
+    <h1>Política de Envio</h1>
+    <p>Esta Política de Envio descreve prazos, custos e procedimentos relacionados à expedição de pedidos em nossa plataforma de ecommerce. Leia atentamente para saber como entregamos seus produtos de forma segura e eficiente.</p>
+
+    <h2>1. Processamento de Pedidos</h2>
+    <p>Após a confirmação de pagamento, seu pedido entra em processamento em até 1 dia útil. Durante esse período, verificamos disponibilidade de estoque, realizamos registro e encaminhamento para a transportadora parceira.</p>
+
+    <h2>2. Opções de Frete e Prazos</h2>
+    <ol>
+        <li><strong>Standard</strong>: prazo estimado de 7 a 12 dias úteis;</li>
+        <li><strong>Express</strong>: prazo estimado de 3 a 5 dias úteis;</li>
+        <li><strong>Retirada em Loja</strong>: disponível apenas em locais contemplados, com retirada em até 2 dias úteis após liberação.</li>
+    </ol>
+    <p>Os prazos começam a contar a partir da conclusão do processamento do pedido e podem variar conforme região de entrega.</p>
+
+    <h2>3. Cálculo de Frete</h2>
+    <p>O valor do frete é calculado automaticamente no carrinho, com base em peso, dimensões do pacote e CEP de entrega. Oferecemos promoções de frete grátis em compras acima de R$ 200,00.</p>
+
+    <h2>4. Rastreamento</h2>
+    <p>Assim que o pedido for despachado, você receberá um código de rastreamento por e-mail e poderá acompanhar em tempo real no site da transportadora.</p>
+
+    <h2>5. Atrasos e Incidências</h2>
+    <p>Eventuais atrasos podem ocorrer por fatores externos, como greves ou condições climáticas severas. Nesse caso, nossa equipe de atendimento entrará em contato para informar e apresentar alternativas.</p>
+
+    <h2>6. Endereços Incorretos ou Incompletos</h2>
+    <p>Certifique-se de inserir o endereço completo e correto. Em caso de devolução por erro de endereço, o custo de reenvio será de responsabilidade do cliente.</p>
+
+    <h2>7. Trocas e Devoluções de Entrega</h2>
+    <p>Se o produto chegar danificado, recuse o recebimento e entre em contato imediatamente com nosso suporte. Siga também as instruções da <a asp-controller="Home" asp-action="ReturnPolicy">Política de Devolução</a>.</p>
+
+    <h2>8. Atendimento e Contato</h2>
+    <p>Para dúvidas sobre envio, fale com nosso time pelo e-mail <a href="mailto:suporte@seusite.com">suporte@seusite.com</a> ou pelo chat em tempo real disponível em nosso site.</p>
+
+    <em>Última atualização: 5 de maio de 2025</em>
+</div>

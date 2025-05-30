@@ -1,0 +1,178 @@
+﻿@{
+    ViewData["Title"] = "Perguntas Frequentes (FAQ)";
+}
+
+<style>
+    /* Container */
+    .faq-section {
+        max-width: 800px;
+        margin: 60px auto;
+        padding: 40px 20px;
+        background: #2c2c44;
+        border-radius: 12px;
+        box-shadow: 0 12px 30px rgba(0,0,0,0.6);
+        color: #fff;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+        /* Title */
+        .faq-section h1 {
+            text-align: center;
+            color: #a64bd9;
+            font-size: 2.4rem;
+            margin-bottom: 30px;
+            letter-spacing: 1px;
+            position: relative;
+        }
+
+            .faq-section h1::after {
+                content: '';
+                display: block;
+                width: 60px;
+                height: 4px;
+                background: #a64bd9;
+                margin: 10px auto 0;
+                border-radius: 2px;
+            }
+
+    /* Item */
+    .faq-item + .faq-item {
+        margin-top: 10px;
+    }
+
+    /* Question */
+    .faq-question {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        background: transparent;
+        border: none;
+        outline: none;
+        color: #a64bd9;
+        font-size: 1.1rem;
+        font-weight: 600;
+        padding: 18px 16px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background 0.3s;
+    }
+
+        .faq-question:hover {
+            background: #3b3b55;
+        }
+
+        .faq-question .icon {
+            transition: transform 0.3s ease;
+        }
+
+    /* Answer */
+    .faq-answer {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.5s ease, padding 0.3s ease;
+        padding: 0 16px;
+        color: #ddd;
+        line-height: 1.6;
+    }
+
+    .faq-item.open .faq-answer {
+        max-height: 500px; /* sufficiently high for content */
+        padding: 12px 16px 18px;
+    }
+
+    .faq-item.open .faq-question {
+        background: #3b3b55;
+    }
+
+        .faq-item.open .faq-question .icon {
+            transform: rotate(180deg);
+        }
+</style>
+
+<section class="faq-section" aria-label="Perguntas Frequentes (FAQ)">
+    <h1>Perguntas Frequentes</h1>
+
+    @for (int i = 1; i <= questions.Length; i++)
+    {
+        <div class="faq-item">
+            <button class="faq-question" aria-expanded="false" onclick="toggleAnswer(this)">
+                <span>@questions[i - 1]</span>
+                <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M6 9l6 6 6-6" stroke="#a64bd9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+            </button>
+            <div class="faq-answer" aria-hidden="true">
+                <p>@answers[i - 1]</p>
+            </div>
+        </div>
+    }
+</section>
+
+<script>
+    function toggleAnswer(button) {
+        const item = button.closest('.faq-item');
+        const answer = item.querySelector('.faq-answer');
+        const expanded = button.getAttribute('aria-expanded') === 'true';
+
+        // Toggle state
+        item.classList.toggle('open');
+        button.setAttribute('aria-expanded', String(!expanded));
+        answer.setAttribute('aria-hidden', String(expanded));
+
+        // Optional: scroll into view when opening
+        if (!expanded) {
+            item.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }
+</script>
+
+@functions {
+    private static readonly string[] questions = new[]
+    {
+        "Como faço para acompanhar meu pedido?",
+        "Quais são as formas de pagamento aceitas?",
+        "Qual o prazo de entrega?",
+        "Como faço uma devolução?",
+        "Como posso alterar meu endereço de entrega?",
+        "O que faço se o produto chegar com defeito?",
+        "Vocês enviam para todo o Brasil?",
+        "É seguro comprar no site?",
+        "Como uso um cupom de desconto?",
+        "Como entro em contato com o suporte?",
+        "Posso parcelar minha compra?",
+        "Quais são os horários de atendimento?",
+        "Como cancelo um pedido?",
+        "Qual o prazo para devolução de produtos?",
+        "O site armazena meus dados?",
+        "Vocês vendem produtos usados?",
+        "Como sei se meu pedido foi aprovado?",
+        "Posso retirar o pedido em mãos?",
+        "Vocês oferecem garantia dos produtos?",
+        "O que faço se esquecer minha senha?"
+    };
+
+    private static readonly string[] answers = new[]
+    {
+        "Você pode acompanhar seu pedido na área \"Meus Pedidos\" após fazer login.",
+        "Aceitamos cartão de crédito, boleto bancário e PIX.",
+        "O prazo varia de acordo com sua localização e o método de envio escolhido.",
+        "Consulte nossa Política de Devolução para detalhes.",
+        "Acesse sua conta e vá até 'Endereços' para editar.",
+        "Entre em contato com o suporte imediatamente com fotos do defeito.",
+        "Sim, enviamos para todo o território nacional.",
+        "Sim, usamos criptografia e seguimos todas as normas de segurança.",
+        "Você pode aplicar o cupom no carrinho de compras antes de finalizar o pedido.",
+        "Clique em 'Fale Conosco' ou envie e-mail para suporte@loja.com.",
+        "Sim, aceitamos parcelamento em até 12x no cartão.",
+        "Nosso atendimento funciona de segunda a sexta das 9h às 18h.",
+        "Acesse sua conta e vá até 'Meus Pedidos' para solicitar o cancelamento.",
+        "Você tem até 7 dias corridos após o recebimento para solicitar devolução.",
+        "Sim, tratamos suas informações com total sigilo e segurança.",
+        "Não. Todos os nossos produtos são novos e lacrados.",
+        "Você será notificado por e-mail assim que seu pedido for aprovado.",
+        "Atualmente não oferecemos retirada presencial.",
+        "Sim, todos os produtos têm garantia mínima de 3 meses.",
+        "Clique em 'Esqueci minha senha' na tela de login e siga as instruções."
+    };
+}

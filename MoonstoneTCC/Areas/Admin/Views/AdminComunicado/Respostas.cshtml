@@ -1,0 +1,113 @@
+﻿@using MoonstoneTCC.Models
+@inject MoonstoneTCC.Context.AppDbContext _context
+@model IEnumerable<RespostaUsuario>
+
+@{
+    ViewData["Title"] = "Respostas dos Usuários";
+    var tipoSelecionado = Context.Request.Query["tipo"];
+    var tituloBuscado = Context.Request.Query["titulo"];
+    var emailBuscado = Context.Request.Query["email"];
+}
+
+<h2 class="text-white mb-4"><i class="fas fa-users"></i> Respostas dos Usuários</h2>
+
+<form method="get" class="mb-4 bg-dark p-3 rounded">
+    <div class="row gy-2">
+        <div class="col-md-3">
+            <label class="text-white fw-bold">Tipo</label>
+            <select name="tipo" class="form-control">
+                <option value="">Todos</option>
+                <option value="0" selected="@(tipoSelecionado == "0")">Comunicado</option>
+                <option value="1" selected="@(tipoSelecionado == "1")">Enquete</option>
+                <option value="2" selected="@(tipoSelecionado == "2")">Pergunta + Resposta</option>
+            </select>
+        </div>
+        <div class="col-md-4">
+            <label class="text-white fw-bold">Título</label>
+            <input type="text" name="titulo" value="@tituloBuscado" class="form-control" placeholder="Ex: Pesquisa 2024" />
+        </div>
+        <div class="col-md-3">
+            <label class="text-white fw-bold">Email</label>
+            <input type="text" name="email" value="@emailBuscado" class="form-control" placeholder="Ex: usuario@email.com" />
+        </div>
+        <div class="col-md-2 d-flex align-items-end">
+            <button type="submit" class="btn btn-purple w-100"><i class="fas fa-filter"></i> Filtrar</button>
+        </div>
+    </div>
+</form>
+
+<div class="table-responsive rounded">
+    <table class="table table-bordered table-dark table-striped align-middle">
+        <thead class="bg-purple text-white">
+            <tr>
+                <th>Usuário</th>
+                <th>Tipo</th>
+                <th>Título</th>
+                <th>Pergunta</th>
+                <th>Resposta</th>
+                <th>Data</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var r in Model)
+            {
+                var tipo = r.Comunicado.Tipo.ToString();
+                var titulo = r.Comunicado.Titulo;
+                string perguntaTexto = "";
+
+                var match = System.Text.RegularExpressions.Regex.Match(r.TextoResposta ?? "", @"\[(\d+)\]");
+                if (match.Success && int.TryParse(match.Groups[1].Value, out int perguntaId))
+                {
+                    var pergunta = _context.PerguntasComunicados.FirstOrDefault(p => p.Id == perguntaId);
+                    perguntaTexto = pergunta?.TextoPergunta ?? "";
+                }
+
+                <tr>
+                    <td>@r.Usuario?.Email</td>
+                    <td>@tipo</td>
+                    <td>@titulo</td>
+                    <td>@(string.IsNullOrWhiteSpace(perguntaTexto) ? "-" : perguntaTexto)</td>
+                    <td>@r.TextoResposta</td>
+                    <td>@r.DataResposta.ToString("dd/MM/yyyy HH:mm")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<style>
+    body {
+        background-color: #1e002f;
+    }
+
+    .bg-purple {
+        background-color: #6f42c1 !important;
+    }
+
+    .btn-purple {
+        background-color: #9F00FF;
+        border: none;
+        color: white;
+        font-weight: bold;
+    }
+
+        .btn-purple:hover {
+            background-color: #BB33FF;
+        }
+
+    .form-control {
+        background-color: #3B0056;
+        border: none;
+        color: white;
+        border-radius: 8px;
+    }
+
+        .form-control::placeholder {
+            color: #aaa;
+        }
+
+    table th,
+    table td {
+        vertical-align: middle !important;
+    }
+</style>

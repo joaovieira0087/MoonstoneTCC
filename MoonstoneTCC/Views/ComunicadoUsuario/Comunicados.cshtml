@@ -1,0 +1,136 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using System.Security.Claims
+@using MoonstoneTCC.Models
+@inject UserManager<IdentityUser> UserManager
+@inject MoonstoneTCC.Context.AppDbContext _context
+@model IEnumerable<Comunicado>
+
+@functions {
+    public Task<IdentityUser> ObterUsuarioAsync(UserManager<IdentityUser> userManager, ClaimsPrincipal user)
+    {
+        return userManager.GetUserAsync(user);
+    }
+}
+
+@{
+    var user = await ObterUsuarioAsync(UserManager, User);
+    ViewData["Title"] = "Comunicados Importantes";
+}
+
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+
+<div class="container mt-5 text-white">
+    <h2><i class="fas fa-bullhorn"></i> Comunicados Importantes</h2>
+
+    @foreach (var item in Model.OrderByDescending(c => c.DataCriacao))
+    {
+        var resposta = _context.RespostasUsuarios.FirstOrDefault(r => r.UsuarioId == user.Id && r.ComunicadoId == item.Id);
+        var opcoes = item.OpcoesEnquete?.Split('|') ?? Array.Empty<string>();
+        var respostasEnquete = _context.RespostasUsuarios
+        .Where(r => r.ComunicadoId == item.Id && r.OpcaoEscolhida != null)
+        .ToList();
+
+        <div class="card shadow mb-4 border-0" style="background-color: #3B0056;">
+            <div class="card-header" style="background-color: #6f42c1;">
+                <strong>@item.Titulo</strong>
+                <span class="float-end">@item.DataCriacao.ToString("dd/MM/yyyy HH:mm")</span>
+            </div>
+
+            <div class="card-body">
+                <p>@item.Mensagem</p>
+
+                @* TIPO: PERGUNTA (com múltiplas perguntas e um botão só) *@
+                @if (item.Tipo == TipoComunicado.Pergunta)
+                {
+                    var perguntas = _context.PerguntasComunicados
+                    .Where(p => p.ComunicadoId == item.Id)
+                    .ToList();
+
+                    var respostasDoUsuario = _context.RespostasUsuarios
+                    .Where(r => r.UsuarioId == user.Id && r.ComunicadoId == item.Id)
+                    .ToList();
+
+                    if (respostasDoUsuario.Count == 0)
+                    {
+                        <form asp-controller="ComunicadoUsuario" asp-action="ResponderVariasPerguntas" method="post">
+                            <input type="hidden" name="ComunicadoId" value="@item.Id" />
+
+                            @for (int i = 0; i < perguntas.Count; i++)
+                            {
+                                <input type="hidden" name="Respostas[@i].PerguntaId" value="@perguntas[i].Id" />
+                                <div class="mb-3">
+                                    <label class="form-label text-white">@perguntas[i].TextoPergunta</label>
+                                    <textarea class="form-control" name="Respostas[@i].Texto" required placeholder="Sua resposta aqui..."></textarea>
+                                </div>
+                            }
+
+                            <button type="submit" class="btn btn-light">Enviar todas as respostas</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <div class="alert alert-success">
+                            <strong><i class="fas fa-check-circle"></i> Você já respondeu esse comunicado.</strong>
+                        </div>
+                    }
+                }
+                else if (item.Tipo == TipoComunicado.Enquete && resposta == null)
+                {
+                    <form asp-controller="ComunicadoUsuario" asp-action="Votar" method="post">
+                        <input type="hidden" name="ComunicadoId" value="@item.Id" />
+                        @foreach (var opcao in opcoes)
+                        {
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="OpcaoEscolhida" value="@opcao" required />
+                                <label class="form-check-label">@opcao</label>
+                            </div>
+                        }
+                        <button type="submit" class="btn btn-light btn-sm mt-2">Votar</button>
+                    </form>
+                }
+                else if (item.Tipo == TipoComunicado.Enquete && resposta != null)
+                {
+                    var totalVotos = respostasEnquete.Count();
+                    <h6 class="mt-3">Resultado da Enquete:</h6>
+                    @foreach (var opcao in opcoes)
+                    {
+                        var votos = respostasEnquete.Count(r => r.OpcaoEscolhida == opcao);
+                        var percentual = totalVotos > 0 ? (int)((votos / (double)totalVotos) * 100) : 0;
+                        <div class="mb-2">
+                            <strong>@opcao:</strong> @votos votos (@percentual%)
+                            <div class="progress">
+                                <div class="progress-bar" style="width:@percentual%; background-color: #9F00FF">@percentual%</div>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    }
+</div>
+
+
+<style>
+    body {
+        background-color: #2A003F;
+    }
+
+    .card-header {
+        color: white;
+    }
+
+    .form-check-label {
+        color: white;
+    }
+
+    .progress {
+        height: 20px;
+    }
+
+    .progress-bar {
+        color: white;
+        font-weight: bold;
+        line-height: 20px;
+    }
+</style>

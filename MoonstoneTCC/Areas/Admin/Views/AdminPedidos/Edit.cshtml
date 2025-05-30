@@ -1,0 +1,132 @@
+﻿@model MoonstoneTCC.Models.Pedido
+
+@{
+    ViewData["Title"] = "Editar Pedido";
+}
+
+<div class="card-header text-white text-center" style="background: linear-gradient(90deg, #6a0dad 0%, #3c006e 50%, #2b003f 100%);">
+    <h1 class="fw-bold">EDITAR PEDIDO</h1>
+</div>
+
+<h4 class="text-primary">Detalhes do Pedido</h4>
+<hr />
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="PedidoId" />
+
+            <div class="row mb-3">
+                <div class="form-group col-md-6">
+                    <label asp-for="Nome" class="control-label d-flex align-items-center">
+                        <i class="fas fa-user text-primary mr-2" style="font-size: 1.2rem;"></i>
+                        <span>Nome</span>
+                    </label>
+                    <input asp-for="Nome" class="form-control border-primary" />
+                    <span asp-validation-for="Nome" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-6">
+                    <label asp-for="Sobrenome" class="control-label d-flex align-items-center">
+                        <i class="fas fa-user-friends text-success mr-2" style="font-size: 1.2rem;"></i>
+                        <span>Sobrenome</span>
+                    </label>
+                    <input asp-for="Sobrenome" class="form-control border-success" />
+                    <span asp-validation-for="Sobrenome" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="form-group col-md-6">
+                    <label asp-for="Endereco1" class="control-label d-flex align-items-center">
+                        <i class="fas fa-map-marker-alt text-warning mr-2" style="font-size: 1.2rem;"></i>
+                        <span>Endereço 1</span>
+                    </label>
+                    <input asp-for="Endereco1" class="form-control border-warning" />
+                    <span asp-validation-for="Endereco1" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-6">
+                    <label asp-for="Endereco2" class="control-label d-flex align-items-center">
+                        <i class="fas fa-map-marker text-info mr-2" style="font-size: 1.2rem;"></i>
+                        <span>Endereço 2</span>
+                    </label>
+                    <input asp-for="Endereco2" class="form-control border-info" />
+                    <span asp-validation-for="Endereco2" class="text-danger"></span>
+                </div>
+            </div>
+
+
+            <div class="row mb-3">
+                <div class="form-group col-md-6">
+                    <label asp-for="Cep" class="control-label d-flex align-items-center">
+                        <i class="fas fa-envelope text-danger mr-2" style="font-size: 1.2rem;"></i>
+                        <span>CEP</span>
+                    </label>
+                    <input asp-for="Cep" class="form-control border-danger" placeholder="Digite o CEP" />
+                    <span asp-validation-for="Cep" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-6">
+                    <label asp-for="Estado" class="control-label d-flex align-items-center">
+                        <i class="fas fa-globe-americas text-primary mr-2" style="font-size: 1.2rem;"></i>
+                        <span>Estado</span>
+                    </label>
+                    <input asp-for="Estado" class="form-control border-primary" placeholder="Digite o Estado" />
+                    <span asp-validation-for="Estado" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="form-group col-md-6">
+                    <label asp-for="Cidade" class="control-label d-flex align-items-center">
+                        <i class="fas fa-city text-success mr-2" style="font-size: 1.2rem;"></i>
+                        <span>Cidade</span>
+                    </label>
+                    <input asp-for="Cidade" class="form-control border-success" placeholder="Digite a Cidade" />
+                    <span asp-validation-for="Cidade" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-6">
+                    <label asp-for="Telefone" class="control-label d-flex align-items-center">
+                        <i class="fas fa-phone text-warning mr-2" style="font-size: 1.2rem;"></i>
+                        <span>Telefone</span>
+                    </label>
+                    <input asp-for="Telefone" class="form-control border-warning" placeholder="Digite o Telefone" />
+                    <span asp-validation-for="Telefone" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="form-group col-md-6">
+                    <label asp-for="Email" class="control-label d-flex align-items-center">
+                        <i class="fas fa-envelope-open text-info mr-2" style="font-size: 1.2rem;"></i>
+                        <span> Email</span>
+                    </label>
+                    <input asp-for="Email" class="form-control border-info" placeholder="Digite o email" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-6">
+                    <label asp-for="PedidoEnviado" class="control-label d-flex align-items-center">
+                        <i class="fas fa-truck text-primary mr-2" style="font-size: 1.2rem;"></i>
+                        <span>Pedido Enviado</span>
+                    </label>
+                    <input asp-for="PedidoEnviado" class="form-control border-primary" placeholder="Data do envio" />
+                    <span asp-validation-for="PedidoEnviado" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="form-group col-md-6">
+                    <label asp-for="PedidoEntregueEm" class="control-label d-flex align-items-center">
+                        <i class="fas fa-calendar-check text-success mr-2" style="font-size: 1.2rem;"></i>
+                        <span> Pedido Entregue Em</span>
+                    </label>
+                    <input asp-for="PedidoEntregueEm" class="form-control border-success" placeholder="Data da entrega" />
+                    <span asp-validation-for="PedidoEntregueEm" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-group mt-3 text-center">
+                <input type="submit" value="Salvar" class="btn btn-primary btn-lg px-5" />
+                <a asp-action="Index" class="btn btn-secondary btn-lg px-5 ml-2">Voltar à Lista</a>
+            </div>
+        </form>
+    </div>
+</div>

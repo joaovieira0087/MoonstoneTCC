@@ -1,0 +1,88 @@
+﻿@model IEnumerable<MoonstoneTCC.Models.Pedido>
+
+<h2 class="text-center">Pedidos Por Período</h2>
+
+<!-- Filtro de Data -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+    <div class="container-fluid">
+        <form class="d-flex w-100 justify-content-between">
+            <div class="form-group d-flex">
+                <label for="minDate" class="form-label text-white me-2">Data Inicial</label>
+                <input type="date" class="form-control" name="minDate" value="@ViewData["minDate"]" />
+            </div>
+            <div class="form-group d-flex ms-3">
+                <label for="maxDate" class="form-label text-white me-2">Data Final</label>
+                <input type="date" class="form-control" name="maxDate" value="@ViewData["maxDate"]" />
+            </div>
+            <button type="submit" class="btn btn-success ms-3">Filtrar</button>
+        </form>
+    </div>
+</nav>
+
+<!-- Informações de Total -->
+<div class="container mb-4">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card bg-primary text-white mb-3">
+                <div class="card-header">Total de Pedidos</div>
+                <div class="card-body">
+                    <h5 class="card-title">@Model.Count()</h5>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-info text-white mb-3">
+                <div class="card-header">Total de Jogos nos Pedidos</div>
+                <div class="card-body">
+                    <h5 class="card-title">@Model.Sum(obj => obj.TotalItensPedido)</h5>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-success text-white mb-3">
+                <div class="card-header">Valor Total dos Pedidos</div>
+                <div class="card-body">
+                    <h5 class="card-title">@Model.Sum(obj => obj.PedidoTotal).ToString("c")</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tabela de Pedidos -->
+<div class="container">
+    <div class="panel panel-primary">
+        <div class="panel-heading mb-3">
+            <h3 class="panel-title">Pedidos</h3>
+        </div>
+        <div class="panel-body">
+            <table class="table table-bordered table-striped table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>@Html.DisplayNameFor(model => model.PedidoId)</th>
+                        <th>@Html.DisplayNameFor(model => model.Nome)</th>
+                        <th>@Html.DisplayNameFor(model => model.Email)</th>
+                        <th>@Html.DisplayNameFor(model => model.Telefone)</th>
+                        <th>@Html.DisplayNameFor(model => model.PedidoTotal)</th>
+                        <th>@Html.DisplayNameFor(model => model.TotalItensPedido)</th>
+                        <th>@Html.DisplayNameFor(model => model.PedidoEntregueEm)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@Html.DisplayFor(modelItem => item.PedidoId)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Nome)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Email)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Telefone)</td>
+                            <td>@Html.DisplayFor(modelItem => item.PedidoTotal)</td>
+                            <td>@Html.DisplayFor(modelItem => item.TotalItensPedido)</td>
+                            <td>@Html.DisplayFor(modelItem => item.PedidoEntregueEm)</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

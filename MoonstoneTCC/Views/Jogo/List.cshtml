@@ -1,0 +1,11 @@
+﻿@model JogoListViewModel
+
+<div class="container my-5" style="; color: #f5f5f5; padding: 20px; border-radius: 15px;">
+    <h2>@Model.CategoriaAtual</h2>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
+        @foreach (var jogo in Model.Jogos)
+        {
+            <partial name="_JogosResumo" for="@jogo"/>
+        }
+    </div>
+</div>

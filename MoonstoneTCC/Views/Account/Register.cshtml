@@ -1,0 +1,190 @@
+﻿@model LoginViewModel
+
+@{
+    ViewData["HideHeader"] = true; // Esconder o header
+    ViewData["HideFooter"] = true; // Esconder o footer
+}
+
+<style>
+    /* Reaproveitando o CSS da página de login */
+    html, body {
+        font-family: 'Arial', sans-serif;
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient(135deg, #1e1e2f, #4b0082);
+        color: #fff;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .register-container {
+        max-width: 500px;
+        width: 100%;
+        padding: 20px;
+        background: #2c2c44;
+        margin-left: 400px;
+        border-radius: 10px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+        text-align: center;
+        position: relative;
+    }
+
+    .register-header img {
+        max-width: 180px;
+        margin-bottom: 15px;
+    }
+
+    h4 {
+        color: #a64bd9;
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+
+    .register-form .form-control {
+        background: #3b3b55;
+        border: 1px solid #4b0082;
+        border-radius: 5px;
+        color: #fff;
+        padding: 10px;
+        width: 100%;
+        margin-bottom: 15px;
+        transition: all 0.3s;
+    }
+
+    .register-form .form-control:focus {
+        border-color: #a64bd9;
+        outline: none;
+        box-shadow: 0 0 8px #a64bd9;
+    }
+
+    .btn-register {
+        background-color: #a64bd9;
+        border: none;
+        border-radius: 5px;
+        color: #fff;
+        cursor: pointer;
+        padding: 10px 20px;
+        font-size: 16px;
+        transition: background 0.3s ease;
+        width: 100%;
+    }
+
+    .btn-register:hover {
+        background-color: #932dba;
+    }
+
+    .form-group label {
+        display: flex;
+        align-items: center;
+        font-size: 14px;
+        margin-bottom: 5px;
+    }
+
+    .form-group label i {
+        margin-right: 8px;
+        color: #a64bd9;
+    }
+
+    .text-danger {
+        color: #ff4c4c;
+        font-size: 12px;
+    }
+
+    .register-footer {
+        margin-top: 20px;
+        font-size: 12px;
+        color: #aaa;
+    }
+
+    .register-footer a {
+        color: #a64bd9;
+        text-decoration: none;
+    }
+
+    .register-footer a:hover {
+        text-decoration: underline;
+    }
+
+    /* Estilos atualizados para o checkbox de termos */
+    .terms {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+        font-size: 14px;
+    }
+    .terms input[type="checkbox"] {
+        appearance: none;
+        -webkit-appearance: none;
+        width: 18px;
+        height: 18px;
+        border: 2px solid #a64bd9;
+        border-radius: 4px;
+        background: #2c2c44;
+        position: relative;
+        margin-right: 10px;
+        cursor: pointer;
+        transition: background 0.3s ease, border-color 0.3s ease;
+    }
+    .terms input[type="checkbox"]:checked {
+        background: #a64bd9;
+        border-color: #a64bd9;
+    }
+    .terms input[type="checkbox"]:checked::after {
+        content: "";
+        position: absolute;
+        top: 3px;
+        left: 6px;
+        width: 4px;
+        height: 8px;
+        border: solid #fff;
+        border-width: 0 2px 2px 0;
+        transform: rotate(45deg);
+    }
+    .terms a {
+        color: #a64bd9;
+        text-decoration: underline;
+        cursor: pointer;
+    }
+    .terms a:hover {
+        color: #932dba;
+    }
+</style>
+<body>
+    <div class="register-container">
+        <div class="register-header">
+            <img src="~/img/userlmn_190a820892874567a91071d0542da791.png" alt="Registrar Usuário">
+        </div>
+        <h4>REGISTRAR USUÁRIO</h4>
+        <form asp-controller="Account" asp-action="Register" method="post" class="register-form">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="UserName"><i class="fas fa-user"></i> Nome de Usuário</label>
+                <input asp-for="UserName" class="form-control" />
+                <span asp-validation-for="UserName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Password"><i class="fas fa-lock"></i> Senha</label>
+                <input asp-for="Password" type="password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <!-- Campo para aceitar termos de uso -->
+            <div class="form-group terms">
+                <input type="checkbox" id="AcceptTerms" name="AcceptTerms" />
+                <label for="AcceptTerms">
+                    Eu aceito os <a asp-controller="Home" asp-action="Terms" target="_blank">Termos de Uso</a>
+                </label>
+                
+            </div>
+            <button type="submit" class="btn-register">Registrar</button>
+        </form>
+        <div class="register-footer">
+            <p>Já tem uma conta? <a asp-controller="Account" asp-action="Login">Faça Login</a></p>
+        </div>
+    </div>
+</body>
+

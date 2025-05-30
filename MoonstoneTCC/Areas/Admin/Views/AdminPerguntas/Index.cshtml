@@ -1,0 +1,41 @@
+﻿@model IEnumerable<MoonstoneTCC.Models.PerguntaUsuario>
+
+<h2>Perguntas dos Usuários</h2>
+
+<table class="table table-bordered table-hover">
+    <thead class="table-dark">
+        <tr>
+            <th>Título</th>
+            <th>Usuário</th>
+            <th>Data</th>
+            <th>Status</th>
+            <th>Ação</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var pergunta in Model)
+        {
+            <tr>
+                <td>@pergunta.Titulo</td>
+                <td>@pergunta.Usuario?.UserName</td>
+                <td>@pergunta.DataEnvio.ToString("dd/MM/yyyy HH:mm")</td>
+                <td>
+                    @if (pergunta.Respondido)
+                    {
+                        <span class="badge bg-success">Respondido</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-warning text-dark">Pendente</span>
+                    }
+                </td>
+                <td>
+                    <a class="btn btn-primary btn-sm" asp-action="Responder" asp-route-id="@pergunta.Id">
+                        <i class="fas fa-reply"></i> Responder
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

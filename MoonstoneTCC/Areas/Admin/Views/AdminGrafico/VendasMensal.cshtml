@@ -1,0 +1,74 @@
+﻿<title>
+    @ViewData["Title"] - Gráfico de Vendas
+</title>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+<div id="chart_div" style="width: 900px; height: 500px;"></div>
+
+<script type="text/javascript">
+    google.charts.load('current', { packages: ['corechart'] });
+    google.charts.setOnLoadCallback(CarregaDados);
+
+    // Função para buscar dados via AJAX
+    function CarregaDados() {
+        $.ajax({
+            url: '@Url.Action("VendasJogos", "AdminGrafico")',
+            data: { dias: 30 }, // Define o intervalo de 30 dias
+            dataType: "json",
+            type: "GET",
+            error: function (xhr, status, error) {
+                toastr.error("Erro ao carregar os dados: " + error);
+            },
+            success: function (response) {
+                if (response.success) {
+                    console.log("Dados recebidos:", response.data);
+                    GraficoVendasJogos(response.data);
+                } else {
+                    toastr.warning(response.message || "Nenhum dado encontrado para os últimos 30 dias.");
+                }
+            }
+        });
+    }
+
+    // Função para montar o gráfico
+    function GraficoVendasJogos(data) {
+        if (!data || data.length === 0) {
+            toastr.warning("Nenhum dado encontrado para os últimos 30 dias.");
+            return;
+        }
+
+        var dataArray = [['Jogo', 'Valores (R$)']];
+
+        // Adiciona os dados no formato para gráfico de pizza
+        $.each(data, function (i, item) {
+            if (item.jogoNome && item.jogosValorTotal >= 0) {
+                dataArray.push([item.jogoNome, Number(item.jogosValorTotal)]);
+            }
+        });
+
+        if (dataArray.length <= 1) {
+            toastr.warning("Nenhum dado válido encontrado para os últimos 30 dias.");
+            return;
+        }
+
+        console.log("Array de dados para o gráfico de pizza:", dataArray);
+
+        var dataTable = google.visualization.arrayToDataTable(dataArray);
+
+        var options = {
+            title: 'Jogos - Vendas nos Últimos 30 Dias',
+            pieHole: 0.4, // Para criar um gráfico de pizza com um "buraco" (estilo donut)
+            colors: ['#5202b5', '#d2a828', '#f45b69', '#009688', '#8e44ad'],
+            legend: { position: 'right' },
+            animation: {
+                duration: 1000,
+                easing: 'out',
+                startup: true
+            }
+        };
+
+        // Configura o gráfico como PieChart
+        var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+        chart.draw(dataTable, options);
+    }
+</script>

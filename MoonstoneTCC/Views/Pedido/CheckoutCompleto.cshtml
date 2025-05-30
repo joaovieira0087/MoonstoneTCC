@@ -1,0 +1,211 @@
+﻿@model Pedido
+
+<div class="container my-5">
+    <!-- Toast de avaliação -->
+<div id="avaliacaoToast" class="toast-avaliacao">
+    <div class="toast-conteudo">
+        <span><i class="fas fa-star text-warning"></i> Como você avalia sua compra no site?</span>
+        <div class="toast-acoes">
+            <a href="/Pergunta/Criar" class="btn-avaliar">Avaliar agora</a>
+            <button onclick="fecharToast()" class="btn-fechar">X</button>
+        </div>
+    </div
+
+    <div class="bg-purple-100 p-5 rounded shadow-lg text-center">
+        <h2 class="text-purple-700 mb-4">
+            <i class="fas fa-check-circle text-success"></i> @ViewBag.CheckoutCompletoMensagem
+        </h2>
+        <p class="lead">Obrigado por sua compra, <strong>@Model.Nome @Model.Sobrenome</strong>!</p>
+    </div>
+
+    <div class="card mt-4 shadow border-0">
+        <div class="card-header bg-purple-600 text-white">
+            <i class="fas fa-info-circle"></i> Informações do Cliente
+        </div>
+        <div class="card-body">
+            <p><i class="fas fa-user"></i> Nome: <strong>@Model.Nome @Model.Sobrenome</strong></p>
+            <p><i class="fas fa-envelope"></i> Email: <strong>@Model.Email</strong></p>
+            <p><i class="fas fa-phone"></i> Telefone: <strong>@Model.Telefone</strong></p>
+        </div>
+    </div>
+
+    <div class="card mt-4 shadow border-0">
+        <div class="card-header bg-purple-600 text-white">
+            <i class="fas fa-map-marker-alt"></i> Endereço de Entrega
+        </div>
+        <div class="card-body">
+            <p><strong>@Model.Endereco1</strong></p>
+            @if (!string.IsNullOrEmpty(Model.Endereco2))
+            {
+                <p><strong>@Model.Endereco2</strong></p>
+            }
+            <p>@Model.Cidade - @Model.Estado, @Model.Cep</p>
+        </div>
+    </div>
+
+    <div class="card mt-4 shadow border-0">
+        <div class="card-header bg-purple-600 text-white">
+            <i class="fas fa-receipt"></i> Detalhes do Pedido
+        </div>
+        <div class="card-body">
+            <p><i class="fas fa-hashtag"></i> Número do Pedido: <strong>@Model.PedidoId</strong></p>
+            <p><i class="fas fa-calendar-alt"></i> Enviado em: <strong>@Model.PedidoEnviado.ToString("dd/MM/yyyy")</strong></p>
+            @if (Model.PedidoEntregueEm != null)
+            {
+                <p><i class="fas fa-truck"></i> Entregue em: <strong>@Model.PedidoEntregueEm?.ToString("dd/MM/yyyy")</strong></p>
+            }
+            <p><i class="fas fa-box-open"></i> Total de Itens: <strong>@Model.TotalItensPedido</strong></p>
+            <p><i class="fas fa-money-bill-wave"></i> Valor Total: <strong>@Model.PedidoTotal.ToString("C2")</strong></p>
+        </div>
+    </div>
+
+    <div class="card mt-4 shadow border-0">
+        <div class="card-header bg-purple-600 text-white">
+            <i class="fas fa-gamepad"></i> Itens do Pedido
+        </div>
+        <div class="card-body">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th></th>
+                        <th>Quantidade</th>
+                        <th>Jogo</th>
+                        <th>Preço</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.PedidoItens)
+                    {
+                        <tr>
+                            <td><img src="@item.Jogo.ImagemUrl" width="60" height="60" class="rounded shadow-sm" /></td>
+                            <td>@item.Quantidade</td>
+                            <td>@item.Jogo.Nome</td>
+                            <td>@item.Jogo.Preco.ToString("C2")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="text-center mt-4">
+        <a class="btn btn-outline-purple btn-lg" asp-controller="Home" asp-action="Index">
+            <i class="fas fa-arrow-left"></i> Retornar à página inicial
+        </a>
+    </div>
+</div>
+
+<style>
+
+        .toast-avaliacao {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        background-color: #3B0056;
+        color: white;
+        padding: 20px 25px;
+        border-radius: 15px;
+        box-shadow: 0 0 15px rgba(0,0,0,0.4);
+        z-index: 9999;
+        display: none;
+        animation: fadeIn 0.5s ease forwards;
+    }
+
+    .toast-conteudo {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+
+    .toast-conteudo span {
+        font-size: 16px;
+        font-weight: 500;
+    }
+
+    .toast-acoes {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .btn-avaliar {
+        background-color: #9F00FF;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 10px;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+    .btn-avaliar:hover {
+        background-color: #BB33FF;
+    }
+
+    .btn-fechar {
+        background-color: transparent;
+        border: none;
+        color: white;
+        font-weight: bold;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+/*     keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    keyframes fadeOut {
+        from { opacity: 1; transform: translateY(0); }
+        to { opacity: 0; transform: translateY(20px); }
+    } */
+
+
+    .btn-outline-purple {
+        border-color: #6f42c1;
+        color: #6f42c1;
+    }
+
+        .btn-outline-purple:hover {
+            background-color: #6f42c1;
+            color: white;
+        }
+
+    .bg-purple-100 {
+        background-color: #f3e8ff;
+    }
+
+    .text-purple-700 {
+        color: #6f42c1;
+    }
+
+    .bg-purple-600 {
+        background-color: #6f42c1;
+    }
+</style>
+
+<script>
+    window.onload = function () {
+        const toast = document.getElementById('avaliacaoToast');
+        toast.style.display = 'block';
+
+        setTimeout(() => {
+            toast.style.animation = 'fadeOut 0.5s ease forwards';
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 500);
+        }, 7000);
+    }
+
+    function fecharToast() {
+        const toast = document.getElementById('avaliacaoToast');
+        toast.style.animation = 'fadeOut 0.5s ease forwards';
+        setTimeout(() => {
+            toast.style.display = 'none';
+        }, 500);
+    }
+</script>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">

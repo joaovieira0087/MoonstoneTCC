@@ -1,0 +1,71 @@
+﻿<script type="text/javascript">
+    // Carrega os pacotes do Google Charts
+    google.charts.load('current', { packages: ['corechart'] });
+    google.charts.setOnLoadCallback(CarregaDados);
+
+    function CarregaDados() {
+        $.ajax({
+            url: '@Url.Action("VendasJogos", "AdminGrafico")', // Corrigido erro de sintaxe
+            data: { dias: 7 }, // Envia a quantidade de dias para o backend
+            dataType: "json",
+            type: "GET",
+            error: function (xhr, status, error) {
+                toastr.error("Erro ao carregar os dados: " + error); // Mensagem detalhada para erros
+            },
+            success: function (response) {
+                // Verifica se a resposta é bem-sucedida
+                if (response.success) {
+                    console.log("Dados recebidos:", response.data); // Log para verificação
+                    GraficoVendasJogos(response.data); // Chama a função para renderizar o gráfico
+                } else {
+                    toastr.warning(response.message || "Erro ao carregar os dados.");
+                }
+            }
+        });
+    }
+
+    // Função para montar o gráfico
+    function GraficoVendasJogos(data) {
+        if (!data || data.length === 0) {
+            toastr.warning("Nenhum dado encontrado para os últimos 7 dias.");
+            return;
+        }
+
+        // Função para preparar e exibir os dados no gráfico
+        var dataArray = [['Jogo', 'Quantidade', 'Valores (R$)']];
+
+        // Itera sobre os dados recebidos
+        $.each(data, function (i, item) {
+            if (item.jogoNome && item.jogosQuantidade >= 0 && item.jogosValorTotal >= 0) {
+                dataArray.push([
+                    item.jogoNome,
+                    Number(item.jogosQuantidade),
+                    Number(item.jogosValorTotal)
+                ]);
+            }
+        });
+
+        if (dataArray.length <= 1) {
+            toastr.warning("Nenhum dado válido encontrado para os últimos 7 dias.");
+            return;
+        }
+
+        // Log para depuração
+        console.log("Array de dados para o gráfico:", dataArray);
+
+        var dataTable = google.visualization.arrayToDataTable(dataArray);
+
+        var options = {
+            title: 'Vendas nos Últimos 7 Dias',
+            chartArea: { width: '70%' },
+            colors: ['#5202b5', '#d2a828'],
+            hAxis: { title: 'Jogos', minValue: 0 },
+            vAxis: { title: 'Quantidade e Valores' },
+            legend: { position: 'top' }
+        };
+
+        // Alterando para Gráfico de Colunas
+        var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+        chart.draw(dataTable, options);
+    }
+</script>

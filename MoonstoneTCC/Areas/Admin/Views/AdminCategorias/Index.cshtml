@@ -1,0 +1,233 @@
+﻿@model IEnumerable<MoonstoneTCC.Models.Categoria>
+
+@{
+    ViewData["Title"] = "Lista de Categorias";
+}
+
+<h1>LISTA DE CATEGORIAS</h1>
+
+<p>
+    <a class="btn btn-custom" asp-action="Create">
+        <i class="fas fa-plus icon"></i> Criar Nova
+    </a>
+</p>
+
+<!-- Notificação de Copiado -->
+<div id="copyNotification" class="copy-message" style="display: none;">
+    Copiado para a área de transferência!
+</div>
+
+<table class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.CategoriaNome)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Descricao)
+            </th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CategoriaNome)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Descricao)
+                </td>
+                <td>
+                    <div class="btn-group">
+                        <a class="btn btn-sm btn-outline-primary" asp-action="Edit" asp-route-id="@item.CategoriaId">
+                            <i class="fas fa-edit"></i> Editar
+                        </a>
+                        <a class="btn btn-sm btn-outline-info" asp-action="Details" asp-route-id="@item.CategoriaId">
+                            <i class="fas fa-info-circle"></i> Detalhes
+                        </a>
+                        <a class="btn btn-sm btn-outline-danger" asp-action="Delete" asp-route-id="@item.CategoriaId">
+                            <i class="fas fa-trash"></i> Excluir
+                        </a>
+                        <button class="btn btn-sm btn-outline-success copy-btn" data-nome="@item.CategoriaNome" data-descricao="@item.Descricao">
+                            <i class="fas fa-copy"></i> Copiar
+                        </button>
+                    </div>
+                </td>
+
+            </tr>
+
+        }
+    </tbody>
+</table>
+
+<style>
+    body {
+        background: #f1f4f9; /* Fundo do site: cinza claro */
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    h1 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: black; 
+    }
+
+    table.table {
+        margin-top: 20px;
+        border-collapse: collapse;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        overflow: hidden;
+        background: white;
+    }
+
+        table.table th {
+            background: linear-gradient(90deg, #6a0dad 0%, #3c006e 50%, #2b003f 100%); /* Azul sólido */
+            color: white;
+            text-align: center;
+            padding: 12px;
+        }
+
+        table.table td {
+            text-align: center;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        table.table tbody tr:nth-child(even) {
+            background: #f8f9fc; /* Fundo alternado */
+        }
+
+        table.table tbody tr:hover {
+            background: rgba(78, 115, 223, 0.1); /* Fundo azul claro ao passar o mouse */
+        }
+
+    .btn-custom {
+        background: #4e73df;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 5px;
+        transition: transform 0.3s ease, background 0.3s ease;
+    }
+
+        .btn-custom:hover {
+            transform: scale(1.1);
+            background: #375a7f;
+        }
+
+    .btn-outline-primary {
+        color: #4e73df;
+        border-color: #4e73df;
+    }
+
+        .btn-outline-primary:hover {
+            background: #375a7f;
+            color: white;
+        }
+
+    .btn-outline-info {
+        color: #36b9cc;
+        border-color: #36b9cc;
+    }
+
+        .btn-outline-info:hover {
+            background: #2c9faf;
+            color: white;
+        }
+
+    .btn-outline-danger {
+        color: #e74a3b;
+        border-color: #e74a3b;
+    }
+
+        .btn-outline-danger:hover {
+            background: #c0392b;
+            color: white;
+        }
+
+        /*mensagem de copiou */
+    .btn-outline-success {
+        border-color: #28a745;
+        color: #28a745;
+    }
+
+        .btn-outline-success:hover {
+            background-color: #28a745;
+            color: white;
+        }
+
+    .copy-message {
+        position: fixed;
+        top: 20px; /* Distância do topo */
+        right: 20px; /* Distância da direita */
+        background-color: #28a745; /* Cor de fundo verde */
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-size: 14px;
+        font-weight: bold;
+        z-index: 9999; /* Garantir que fique sobre outros elementos */
+        display: none; /* Inicialmente escondido */
+        opacity: 0;
+        transition: opacity 0.5s ease;
+    }
+
+        .copy-message.show {
+            display: block;
+            opacity: 1;
+        }
+
+
+    .btn-group {
+        display: flex;
+        justify-content: flex-start;
+        gap: 5px; /* Menor espaçamento entre os botões */
+    }
+
+        .btn-group .btn {
+            padding: 4px 8px; /* Diminuir o padding para encolher os botões */
+            font-size: 18px; /* Reduzir o tamanho da fonte */
+            min-width: 80px; /* Largura mínima ajustada para ficar mais compacta */
+        }
+
+    .copy-btn {
+        width: auto;
+    }
+
+</style>
+
+<script>
+    // Seleciona todos os botões de copiar
+    const copyButtons = document.querySelectorAll('.copy-btn');
+
+    copyButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            // Obtém os valores dos atributos data-nome e data-descricao
+            const nome = this.getAttribute('data-nome');
+            const descricao = this.getAttribute('data-descricao');
+
+            // Texto a ser copiado
+            const textToCopy = `Nome: ${nome}\nDescrição: ${descricao}`;
+
+            // Copia o texto para o clipboard
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                // Exibe a mensagem de confirmação
+                const notification = document.getElementById('copyNotification');
+                notification.classList.add('show');
+
+                // Esconde a mensagem após 2 segundos
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 2000);
+            }).catch(err => {
+                console.error('Erro ao copiar texto: ', err);
+            });
+        });
+    });
+</script>
+
+
+

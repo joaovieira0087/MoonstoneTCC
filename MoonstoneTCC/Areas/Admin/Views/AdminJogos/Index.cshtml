@@ -1,0 +1,181 @@
+﻿@model ReflectionIT.Mvc.Paging.PagingList<MoonstoneTCC.Models.Jogo>
+
+@{
+    ViewData["Title"] = "Jogos";
+}
+
+<h1 class="text-center my-4">JOGOS</h1>
+
+<div class="container">
+    <form method="get" class="d-flex justify-content-center align-items-center gap-2 mb-4">
+        <div class="input-group" style="max-width: 500px;">
+            <input name="filter"
+                   class="form-control"
+                   placeholder="Digite sua pesquisa..."
+                   value="@Model.RouteValue["Filter"]"
+                   aria-label="Filtro" />
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-search"></i> Buscar
+            </button>
+        </div>
+    </form>
+
+
+    <p class="text-center">Total de Jogos: <strong>@Model.TotalRecordCount</strong></p>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <vc:pager paging-list="@Model"></vc:pager>
+        <div class="btn-group gap-3">
+            <a asp-action="Create" class="btn btn-success">
+                <i class="fas fa-plus-circle"></i> Criar novo jogo
+            </a>
+            <a asp-controller="AdminJogosReport" asp-action="JogosCategoriaReport" class="btn btn-warning">
+                <i class="fas fa-file-alt"></i> Gerar Relatório (ONLINE)
+            </a>
+            <a asp-controller="AdminJogosReport" asp-action="JogosCategoriaPDF" class="btn btn-danger">
+                <i class="fas fa-file-pdf"></i> Gerar Relatório (PDF)
+            </a>
+        </div>
+    </div>
+
+
+    <table class="table table-hover table-bordered align-middle">
+        <thead style="background: linear-gradient(90deg, #6a0dad 0%, #3c006e 50%, #2b003f 100%); color: white;">
+            <tr>
+                <th>@Html.DisplayNameFor(model => model.Nome)</th>
+                <th>@Html.DisplayNameFor(model => model.DescricaoCurta)</th>
+                <th>@Html.DisplayNameFor(model => model.Preco)</th>
+                <th>@Html.DisplayNameFor(model => model.Plataformas)</th>
+                <th>@Html.DisplayNameFor(model => model.Categoria)</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td class="text-truncate" style="max-width: 150px;">@Html.DisplayFor(modelItem => item.Nome)</td>
+                    <td class="text-truncate" style="max-width: 200px;">@Html.DisplayFor(modelItem => item.DescricaoCurta)</td>
+                    <td class="text-center">@Html.DisplayFor(modelItem => item.Preco)</td>
+                    <td class="text-truncate" style="max-width: 150px;">@Html.DisplayFor(modelItem => item.Plataformas)</td>
+                    <td class="text-truncate" style="max-width: 150px;">@Html.DisplayFor(modelItem => item.Categoria.CategoriaNome)</td>
+                    <td>
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <a asp-action="Edit" asp-route-id="@item.JogoId" class="btn btn-primary btn-sm w-100">
+                                    <i class="fas fa-edit"></i> Editar
+                                </a>
+                            </div>
+                            <div class="col-6">
+                                <a asp-action="Details" asp-route-id="@item.JogoId" class="btn btn-info btn-sm w-100">
+                                    <i class="fas fa-info-circle"></i> Detalhes
+                                </a>
+                            </div>
+                            <div class="col-6">
+                                <a asp-action="Delete" asp-route-id="@item.JogoId" class="btn btn-danger btn-sm w-100">
+                                    <i class="fas fa-trash-alt"></i> Excluir
+                                </a>
+                            </div>
+                            <div class="col-6">
+                                <button class="btn btn-secondary btn-sm w-100 toggle-details" data-id="@item.JogoId">
+                                    <i class="fas fa-chevron-down"></i> Mais detalhes
+                                </button>
+                            </div>
+                        </div>
+                    </td>
+
+
+                </tr>
+                <tr class="details" id="details-@item.JogoId" style="display: none;">
+                    <td colspan="6">
+                        <div class="bg-light p-3">
+                            <p><strong>Descrição Detalhada:</strong> @item.DescricaoDetalhada</p>
+                            <p><strong>Imagem URL:</strong> <a href="@item.ImagemUrl" target="_blank">@item.ImagemUrl</a></p>
+                            <p><strong>Classificação Etária:</strong> @item.ClassificacaoEtaria</p>
+                            <p><strong>Gênero:</strong> @item.Genero</p>
+                            <p><strong>Trailer:</strong> <a href="@item.TrailerYoutubeUrl" target="_blank">Assistir no YouTube</a></p>
+                            <p><strong>Informações Extras:</strong> @item.InformacoesExtras</p>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.toggle-details').forEach(button => {
+            button.addEventListener('click', () => {
+                const id = button.getAttribute('data-id');
+                const detailsRow = document.getElementById(`details-${id}`);
+
+                if (detailsRow.style.display === 'none' || detailsRow.style.display === '') {
+                    detailsRow.style.display = 'table-row';
+                    button.innerHTML = '<i class="fas fa-chevron-up"></i> Menos detalhes';
+                } else {
+                    detailsRow.style.display = 'none';
+                    button.innerHTML = '<i class="fas fa-chevron-down"></i> Mais detalhes';
+                }
+            });
+        });
+    });
+
+</script>
+<style>
+    /* Ajusta o espaço interno da tabela para melhor legibilidade */
+    table.table {
+        margin-top: 20px;
+    }
+
+    th, td {
+        padding: 15px; /* Mais espaçamento interno */
+        vertical-align: middle;
+    }
+
+    /* Limita o texto e adiciona reticências para valores muito longos */
+    .text-truncate {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    /* Espaçamento entre botões nas ações */
+    .d-grid .btn {
+        margin-bottom: 5px;
+    }
+
+    /* Centraliza o texto do cabeçalho */
+    th {
+        text-align: center;
+        font-weight: bold;
+    }
+
+    /* Destaque ao passar o mouse */
+    tr:hover {
+       /*  background-color: #f8f9fa; /* Claro no hover */ */
+    }
+
+    /* Ajusta o alinhamento */
+    .text-center {
+        text-align: center;
+    }
+
+    .btn-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        border: 2px solid transparent;
+        padding: 10px;
+        border-radius: 50px;
+        font-size: 14px;
+        transition: all 0.3s ease;
+    }
+
+
+
+   
+
+
+</style>

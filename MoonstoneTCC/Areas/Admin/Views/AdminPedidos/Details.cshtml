@@ -1,0 +1,132 @@
+﻿@model MoonstoneTCC.Models.Pedido
+
+@{
+    ViewData["Title"] = "Detalhes do Pedido";
+}
+
+<style>
+    .details-container {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .details-item {
+        background-color: #f9f9f9;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 20px;
+        margin: 10px 0;
+        text-align: center;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .details-item i {
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+    }
+
+    .details-item h5 {
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 5px;
+    }
+
+    .details-item span {
+        font-size: 0.9rem;
+        color: #555;
+    }
+
+    .details-row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    .details-btns {
+        margin-top: 20px;
+        text-align: center;
+    }
+
+    .details-btns a {
+        margin: 5px;
+    }
+</style>
+
+<div class="card-header text-white text-center" style="background: linear-gradient(90deg, #6a0dad 0%, #3c006e 50%, #2b003f 100%);">
+    <h1 class="fw-bold">DETALHES DO PEDIDO</h1>
+</div>
+
+<div class="details-container">
+    <div class="details-row">
+        <div class="col-md-4 details-item">
+            <i class="fas fa-user text-primary"></i>
+            <h5>Nome</h5>
+            <span>@Html.DisplayFor(model => model.Nome)</span>
+        </div>
+        <div class="col-md-4 details-item">
+            <i class="fas fa-user-friends text-success"></i>
+            <h5>Sobrenome</h5>
+            <span>@Html.DisplayFor(model => model.Sobrenome)</span>
+        </div>
+        <div class="col-md-4 details-item">
+            <i class="fas fa-map-marker-alt text-warning"></i>
+            <h5>Endereço 1</h5>
+            <span>@Html.DisplayFor(model => model.Endereco1)</span>
+        </div>
+    </div>
+    <div class="details-row">
+        <div class="col-md-4 details-item">
+            <i class="fas fa-map-marker text-info"></i>
+            <h5>Endereço 2</h5>
+            <span>@Html.DisplayFor(model => model.Endereco2)</span>
+        </div>
+        <div class="col-md-4 details-item">
+            <i class="fas fa-envelope text-danger"></i>
+            <h5>CEP</h5>
+            <span>@Html.DisplayFor(model => model.Cep)</span>
+        </div>
+        <div class="col-md-4 details-item">
+            <i class="fas fa-globe-americas text-primary"></i>
+            <h5>Estado</h5>
+            <span>@Html.DisplayFor(model => model.Estado)</span>
+        </div>
+    </div>
+    <div class="details-row">
+        <div class="col-md-4 details-item">
+            <i class="fas fa-city text-success"></i>
+            <h5>Cidade</h5>
+            <span>@Html.DisplayFor(model => model.Cidade)</span>
+        </div>
+        <div class="col-md-4 details-item">
+            <i class="fas fa-phone text-warning"></i>
+            <h5>Telefone</h5>
+            <span>@Html.DisplayFor(model => model.Telefone)</span>
+        </div>
+        <div class="col-md-4 details-item">
+            <i class="fas fa-envelope-open text-info"></i>
+            <h5>Email</h5>
+            <span>@Html.DisplayFor(model => model.Email)</span>
+        </div>
+    </div>
+    <div class="details-row">
+        <div class="col-md-4 details-item">
+            <i class="fas fa-truck text-primary"></i>
+            <h5>Pedido Enviado</h5>
+            <span>@Html.DisplayFor(model => model.PedidoEnviado)</span>
+        </div>
+        <div class="col-md-4 details-item">
+            <i class="fas fa-calendar-check text-success"></i>
+            <h5>Pedido Entregue Em</h5>
+            <span>@Html.DisplayFor(model => model.PedidoEntregueEm)</span>
+        </div>
+    </div>
+</div>
+
+<div class="details-btns">
+    <a asp-action="Edit" asp-route-id="@Model?.PedidoId" class="btn btn-primary">
+        <i class="fas fa-edit mr-2"></i> Editar
+    </a>
+    <a asp-action="Index" class="btn btn-secondary">
+        <i class="fas fa-list mr-2"></i> Voltar à Lista
+    </a>
+</div>

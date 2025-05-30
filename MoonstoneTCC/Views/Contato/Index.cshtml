@@ -1,0 +1,127 @@
+﻿<head>
+    <title>Contato — Moonstone</title>
+    <style>
+        :root {
+            --purple: #6a0dad;
+            --purple-light: #8f3ece;
+            --whatsapp: #25D366;
+            --dark-bg: #2c2c44;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        /* Fundo escuro full-width */
+        .contact-bg {
+            background-color: var(--dark-bg);
+            padding: 5rem 0;
+        }
+
+        .contact-section h2 {
+            color: #a64bd9;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .contact-card {
+            border: none;
+            border-radius: 0.75rem;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            background-color: var(--purple);
+            color: #fff;
+        }
+
+            .contact-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            }
+
+        .icon-circle {
+            width: 60px;
+            height: 60px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #fff;
+            color: var(--purple);
+            border-radius: 50%;
+            font-size: 1.5rem;
+            transition: transform 0.3s;
+        }
+
+        .contact-card:hover .icon-circle {
+            transform: scale(1.1);
+        }
+
+        .btn-whatsapp {
+            background-color: var(--whatsapp);
+            border-color: var(--whatsapp);
+            font-weight: 500;
+            padding: 0.75rem 1.5rem;
+        }
+
+            .btn-whatsapp:hover {
+                background-color: #1DA851;
+                border-color: #1DA851;
+            }
+    </style>
+</head>
+<body>
+
+    <!-- Fundo escuro full-width -->
+    <div class="contact-bg">
+        <div class="container">
+            <section class="contact-section text-center text-white">
+                <h2 class="mb-5">Entre em Contato</h2>
+
+                <div class="row g-4">
+                    <!-- Telefone -->
+                    <div class="col-md-4">
+                        <div class="card contact-card text-center p-4 h-100">
+                            <div class="icon-circle mb-3">
+                                <i class="fas fa-phone-alt"></i>
+                            </div>
+                            <h5 class="fw-semibold mb-1">Telefone</h5>
+                            <p class="mb-0">(11) 98765‑4321</p>
+                        </div>
+                    </div>
+
+                    <!-- E‑mail -->
+                    <div class="col-md-4">
+                        <div class="card contact-card text-center p-4 h-100">
+                            <div class="icon-circle mb-3">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <h5 class="fw-semibold mb-1">E‑mail</h5>
+                            <p class="mb-0">contato@moonstone.com</p>
+                        </div>
+                    </div>
+
+                    <!-- Endereço -->
+                    <div class="col-md-4">
+                        <div class="card contact-card text-center p-4 h-100">
+                            <div class="icon-circle mb-3">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <h5 class="fw-semibold mb-1">Endereço</h5>
+                            <p class="mb-0">Rua dos Desenvolvedores, 123</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-5">
+                    <a href="https://wa.me/5511987654321" class="btn btn-whatsapp btn-lg shadow-sm" target="_blank">
+                        <i class="fab fa-whatsapp me-2"></i>Fale Conosco
+                    </a>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS (opcional) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

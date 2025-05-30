@@ -1,0 +1,140 @@
+﻿@* Controller: adicionar em Controllers/HomeController.cs *@
+
+@* View: Views/Home/PrivacyPolicy.cshtml *@
+@{
+    ViewData["Title"] = "Política de Privacidade";
+    Layout = "_Layout";
+}
+
+<style>
+    .privacy-container {
+        max-width: 900px;
+        width: 90%;
+        margin: 60px auto;
+        background: #3b2f63;
+        color: #f0eafa;
+        padding: 40px 50px;
+        border-radius: 10px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        line-height: 1.7;
+        font-size: 16px;
+    }
+    .privacy-container h1 {
+        color: #d1b3ff;
+        font-size: 32px;
+        margin-bottom: 25px;
+        border-bottom: 2px solid #d1b3ff;
+        padding-bottom: 10px;
+    }
+    .privacy-container h2 {
+        color: #e3cfff;
+        font-size: 22px;
+        margin-top: 30px;
+        margin-bottom: 15px;
+    }
+    .privacy-container p, .privacy-container li {
+        margin-bottom: 18px;
+    }
+    .privacy-container ol, .privacy-container ul {
+        padding-left: 25px;
+    }
+    .privacy-container a {
+        color: #bb94e0;
+        text-decoration: underline;
+    }
+    .privacy-container a:hover {
+        color: #d1b3ff;
+    }
+    .privacy-container em {
+        display: block;
+        margin-top: 40px;
+        text-align: right;
+        font-size: 14px;
+        color: #c4aad4;
+    }
+</style>
+
+<div class="privacy-container">
+    <h1>Política de Privacidade</h1>
+    <p>Seu consentimento é importante para nós. Esta Política de Privacidade descreve como coletamos, usamos, protegemos e compartilhamos suas informações pessoais ao utilizar nosso site de ecommerce.</p>
+
+    <h2>1. Definições</h2>
+    <ul>
+        <li><strong>Controlador</strong>: a empresa responsável pelas decisões relativas ao tratamento dos dados pessoais.</li>
+        <li><strong>Dados Pessoais</strong>: qualquer informação relacionada a pessoa natural identificada ou identificável.</li>
+        <li><strong>Usuário</strong>: pessoa que acessa, navega ou faz cadastro em nosso site.</li>
+        <li><strong>Tratamento</strong>: operações realizadas com dados pessoais (coleta, uso, armazenamento, compartilhamento etc.).</li>
+    </ul>
+
+    <h2>2. Quais Dados Coletamos</h2>
+    <ul>
+        <li><strong>Informações de Conta:</strong> nome, email, telefone e endereço fornecidos no cadastro.</li>
+        <li><strong>Credenciais:</strong> senha criptografada.</li>
+        <li><strong>Dados de Pagamento:</strong> token de pagamento gerado por gateway, sem armazenamento de dados completos de cartão.</li>
+        <li><strong>Dados de Navegação:</strong> cookies, endereço IP, páginas visitadas, tempo de permanência.</li>
+        <li><strong>Dados de Suporte:</strong> histórico de atendimento e comunicações.</li>
+    </ul>
+
+    <h2>3. Finalidades do Tratamento</h2>
+    <ol>
+        <li>Processamento de pedidos e gerenciamento de conta.</li>
+        <li>Envio de confirmações, notificações e marketing (com consentimento prévio).</li>
+        <li>Melhoria contínua do site e experiência do usuário.</li>
+        <li>Prevenção a fraudes e análise de segurança.</li>
+        <li>Atendimento a obrigações legais e regulatórias.</li>
+    </ol>
+
+    <h2>4. Base Legal</h2>
+    <p>Tratamos seus dados com fundamento nas seguintes bases legais:</p>
+    <ul>
+        <li><strong>Contrato:</strong> para execução de compras solicitadas.</li>
+        <li><strong>Consentimento:</strong> para envio de newsletters e ofertas.</li>
+        <li><strong>Legítimo Interesse:</strong> para segurança, prevenção a fraudes e análise estatística.</li>
+        <li><strong>Obrigação Legal:</strong> para cumprimento de obrigações fiscais e tributárias.</li>
+    </ul>
+
+    <h2>5. Compartilhamento de Dados</h2>
+    <p>Podemos compartilhar seus dados com:</p>
+    <ul>
+        <li><strong>Fornecedores de Pagamento:</strong> para cobrança e verificação.</li>
+        <li><strong>Transportadoras:</strong> para entrega de produtos.</li>
+        <li><strong>Prestadores de Serviço:</strong> hospedagem, marketing, análise de dados.</li>
+        <li><strong>Autoridades Legais:</strong> quando exigido por lei ou ordem judicial.</li>
+    </ul>
+
+    <h2>6. Cookies e Tecnologias Semelhantes</h2>
+    <p>Utilizamos cookies para:</p>
+    <ul>
+        <li>Manter sessão autenticada.</li>
+        <li>Personalizar conteúdo e ofertas.</li>
+        <li>Coletar métricas de uso e desempenho.</li>
+    </ul>
+    <p>Você pode gerenciar suas preferências de cookies nas configurações do navegador.</p>
+
+    <h2>7. Retenção de Dados</h2>
+    <p>Retemos seus dados pessoais enquanto sua conta estiver ativa e, após o cancelamento, pelo período exigido por lei (ex.: obrigatoriedade fiscal de 5 anos).</p>
+
+    <h2>8. Direitos dos Usuários</h2>
+    <p>Você tem direito de:</p>
+    <ul>
+        <li>Acessar, corrigir ou atualizar seus dados.</li>
+        <li>Solicitar portabilidade ou exclusão de dados.</li>
+        <li>Revogar consentimento a qualquer momento.</li>
+        <li>Opor-se ao tratamento ou solicitar limitação.</li>
+    </ul>
+    <p>Para exercer seus direitos, contate nosso Encarregado de Proteção de Dados (DPO) em <a href="mailto:dpo@seusite.com">dpo@seusite.com</a>.</p>
+
+    <h2>9. Segurança</h2>
+    <p>Adotamos medidas técnicas e organizacionais, como criptografia SSL, para proteger seus dados contra acesso não autorizado, vazamento e perda.</p>
+
+    <h2>10. Transferência Internacional</h2>
+    <p>Seus dados podem ser transferidos a servidores ou prestadores localizados fora do Brasil, observando garantias adequadas de privacidade.</p>
+
+    <h2>11. Alterações nesta Política</h2>
+    <p>Atualizaremos esta Política periodicamente. A versão vigente estará sempre disponível em nosso site com data de última revisão.</p>
+
+    <h2>12. Contato</h2>
+    <p>Em caso de dúvidas ou solicitações relativas a dados pessoais, fale conosco em <a href="mailto:privacidade@seusite.com">privacidade@seusite.com</a> ou pelo telefone (11) 1234-5678.</p>
+
+    <em>Última atualização: 5 de maio de 2025</em>
+</div>

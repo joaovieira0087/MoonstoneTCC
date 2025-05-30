@@ -1,0 +1,167 @@
+﻿@model IEnumerable<MoonstoneTCC.Models.PerguntaUsuario>
+@{
+    ViewData["Title"] = "Minhas Perguntas";
+    var perguntas = Model.OrderByDescending(p => p.DataEnvio).ToList();
+}
+
+<style>
+    .perguntas-wrapper {
+        margin: 30px auto;
+        max-width: 1100px;
+        height: 80vh;
+        display: flex;
+        border-radius: 15px;
+        overflow: hidden;
+        background-color: #3B0056;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+    }
+
+    .lista-perguntas {
+        width: 35%;
+        background-color: #4B007A;
+        overflow-y: auto;
+        border-right: 2px solid #5A007A;
+    }
+
+    .lista-perguntas-item {
+        padding: 15px;
+        border-bottom: 1px solid #5A007A;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+        color: white;
+    }
+
+        .lista-perguntas-item:hover {
+            background-color: #6B00A0;
+        }
+
+        .lista-perguntas-item.active {
+            background-color: #8000CC;
+        }
+
+    .detalhe-pergunta {
+        flex-grow: 1;
+        padding: 30px;
+        overflow-y: auto;
+        color: white;
+    }
+
+    .titulo {
+        font-size: 20px;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .msg, .resposta {
+        padding: 15px;
+        border-radius: 15px;
+        margin-bottom: 15px;
+        white-space: pre-wrap;
+    }
+
+    .msg {
+        background-color: #5C0080;
+    }
+
+    .resposta {
+        background-color: #1E8E3E;
+    }
+
+    .aguardando {
+        color: #ffd700;
+    }
+
+    .btn-nova-pergunta {
+        display: inline-block;
+        margin: 20px auto;
+        padding: 10px 20px;
+        background-color: #9F00FF;
+        border-radius: 20px;
+        color: white;
+        text-decoration: none;
+        font-weight: bold;
+        transition: background-color 0.3s ease;
+    }
+
+        .btn-nova-pergunta:hover {
+            background-color: #BB33FF;
+        }
+
+</style>
+
+<div class="text-end me-5 mt-3 d-flex justify-content-end gap-3">
+    <a asp-controller="ComunicadoUsuario" asp-action="Comunicados">
+        <i class="fas fa-bullhorn"></i> Ver Comunicados
+    </a>
+
+
+    <a asp-controller="Pergunta" asp-action="Criar" class="btn-nova-pergunta">
+        <i class="fas fa-plus-circle"></i> Fazer outra pergunta
+    </a>
+</div>
+
+
+<div class="perguntas-wrapper">
+    <div class="lista-perguntas" id="listaPerguntas">
+        @for (int i = 0; i < perguntas.Count; i++)
+        {
+            <div class="lista-perguntas-item @(i == 0 ? "active" : "")" onclick="mostrarPergunta(@i)">
+                <div><strong>@perguntas[i].Titulo</strong></div>
+                <div style="font-size: 12px; color: #ccc">@perguntas[i].DataEnvio.ToString("dd/MM/yyyy")</div>
+            </div>
+        }
+    </div>
+
+    <div class="detalhe-pergunta" id="detalhePergunta">
+        <div class="titulo">@perguntas.FirstOrDefault()?.Titulo</div>
+
+        <div class="msg">
+            <strong>Pergunta:</strong><br />
+            @perguntas.FirstOrDefault()?.Mensagem
+        </div>
+
+        @if (perguntas.FirstOrDefault()?.Respondido == true)
+        {
+            <div class="resposta">
+                <strong>Resposta do Admin:</strong><br />
+                @perguntas.FirstOrDefault()?.RespostaAdmin
+            </div>
+        }
+        else
+        {
+            <p class="aguardando"><em>Aguardando resposta do administrador...</em></p>
+        }
+    </div>
+</div>
+
+<script>
+    const perguntas = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(perguntas));
+    const listaItens = document.querySelectorAll(".lista-perguntas-item");
+    const detalhe = document.getElementById("detalhePergunta");
+
+    function mostrarPergunta(index) {
+        listaItens.forEach(el => el.classList.remove("active"));
+        listaItens[index].classList.add("active");
+
+        const p = perguntas[index];
+
+        let html = `
+                <div class="titulo">${p.Titulo}</div>
+                <div class="msg">
+                    <strong>Pergunta:</strong><br/>
+                    ${p.Mensagem}
+                </div>`;
+
+        if (p.Respondido) {
+            html += `
+                    <div class="resposta">
+                        <strong>Resposta do Admin:</strong><br/>
+                        ${p.RespostaAdmin}
+                    </div>`;
+        } else {
+            html += `<p class="aguardando"><em>Aguardando resposta do administrador...</em></p>`;
+        }
+
+        detalhe.innerHTML = html;
+    }
+</script>

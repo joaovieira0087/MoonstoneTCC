@@ -1,0 +1,95 @@
+﻿<style>
+    .pergunta-container {
+        background-color: #3B0056;
+        padding: 20px;
+        border-radius: 20px;
+        max-width: 600px;
+        margin: auto;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        color: white;
+    }
+
+    .pergunta-container h2 {
+        font-size: 24px;
+        margin-bottom: 20px;
+        color: #fff;
+        text-align: center;
+    }
+
+    .form-group label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 8px;
+        color: #ccc;
+    }
+
+    .form-control {
+        background-color: #4B007A;
+        border: none;
+        border-radius: 15px;
+        padding: 12px;
+        color: white;
+        width: 100%;
+        margin-bottom: 20px;
+    }
+
+    .form-control::placeholder {
+        color: #bbb;
+    }
+
+    .btn-enviar {
+        background-color: #A020F0;
+        border: none;
+        padding: 10px 25px;
+        color: white;
+        font-weight: bold;
+        border-radius: 30px;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-enviar:hover {
+        background-color: #C946FF;
+    }
+
+    .ver-perguntas-link {
+        color: #bb86fc;
+        font-weight: bold;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+        .ver-perguntas-link:hover {
+            color: #ffffff;
+            text-decoration: underline;
+        }
+
+
+
+</style>
+
+<div class="pergunta-container">
+    <h2>Enviar uma Pergunta ou Sugestão</h2>
+
+    <form asp-action="Criar" method="post">
+        <div class="form-group">
+            <label for="titulo">Título</label>
+            <input name="Titulo" id="titulo" class="form-control" placeholder="Digite um título curto..." required />
+        </div>
+
+        <div class="form-group">
+            <label for="mensagem">Mensagem</label>
+            <textarea name="Mensagem" id="mensagem" class="form-control" rows="5" placeholder="Escreva sua sugestão ou dúvida..." required></textarea>
+        </div>
+
+        <button type="submit" class="btn-enviar">
+            <i class="fas fa-paper-plane"></i> Enviar
+        </button>
+
+        <div class="text-center mt-3">
+            <a asp-controller="Pergunta" asp-action="MinhasPerguntas" class="ver-perguntas-link">
+                <i class="fas fa-comment-dots"></i> Ver minhas perguntas anteriores
+            </a>
+        </div>
+
+    </form>
+</div>

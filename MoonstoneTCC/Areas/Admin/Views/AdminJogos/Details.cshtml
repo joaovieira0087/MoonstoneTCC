@@ -1,0 +1,253 @@
+﻿@model MoonstoneTCC.Models.Jogo
+
+@{
+    ViewData["Title"] = "Detalhes do Jogo";
+}
+
+<div class="container my-5">
+    <div class="card shadow-lg">
+        <!-- Cabeçalho -->
+        <div class="card-header text-white d-flex align-items-center justify-content-between" style="background: linear-gradient(90deg, #6a0dad 0%, #3c006e 50%, #2b003f 100%);">
+            <h1 class="mb-0">DETALHES DO JOGO</h1>
+            <span class="badge bg-light text-dark">ID: @Model.JogoId</span>
+            <span class="badge bg-light text-dark">Nome: @Model.Nome</span>
+        </div>
+
+
+        <!-- Corpo do Card -->
+        <div class="card-body">
+            <!-- Informações Gerais -->
+            <div class="mb-4">
+                <h4 class="text-secondary border-bottom pb-2">Informações Gerais</h4>
+                <dl class="row text-dark">
+                    <div class="row g-3">
+                        <!-- Nome -->
+                        <div class="col-12 col-md-6">
+                            <div class="card bg-light shadow-sm">
+                                <div class="card-body d-flex align-items-center">
+                                    <i class="fas fa-tag text-primary fs-3 me-3"></i> <!-- Icone do FontAwesome -->
+                                    <div>
+                                        <h5 class="card-title mb-0 fw-bold">Nome</h5>
+                                        <p class="card-text text-muted">@Model.Nome</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Preço -->
+                        <div class="col-12 col-md-6 mb-5">
+                            <div class="card bg-light shadow-sm">
+                                <div class="card-body d-flex align-items-center">
+                                    <i class="fas fa-dollar-sign text-success fs-3 me-3"></i> <!-- Icone do FontAwesome -->
+                                    <div>
+                                        <h5 class="card-title mb-0 fw-bold">Preço</h5>
+                                        <p class="card-text text-muted">R$ @Model.Preco</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- Outros Detalhes -->
+                    <div class="mb-4">
+                        <h4 class="text-secondary border-bottom pb-2">Outros Detalhes</h4>
+                        <div class="row g-3">
+                            <!-- Jogo Preferido -->
+                            <div class="col-md-4">
+                                <div class="p-3 border rounded bg-light text-center">
+                                    <i class="fas fa-star text-warning fs-4"></i> <!-- FontAwesome -->
+                                    <p class="fw-bold mt-2">Jogo Preferido</p>
+                                    @if (Model.IsJogoPreferido)
+                                    {
+                                        <span class="badge bg-success">Sim</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">Não</span>
+                                    }
+                                </div>
+                            </div>
+
+                            <!-- Em Estoque -->
+                            <div class="col-md-4">
+                                <div class="p-3 border rounded bg-light text-center">
+                                    <i class="fas fa-box-open text-primary fs-4"></i> <!-- FontAwesome -->
+                                    <p class="fw-bold mt-2">Em Estoque</p>
+                                    @if (Model.EmEstoque)
+                                    {
+                                        <span class="badge bg-success">Sim</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">Não</span>
+                                    }
+                                </div>
+                            </div>
+
+                            <!-- Plataformas -->
+                            <div class="col-md-4">
+                                <div class="p-3 border rounded bg-light text-center">
+                                    <i class="fas fa-gamepad text-info fs-4"></i> <!-- FontAwesome -->
+                                    <p class="fw-bold mt-2">Plataformas</p>
+                                    <span class="badge bg-primary">@Model.Plataformas</span>
+                                </div>
+                            </div>
+
+                            <!-- Gênero -->
+                            <div class="col-md-4">
+                                <div class="p-3 border rounded bg-light text-center">
+                                    <i class="fas fa-puzzle-piece text-success fs-4"></i> <!-- FontAwesome -->
+                                    <p class="fw-bold mt-2">Gênero</p>
+                                    <span class="badge bg-secondary">@Model.Genero</span>
+                                </div>
+                            </div>
+
+                            <!-- Classificação Etária -->
+                            <div class="col-md-4">
+                                <div class="p-3 border rounded bg-light text-center">
+                                    <i class="fas fa-users text-danger fs-4"></i> <!-- FontAwesome -->
+                                    <p class="fw-bold mt-2">Classificação Etária</p>
+                                    <span class="badge bg-warning text-dark">@Model.ClassificacaoEtaria</span>
+                                </div>
+                            </div>
+
+                            <!-- Categoria -->
+                            <div class="col-md-4">
+                                <div class="p-3 border rounded bg-light text-center">
+                                    <i class="fas fa-tags text-warning fs-4"></i> <!-- FontAwesome -->
+                                    <p class="fw-bold mt-2">Categoria</p>
+                                    @if (Model.Categoria != null)
+                                    {
+                                        <span class="badge bg-primary">@Model.Categoria?.CategoriaNome</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">Categoria não especificada</span>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- Descrição Curta -->
+                    <div class="row g-3">
+                        <div class="col-md-12">
+                            <div class="p-4 border rounded bg-light text-center">
+                                <i class="bi bi-chat-left-text text-info fs-4"></i>
+                                <p class="fw-bold mt-3">Descrição Curta</p>
+                                @if (!string.IsNullOrEmpty(Model.DescricaoCurta))
+                                {
+                                    <span class="text-muted">@Model.DescricaoCurta</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">Nenhuma informação adicional</span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+
+                    <!-- Descrição Detalhada -->
+                    <div class="row g-3">
+                        <div class="col-md-12">
+                            <div class="p-4 border rounded bg-light text-center">
+                                <i class="bi bi-chat-left-text text-info fs-4"></i>
+                                <p class="fw-bold mt-3">Descrição Detalhada</p>
+                                @if (!string.IsNullOrEmpty(Model.DescricaoDetalhada))
+                                {
+                                    <span class="text-muted">@Model.DescricaoDetalhada</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">Nenhuma informação adicional</span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </dl>
+            </div>
+
+
+            <!-- Imagens -->
+            <div class="mb-4">
+                <h4 class="text-secondary border-bottom pb-2">Imagens</h4>
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <div class="p-3 border rounded bg-light text-center">
+                            <img src="@Model.ImagemUrl" class="img-fluid rounded w-50" alt="Imagem do Jogo">
+                            <p class="mt-2 text-muted">Imagem Principal</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="p-3 border rounded bg-light text-center">
+                            <img src="@Model.ImagemThumbnailUrl" class="img-fluid rounded w-50" alt="Thumbnail do Jogo">
+                            <p class="mt-2 text-muted">Imagem Thumbnail</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="p-3 border rounded bg-light text-center">
+                            <img src="@Model.ClassificacaoEtariaImagemUrl" class="img-fluid rounded w-50" alt="Classificação Etária">
+                            <p class="mt-2 text-muted">Imagem Classificação Etária</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+                    <h4 class="text-secondary border-bottom pb-2">Outros Detalhes</h4>
+                    <div class="row g-3">
+                        <!-- Informações Extras -->
+                        <div class="col-md-12">
+                            <div class="p-4 border rounded bg-light text-center">
+                                <i class="bi bi-chat-left-text text-info fs-4"></i>
+                                <p class="fw-bold mt-3">Informações Extras</p>
+                                @if (!string.IsNullOrEmpty(Model.InformacoesExtras))
+                                {
+                                    <span class="text-muted">@Model.InformacoesExtras</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">Nenhuma informação adicional</span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+
+              
+
+
+        <!-- Rodapé -->
+        <div class="card-footer d-flex justify-content-between">
+            <a asp-action="Index" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Voltar</a>
+            <a asp-action="Edit" asp-route-id="@Model?.JogoId" class="btn btn-warning"><i class="bi bi-pencil"></i> Editar</a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card-header {
+        font-size: 1.5rem;
+        font-weight: bold;
+        background: linear-gradient(90deg, #007bff, #0056b3);
+    }
+
+    .card-footer {
+        background-color: #f8f9fa;
+    }
+
+    .img-fluid:hover {
+        transform: scale(1.05);
+        transition: 0.3s ease-in-out;
+    }
+
+    .badge {
+        font-size: 1rem;
+        padding: 0.5em 0.75em;
+    }
+
+
+</style>

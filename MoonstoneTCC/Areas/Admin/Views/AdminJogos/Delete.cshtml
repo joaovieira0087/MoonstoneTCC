@@ -1,0 +1,100 @@
+﻿@model MoonstoneTCC.Models.Jogo
+
+@{
+    ViewData["Title"] = "Excluir Jogo";
+}
+
+<div class="d-flex flex-column align-items-center mb-4">
+    <h1 class="text-danger text-center">EXCLUIR JOGO</h1>
+    <h4 class="text-black text-center">
+        Você tem certeza que deseja excluir o jogo <strong>@Model.Nome</strong>?
+    </h4>
+</div>
+
+<div class="card border-danger mb-4">
+    <div class="card-body">
+        <h4 class="card-title text-center text-dark">Informações do Jogo</h4>
+        <hr />
+        <dl class="row">
+            <dt class="col-sm-2 text-primary">
+                <i class="fa fa-gamepad"></i> Nome
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Nome)
+            </dd>
+
+            <dt class="col-sm-2 text-success">
+                <i class="fa fa-dollar-sign"></i> Preço
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Preco)
+            </dd>
+
+            <dt class="col-sm-2 text-warning">
+                <i class="fa fa-folder-open"></i> Categoria
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Categoria.CategoriaNome)
+            </dd>
+
+            <dt class="col-sm-2 text-danger">
+                <i class="fa fa-star"></i> Preferido?
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.IsJogoPreferido)
+            </dd>
+
+            <dt class="col-sm-2 text-info">
+                <i class="fa fa-box"></i> Estoque
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.EmEstoque)
+            </dd>
+        </dl>
+    </div>
+</div>
+
+<form asp-action="Delete" class="text-center">
+    <input type="hidden" asp-for="JogoId" />
+    <button type="submit" class="btn btn-danger">
+        <i class="fa fa-trash"></i> Excluir
+    </button>
+    <a asp-action="Index" class="btn btn-secondary">
+        <i class="fa fa-arrow-left"></i> Voltar à Lista
+    </a>
+</form>
+
+<style>
+    h1 {
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+
+    h4 {
+        color:white;
+    }
+
+    dl dt {
+        font-weight: bold;
+    }
+
+     strong {
+        color: #dc3545; /* Vermelho destaque para o nome */
+    }
+
+    .btn-danger {
+        margin-right: 10px;
+    }
+
+    .btn {
+        font-size: 1rem;
+    }
+
+    .card {
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    i.fa {
+        margin-right: 8px;
+    }
+</style>

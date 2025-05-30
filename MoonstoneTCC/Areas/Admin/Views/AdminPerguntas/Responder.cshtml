@@ -1,0 +1,25 @@
+﻿@model MoonstoneTCC.Models.PerguntaUsuario
+
+<h2>Responder Pergunta</h2>
+
+<div class="card mb-3">
+    <div class="card-header">
+        <strong>@Model.Titulo</strong> - <small>@Model.Usuario?.UserName</small>
+    </div>
+    <div class="card-body">
+        <p><strong>Mensagem:</strong></p>
+        <p>@Model.Mensagem</p>
+        <hr />
+        <form asp-action="Responder" method="post">
+            <input type="hidden" name="id" value="@Model.Id" />
+            <div class="form-group">
+                <label>Resposta do Administrador:</label>
+                <textarea name="resposta" class="form-control" rows="5" required>@Model.RespostaAdmin</textarea>
+            </div>
+            <button type="submit" class="btn btn-success mt-2">
+                <i class="fas fa-paper-plane"></i> Enviar Resposta
+            </button>
+            <a asp-action="Index" class="btn btn-secondary mt-2 ms-2">Cancelar</a>
+        </form>
+    </div>
+</div>

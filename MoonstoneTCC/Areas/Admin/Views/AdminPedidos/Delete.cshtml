@@ -1,0 +1,169 @@
+﻿@model MoonstoneTCC.Models.Pedido
+
+@{
+    ViewData["Title"] = "Excluir Pedido";
+}
+
+<style>
+    .delete-container {
+        max-width: 800px;
+        margin: 30px auto;
+        background-color: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+    }
+
+    .delete-header {
+        color: #d9534f;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    .delete-subheader {
+        color: #555;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .delete-info {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 15px;
+    }
+
+    .delete-item {
+        flex: 1 1 calc(33.333% - 15px);
+        min-width: 250px;
+        background-color: #f9f9f9;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 15px;
+        text-align: center;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .delete-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .delete-item i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        .delete-item h5 {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .delete-item span {
+            font-size: 1rem;
+            color: #777;
+        }
+
+    .delete-btns {
+        text-align: center;
+        margin-top: 30px;
+    }
+
+        .delete-btns .btn {
+            padding: 10px 20px;
+            font-size: 1rem;
+            margin: 0 10px;
+        }
+
+    .btn-danger {
+        background-color: #d9534f;
+        border-color: #d43f3a;
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        border-color: #6c757d;
+    }
+
+    .btn i {
+        margin-right: 5px;
+    }
+</style>
+
+<div class="delete-container">
+    <h1 class="delete-header">Excluir Pedido</h1>
+    <p class="delete-subheader">Tem certeza que deseja excluir este pedido? Essa ação não poderá ser desfeita.</p>
+
+    <div class="delete-info">
+        <div class="delete-item">
+            <i class="fas fa-user text-primary"></i>
+            <h5>Nome</h5>
+            <span>@Html.DisplayFor(model => model.Nome)</span>
+        </div>
+        <div class="delete-item">
+            <i class="fas fa-user-friends text-success"></i>
+            <h5>Sobrenome</h5>
+            <span>@Html.DisplayFor(model => model.Sobrenome)</span>
+        </div>
+        <div class="delete-item">
+            <i class="fas fa-map-marker-alt text-warning"></i>
+            <h5>Endereço 1</h5>
+            <span>@Html.DisplayFor(model => model.Endereco1)</span>
+        </div>
+        <div class="delete-item">
+            <i class="fas fa-map-marker text-info"></i>
+            <h5>Endereço 2</h5>
+            <span>@Html.DisplayFor(model => model.Endereco2)</span>
+        </div>
+        <div class="delete-item">
+            <i class="fas fa-envelope text-danger"></i>
+            <h5>CEP</h5>
+            <span>@Html.DisplayFor(model => model.Cep)</span>
+        </div>
+        <div class="delete-item">
+            <i class="fas fa-globe-americas text-primary"></i>
+            <h5>Estado</h5>
+            <span>@Html.DisplayFor(model => model.Estado)</span>
+        </div>
+        <div class="delete-item">
+            <i class="fas fa-city text-success"></i>
+            <h5>Cidade</h5>
+            <span>@Html.DisplayFor(model => model.Cidade)</span>
+        </div>
+        <div class="delete-item">
+            <i class="fas fa-phone text-warning"></i>
+            <h5>Telefone</h5>
+            <span>@Html.DisplayFor(model => model.Telefone)</span>
+        </div>
+        <div class="delete-item">
+            <i class="fas fa-envelope-open text-info"></i>
+            <h5>Email</h5>
+            <span>@Html.DisplayFor(model => model.Email)</span>
+        </div>
+        <div class="delete-item">
+            <i class="fas fa-truck text-primary"></i>
+            <h5>Pedido Enviado</h5>
+            <span>@Html.DisplayFor(model => model.PedidoEnviado)</span>
+        </div>
+        <div class="delete-item">
+            <i class="fas fa-calendar-check text-success"></i>
+            <h5>Pedido Entregue Em</h5>
+            <span>@Html.DisplayFor(model => model.PedidoEntregueEm)</span>
+        </div>
+    </div>
+
+    <div class="delete-btns">
+        <form asp-action="Delete" method="post" class="d-inline">
+            <input type="hidden" asp-for="PedidoId" />
+            <button type="submit" class="btn btn-danger">
+                <i class="fas fa-trash-alt"></i> Excluir
+            </button>
+        </form>
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Voltar à Lista
+        </a>
+    </div>
+</div>

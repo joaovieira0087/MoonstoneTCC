@@ -1,0 +1,125 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+
+@if (SignInManager.IsSignedIn(User))
+{
+    <div class="d-flex align-items-center text-white user-info">
+        <i class="fa-solid fa-user-circle user-icon"></i>
+        <a asp-controller="Account" asp-action="Perfil" class="username-link text-decoration-none text-white ms-2">
+            <span id="usernameDisplay" class="username">@User.Identity.Name</span>
+        </a>
+        <form asp-area="" asp-controller="Account" asp-action="Logout" id="logoutForm" method="post" class="ms-3">
+            <button type="submit" class="btn btn-icon">
+                <i class="fa-solid fa-sign-out-alt"></i>
+            </button>
+        </form>
+    </div>
+}
+else
+{
+    <div class="d-flex align-items-center">
+        <a class="btn-icon me-1" asp-controller="Account" asp-action="Login">
+            <i class="fas fa-sign-in-alt"></i>
+        </a>
+        <a class="btn-icon" asp-controller="Account" asp-action="Register">
+            <i class="fas fa-user-plus"></i>
+        </a>
+    </div>
+}
+
+<script>
+    // Truncar o nome de usuário se exceder o limite
+    const usernameDisplay = document.getElementById('usernameDisplay');
+    const username = usernameDisplay?.textContent;
+
+    if (username && username.length > 10) {
+        usernameDisplay.textContent = username.slice(0, 7) + '...';
+    }
+</script>
+<style>
+        .icon-group a {
+        margin-left: 22px; 
+    }
+
+    /* Estilo do nome de usuário e ícone */
+    .user-info {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 5px 10px;
+        background-color: rgba(128, 0, 128, 0.8); /* Fundo roxo */
+        border-radius: 20px;
+        font-size: 1rem;
+        color: white;
+        margin-right: 10px;
+        transition: background-color 0.3s ease;
+    }
+
+        .user-info:hover {
+            background-color: rgba(128, 0, 128, 1); /* Fundo mais escuro no hover */
+        }
+
+    .user-icon {
+        font-size: 1.5rem; /* Tamanho do ícone de usuário */
+    }
+
+    .username {
+        font-weight: bold;
+        font-size: 1rem;
+        white-space: nowrap; /* Evita quebra de linha no nome */
+    }
+
+    /* Botão de logout */
+    #logoutForm .btn-icon {
+        background-color: rgba(128, 0, 128, 0.8);
+        color: white;
+        font-size: 1.2rem;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 50%;
+        transition: transform 0.3s, background-color 0.3s;
+        text-decoration: none; /* Garante que não haja sublinhado */
+        border: none; /* Remove qualquer borda */
+        outline: none; /* Remove qualquer contorno */
+    }
+
+        #logoutForm .btn-icon:hover {
+            background-color: rgba(128, 0, 128, 1);
+            transform: scale(1.1);
+        }
+
+    /* Botões de login e registro */
+    .btn-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none; /* Garante que não haja sublinhado */
+        border: none; /* Remove qualquer borda */
+        outline: none; /* Remove qualquer contorno */
+    }
+
+        /* Garante que os ícones não tenham sublinhado */
+        .btn-icon i {
+            text-decoration: none;
+        }
+
+    /* Remove sublinhado de links no geral */
+    a {
+        text-decoration: none !important; /* Força a remoção de sublinhado */
+    }
+
+        /* Remove borda e linha ao focar */
+        a:focus, button:focus {
+            outline: none;
+            text-decoration: none;
+        }
+
+    /* Ajusta espaçamentos de links e botões */
+    a, .btn-icon {
+        margin: 0;
+        padding: 0;
+    }
+</style>

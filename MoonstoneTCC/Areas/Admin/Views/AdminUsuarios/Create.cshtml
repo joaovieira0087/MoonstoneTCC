@@ -1,0 +1,105 @@
+﻿@{
+    ViewData["Title"] = "Criar Novo Usuário";
+}
+
+<h1 class="text-center my-4 text-primary">CRIAR NOVO USUÁRIO</h1>
+
+<div class="container">
+    <form asp-action="Create" method="post" class="form-container shadow-lg p-4 rounded">
+        <div class="form-group">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" id="email" name="email" class="form-control form-control-lg" required placeholder="Digite o email do usuário" />
+        </div>
+
+        <div class="form-group">
+            <label for="senha" class="form-label">Senha</label>
+            <input type="password" id="senha" name="senha" class="form-control form-control-lg" required placeholder="Digite a senha" />
+        </div>
+
+        <div class="d-flex justify-content-center mt-4">
+            <button type="submit" class="btn btn-success btn-lg hover-effect">Criar</button>
+        </div>
+    </form>
+</div>
+
+<style>
+    /* Estilos globais */
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f4f4f9;
+    }
+
+    /* Título */
+    h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+    }
+
+    /* Formulário */
+    .form-container {
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        margin-top: 40px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-label {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #333;
+    }
+
+    .form-control {
+        font-size: 1.1rem;
+        border-radius: 8px;
+        padding: 15px;
+        transition: all 0.3s ease;
+    }
+
+        .form-control:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+        }
+
+    /* Botão Criar */
+    .btn-lg {
+        padding: 12px 30px;
+        font-size: 1.2rem;
+        text-transform: uppercase;
+        font-weight: 600;
+    }
+
+    .btn-success {
+        background-color: #28a745;
+        border: none;
+    }
+
+        .btn-success:hover {
+            C
+            transform: scale(1.05);;
+        }
+
+    /* Efeito hover nos botões */
+    .hover-effect:hover {
+        background: linear-gradient(90deg, #6a0dad 0%, #3c006e 50%, #2b003f 100%);
+        color: white;
+        transform: scale(1.1);
+    }
+
+    /* Container centralizado */
+    .container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    /* Sombras e efeitos globais */
+    .shadow-lg {
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+
+</style>

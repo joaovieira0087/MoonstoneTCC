@@ -1,0 +1,185 @@
+﻿@model LoginViewModel
+
+@{
+    ViewData["HideHeader"] = true; // Esconder o header
+    ViewData["HideFooter"] = true; // Esconder o footer
+}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - MoonstoneTCC</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <style>
+        /* Configuração geral */
+        /* Configuração geral */
+        html, body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #1e1e2f, #4b0082);
+            color: #fff;
+            overflow: hidden;
+            position: relative; /* Garante que o flex funcione sem interferências */
+        }
+
+        .login-container {
+            max-width: 400px;
+            width: 100%;
+            padding: 20px;
+            background: #2c2c44;
+            border-radius: 10px;
+            margin-left: 460px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            position: relative; /* Isolamento de estilos */
+            z-index: 1;
+        }
+
+
+
+
+        .login-header img {
+            max-width: 180px;
+            margin-bottom: 15px;
+        }
+
+        h2 {
+            color: #a64bd9;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .login-form {
+            margin-top: 20px;
+        }
+
+        .login-form .form-control {
+            background: #3b3b55;
+            border: 1px solid #4b0082;
+            border-radius: 5px;
+            color: #fff;
+            padding: 10px;
+            width: 100%;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+        }
+
+        .login-form .form-control:focus {
+            border-color: #a64bd9;
+            outline: none;
+            box-shadow: 0 0 8px #a64bd9;
+        }
+
+        .btn-login {
+            background-color: #a64bd9;
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            cursor: pointer;
+            padding: 10px 20px;
+            font-size: 16px;
+            transition: background 0.3s ease;
+            width: 100%;
+        }
+
+        .btn-login:hover {
+            background-color: #932dba;
+        }
+
+        .form-group label {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .form-group label i {
+            margin-right: 8px;
+            color: #a64bd9;
+        }
+
+        .text-danger {
+            color: #ff4c4c;
+            font-size: 12px;
+        }
+
+        .login-footer {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #aaa;
+        }
+
+        .login-footer a {
+            color: #a64bd9;
+            text-decoration: none;
+        }
+
+        .login-footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Limitar o nome de usuário */
+        .username-display {
+            max-width: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-size: 14px;
+            color: #ddd;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <img src="~/img/userlmn_190a820892874567a91071d0542da791.png" alt="Login">
+        </div>
+        <form asp-controller="Account" asp-action="Login" method="post" class="login-form">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <input type="hidden" asp-for="ReturnUrl" />
+
+            <div class="form-group">
+                <label asp-for="UserName"><i class="fas fa-user"></i> Usuário</label>
+                <input asp-for="UserName" class="form-control" id="usernameInput" />
+                <span asp-validation-for="UserName" class="text-danger"></span>
+                <div id="usernameDisplay" class="username-display"></div>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Password"><i class="fas fa-lock"></i> Senha</label>
+                <input asp-for="Password" type="password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn-login">Entrar</button>
+        </form>
+        <div class="login-footer">
+            <p>Não tem uma conta? <a asp-controller="Account" asp-action="Register">Cadastre-se</a></p>
+        </div>
+    </div>
+
+    <script>
+        // Limitar e exibir reticências no nome de usuário
+        const usernameInput = document.getElementById('usernameInput');
+        const usernameDisplay = document.getElementById('usernameDisplay');
+
+        usernameInput.addEventListener('input', () => {
+            const username = usernameInput.value;
+            if (username.length > 10) {
+                usernameDisplay.textContent = username.slice(0, 7) + '...';
+            } else {
+                usernameDisplay.textContent = username;
+            }
+        });
+    </script>
+</body>
+</html>

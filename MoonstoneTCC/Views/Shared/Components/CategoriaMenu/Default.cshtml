@@ -1,0 +1,84 @@
+﻿<div class="dropdown categoria-dropdown">
+    <a class="btn dropdown-toggle categoria-btn" role="button"
+       id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+        @{
+            var categoriaAtual = ViewData["CategoriaAtual"] != null && !string.IsNullOrEmpty(ViewData["CategoriaAtual"].ToString())
+            ? ViewData["CategoriaAtual"].ToString()
+            : "Jogos";
+        }
+        @categoriaAtual
+    </a>
+
+    <ul class="dropdown-menu categoria-menu" aria-labelledby="dropdownMenuLink">
+        @foreach (var categoria in Model)
+        {
+            <li>
+                <a class="dropdown-item categoria-item" asp-controller="Jogo" asp-action="List"
+                   asp-route-categoria="@categoria.CategoriaNome">
+                    @categoria.CategoriaNome
+                </a>
+            </li>
+        }
+        <li class="dropdown-divider"></li>
+        <li>
+            <a class="dropdown-item categoria-item" asp-controller="Jogo" asp-action="List"
+               asp-route-categoria="">
+                Todos os Jogos
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+
+
+<style>
+    /* Botão Principal do Dropdown */
+.categoria-dropdown .categoria-btn {
+    background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
+    color: white;
+    font-weight: bold;
+    font-size: 0.85rem;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 25px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.categoria-dropdown .categoria-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Estilo do Dropdown */
+.categoria-menu {
+    background: #f8f9fa;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* Itens do Dropdown */
+.categoria-menu .categoria-item {
+    color: #333;
+    font-weight: bold;
+    padding: 10px 20px;
+            font-size: 0.85rem; 
+    transition: background 0.3s, color 0.3s;
+}
+
+.categoria-menu .categoria-item:hover {
+    background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
+    color: white;
+    border-radius: 5px;
+}
+
+/* Divisor */
+.categoria-menu .dropdown-divider {
+    height: 2px;
+    background: linear-gradient(90deg, #6a11cb, #2575fc);
+    margin: 5px 0;
+}
+</style>

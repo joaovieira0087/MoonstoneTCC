@@ -1,0 +1,220 @@
+﻿@model MoonstoneTCC.Models.Categoria
+
+@{
+    ViewData["Title"] = "Etitar Categoria";
+}
+<style>
+    /* Estilo avançado para a página */
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f8f9fa;
+        margin: 0;
+        padding: 0;
+    }
+
+    h1 {
+        color: black;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .form-container {
+        background: #fff;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        margin: 30px auto;
+        max-width: 1000px;
+    }
+
+    .form-group label {
+        font-weight: bold;
+        margin-bottom: 5px;
+        display: block;
+    }
+
+    .form-group input {
+        margin-bottom: 15px;
+        padding: 10px;
+        border: 1px solid #ced4da;
+        border-radius: 5px;
+        width: 100%;
+    }
+
+        .form-group input:focus {
+            border-color: #80bdff;
+            box-shadow: 0 0 5px rgba(128, 189, 255, 0.5);
+        }
+
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+        padding: 10px 20px;
+        font-size: 16px;
+        border-radius: 5px;
+    }
+
+        .btn-primary:hover {
+            background: linear-gradient(90deg, #6a0dad 0%, #3c006e 50%, #2b003f 100%);
+        }
+
+    .back-link {
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        color: #007bff;
+        font-weight: bold;
+        margin-top: 20px;
+    }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .back-link i {
+            margin-right: 8px;
+        }
+
+    .icon {
+        margin-right: 8px;
+        color: #6c757d;
+    }
+
+    .text-danger {
+        font-size: 14px;
+        font-style: italic;
+    }
+
+    /* Container centralizado */
+    .back-to-list-container {
+        text-align: center;
+        margin-top: 30px;
+    }
+
+    /* Estilo do link */
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        text-decoration: none;
+        font-size: 18px;
+        font-weight: bold;
+        color: #007bff;
+        padding: 10px 20px;
+        border: 2px solid #007bff;
+        border-radius: 50px;
+        transition: all 0.3s ease-in-out;
+        background-color: #ffffff;
+    }
+
+        /* Ícone alinhado com o texto */
+        .back-link i {
+            margin-right: 8px;
+            font-size: 20px;
+        }
+
+        /* Efeito hover no botão */
+        .back-link:hover {
+            background: linear-gradient(90deg, #6a0dad 0%, #3c006e 50%, #2b003f 100%);
+            color: #ffffff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+            /* Efeito no ícone ao passar o mouse */
+            .back-link:hover i {
+                transform: translateX(-5px);
+                transition: transform 0.3s ease;
+            }
+
+    /* Estilo do botão de copiar */
+    .btn-secondary {
+        background-color: #6c757d;
+        border-color: #6c757d;
+        padding: 10px 20px;
+        font-size: 16px;
+        border-radius: 5px;
+        color: #ffffff;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            border-color: #545b62;
+        }
+
+    /* Mensagem de confirmação */
+    .copy-message {
+        display: none;
+        color: #28a745;
+        font-size: 14px;
+        margin-top: 10px;
+    }
+</style>
+
+<h1>EDITAR CATEGORIA</h1>
+
+<div class="form-container">
+    <form asp-action="Edit">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="CategoriaId" />
+
+        <div class="form-group">
+            <label asp-for="CategoriaNome" class="control-label">
+                <i class="fas fa-tag icon"></i>Nome da Categoria
+            </label>
+            <input asp-for="CategoriaNome" id="CategoriaNome" class="form-control" />
+            <span asp-validation-for="CategoriaNome" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Descricao" class="control-label">
+                <i class="fas fa-info-circle icon"></i>Descrição
+            </label>
+            <input asp-for="Descricao" id="Descricao" class="form-control" />
+            <span asp-validation-for="Descricao" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <input type="submit" value="SALVAR" class="btn btn-primary" />
+        </div>
+    </form>
+
+    <!-- Botão para copiar Nome e Descrição -->
+    <div class="form-group text-center">
+        <button type="button" id="copyBtn" class="btn btn-secondary">
+            <i class="fas fa-copy"></i> Copiar Nome e Descrição
+        </button>
+        <div id="copyMessage" class="copy-message">Texto copiado com sucesso!</div>
+    </div>
+</div>
+
+<div class="back-to-list-container">
+    <a asp-action="Index" class="back-link">
+        <i class="fas fa-arrow-left"></i> VOLTAR PARA A LISTA DE CATEGORIAS
+    </a>
+</div>
+
+<!-- Script para funcionalidade de copiar -->
+<script>
+    document.getElementById("copyBtn").addEventListener("click", function () {
+        const categoriaNome = document.getElementById("CategoriaNome").value;
+        const descricao = document.getElementById("Descricao").value;
+
+        // Criação de texto para copiar
+        const textToCopy = `Nome: ${categoriaNome}\nDescrição: ${descricao}`;
+
+        // Copia o texto para o clipboard
+        navigator.clipboard.writeText(textToCopy).then(() => {
+            // Mostra a mensagem de confirmação
+            const copyMessage = document.getElementById("copyMessage");
+            copyMessage.style.display = "block";
+
+            // Esconde a mensagem após 2 segundos
+            setTimeout(() => {
+                copyMessage.style.display = "none";
+            }, 2000);
+        }).catch(err => {
+            console.error("Erro ao copiar texto: ", err);
+        });
+    });
+</script>

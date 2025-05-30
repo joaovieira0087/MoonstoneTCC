@@ -1,0 +1,136 @@
+﻿@if (ViewData["HideFooter"] == null || !(bool)ViewData["HideFooter"])
+{
+    <footer style="background-color: #0c1a1e; color: #fff; padding: 30px; font-family: Arial, sans-serif; font-size: 15px;">
+        <div class="container" style="display: flex; justify-content: space-between; flex-wrap: wrap; align-items: flex-start;">
+
+            <!-- Logo -->
+            <div style="flex: 1; min-width: 200px; margin-bottom: 25px; text-align: left; padding-left: -40px; margin-left: -40px">
+                <a href="/" title="Ir para a página inicial" style="display: inline-block;">
+                    <img src="~/img/userlmn_190a820892874567a91071d0542da791.png" alt="MoonstoneTCC Logo" style="max-width: 250px; height: auto;">
+                </a>
+            </div>
+
+
+
+
+            <!-- Navegação de Categorias -->
+            <div style="flex: 1; min-width: 220px; margin-bottom: 25px;">
+                <h4 style="margin-bottom: 20px; font-size: 17px;">CATEGORIAS</h4>
+                <ul style="list-style: none; padding: 0; margin: 0; line-height: 2.0;">
+                    <li><a href="/Jogo/List/Ação" class="categoria-link"><i class="fas fa-fist-raised"></i> Ação</a></li>
+                    <li><a href="/Jogo/List/Aventura" class="categoria-link"><i class="fas fa-compass"></i> Aventura</a></li>
+                    <li><a href="/Jogo/List/Corrida" class="categoria-link"><i class="fas fa-car"></i> Corrida</a></li>
+                    <li><a href="/Jogo/List/Esportes" class="categoria-link"><i class="fas fa-football-ball"></i> Esportes</a></li>
+                    <li><a href="/Jogo/List/Estratégia" class="categoria-link"><i class="fas fa-chess"></i> Estratégia</a></li>
+                    <li><a href="/Jogo/List/FPS" class="categoria-link"><i class="fas fa-crosshairs"></i> FPS</a></li>
+                    <li><a href="/Jogo/List/Luta" class="categoria-link"><i class="fas fa-hand-rock"></i> Luta</a></li>
+                    <li><a href="/Jogo/List/Mundo%20Aberto" class="categoria-link"><i class="fas fa-globe"></i> Mundo Aberto</a></li>
+                    <li><a href="/Jogo/List/RPG%20de%20Ação" class="categoria-link"><i class="fas fa-dragon"></i> RPG de Ação</a></li>
+                    <li><a href="/Jogo/List/Terror" class="categoria-link"><i class="fas fa-ghost"></i> Terror</a></li>
+                </ul>
+            </div>
+
+            <!-- Informações institucionais -->
+            <div style="flex: 1; min-width: 220px; margin-bottom: 25px;">
+                <h4 style="margin-bottom: 20px; font-size: 17px;">INSTITUCIONAL</h4>
+                <ul style="list-style: none; padding: 0; margin: 0; line-height: 1.8;">
+                    <li><a href="/QuemSomos" class="institucional-link">Quem Somos</a></li>
+                    <li>
+                        <a asp-controller="Home"
+                           asp-action="PrivacyPolicy"
+                           class="institucional-link">
+                            Política de Privacidade
+                        </a>
+                    </li>
+                    <li>
+                        <a asp-controller="Home"
+                           asp-action="ShippingPolicy"
+                           class="institucional-link">
+                            Política de Envio
+                        </a>
+                    </li>
+                    <li>
+                        <a asp-controller="Home"
+                           asp-action="ReturnPolicy"
+                           class="institucional-link">
+                            Política de Devolução
+                        </a>
+                    </li>
+                    <li>
+                        <a asp-controller="Home"
+                           asp-action="Terms"
+                           class="institucional-link">
+                            Termos de Uso
+                        </a>
+                    </li>
+                    <li>
+                        <a asp-controller="Home"
+                           asp-action="FAQ"
+                           class="institucional-link">
+                            Perguntas Frequentes (FAQ)
+                        </a>
+                    </li>
+
+                    <li><a href="/Contato" class="institucional-link">Contato</a></li>
+                </ul>
+            </div>
+
+
+            <!-- Redes sociais -->
+            <div style="flex: 1; min-width: 220px; margin-bottom: 25px;">
+                <h4 style="margin-bottom: 20px; font-size: 17px;">SIGA-NOS</h4>
+                <div style="display: flex; gap: 15px; font-size: 20px;">
+                    <a href="#" style="color: #fff;"><i class="fab fa-facebook"></i></a>
+                    <a href="#" style="color: #fff;"><i class="fab fa-twitter"></i></a>
+                    <a href="#" style="color: #fff;"><i class="fab fa-instagram"></i></a>
+                    <a href="#" style="color: #fff;"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <hr style="border-color: #33444b; margin: 25px 0;">
+
+        <!-- Direitos autorais e idioma -->
+        <div style="display: flex; justify-content: space-between; flex-wrap: wrap; font-size: 15px;">
+            <p style="margin: 0;">&copy; 2024 Moonstone. Todos os direitos reservados.</p>
+            <div>
+                <span>Idioma:</span>
+                <select style="background: #1a2a2e; color: #fff; border: none; padding: 7px; font-size: 15px;">
+                    <option>Português</option>
+                </select>
+            </div>
+        </div>
+    </footer>
+}
+
+<style>
+    footer a {
+        color: #fff;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 8px; /* Espaço entre ícone e texto */
+        transition: color 0.3s, transform 0.2s ease;
+    }
+
+        footer a:hover {
+            color: #a67efb;
+        }
+
+    footer h4 {
+        font-size: 17px;
+        margin-bottom: 20px;
+    }
+
+    footer ul li {
+        margin-bottom: 12px;
+    }
+
+    footer select {
+        cursor: pointer;
+        background-color: #1a2a2e;
+        color: #fff;
+        border: none;
+        padding: 7px;
+    }
+</style>

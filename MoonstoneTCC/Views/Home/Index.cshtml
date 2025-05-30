@@ -1,0 +1,48 @@
+﻿@model HomeViewModel
+
+<div class="container my-5">
+    <!-- Carrossel -->
+    <partial name="_Carousel" />
+
+    <!-- Título da seção -->
+    <h2 class="my-5 text-center fw-bold text-uppercase" style="color: #F5FDFF;">Os Mais Vendidos da Semana</h2>
+
+    <!-- Grid de jogos -->
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        @foreach (var jogo in Model.JogosPreferidos)
+        {
+            <div class="col">
+                <partial name="_JogosResumo" for="@jogo" />
+            </div>
+        }
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+@* 
+@model HomeViewModel
+
+<div class="container my-5">
+    <!-- Carrossel -->
+    <partial name="_Carousel" />
+
+    <!-- Título da seção -->
+    <h2 class="my-5 text-center fw-bold text-uppercase" style="color: #333;">Os Mais Vendidos da Semana</h2>
+
+    <!-- Grid de jogos -->
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        @foreach (var jogo in Model.JogosPreferidos)
+        {
+            <div class="col">
+                <partial name="_JogosResumo" for="@jogo" />
+            </div>
+        }
+    </div>
+</div> *@

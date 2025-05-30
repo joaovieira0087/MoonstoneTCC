@@ -1,0 +1,271 @@
+﻿@model Jogo
+
+<div class="container my-5">
+    <div class="row g-4">
+        <!-- Carrossel de Imagens -->
+        <div class="col-md-6">
+            <div class="carousel-container p-3 rounded">
+                <div id="gameCarousel" class="carousel slide" data-bs-ride="carousel">
+                    <!-- Imagens principais -->
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                            <img src="@Model.ImagemUrl" class="d-block w-100 rounded" alt="Imagem Principal">
+                        </div>
+                        @if (!string.IsNullOrEmpty(Model.ImagensAdicionais))
+                        {
+                            <div class="carousel-item">
+                                <img src="@Model.ImagensAdicionais" class="d-block w-100 rounded" alt="Imagem Adicional 1">
+                            </div>
+                        }
+                        @if (!string.IsNullOrEmpty(Model.ImagensAdicionais2))
+                        {
+                            <div class="carousel-item">
+                                <img src="@Model.ImagensAdicionais2" class="d-block w-100 rounded" alt="Imagem Adicional 2">
+                            </div>
+                        }
+                        @if (!string.IsNullOrEmpty(Model.ImagensAdicionais3))
+                        {
+                            <div class="carousel-item">
+                                <img src="@Model.ImagensAdicionais3" class="d-block w-100 rounded" alt="Imagem Adicional 3">
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Botões de navegação -->
+                    <button class="carousel-control-prev" type="button" data-bs-target="#gameCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Anterior</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#gameCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Próximo</span>
+                    </button>
+                </div>
+
+                <!-- Miniaturas -->
+                <div class="mt-4 d-flex justify-content-center gap-3">
+                    <img src="@Model.ImagemUrl" class="thumbnail" alt="Miniatura 1" data-bs-target="#gameCarousel" data-bs-slide-to="0">
+                    @if (!string.IsNullOrEmpty(Model.ImagensAdicionais))
+                    {
+                        <img src="@Model.ImagensAdicionais" class="thumbnail" alt="Miniatura 2" data-bs-target="#gameCarousel" data-bs-slide-to="1">
+                    }
+                    @if (!string.IsNullOrEmpty(Model.ImagensAdicionais2))
+                    {
+                        <img src="@Model.ImagensAdicionais2" class="thumbnail" alt="Miniatura 3" data-bs-target="#gameCarousel" data-bs-slide-to="2">
+                    }
+                    @if (!string.IsNullOrEmpty(Model.ImagensAdicionais3))
+                    {
+                        <img src="@Model.ImagensAdicionais3" class="thumbnail" alt="Miniatura 4" data-bs-target="#gameCarousel" data-bs-slide-to="3">
+                    }
+                    
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Informações do Jogo -->
+        <div class="col-md-6">
+            <div class="p-4 rounded-4 shadow-lg carousel-container text-white">
+                <!-- Nome do jogo -->
+                <h1 class="fw-bold mb-4 d-flex align-items-center">
+                     @Model.Nome
+                </h1>
+
+                <!-- Preço e Categoria -->
+                <p class="mb-2">
+                    <strong><i class="fas fa-tag me-2 text-success"></i> Preço:</strong> R$ @Model.Preco.ToString("F2")
+                </p>
+                <p class="mb-3">
+                    <strong><i class="fas fa-layer-group me-2 text-info"></i> Categoria:</strong> @Model.Genero
+                </p>
+
+                <!-- Plataforma e Classificação -->
+                <div class="d-flex align-items-center gap-3 mb-4">
+                    <span class="badge bg-secondary px-3 py-2">@Model.Plataformas</span>
+                    @if (!string.IsNullOrEmpty(Model.ClassificacaoEtariaImagemUrl))
+                    {
+                        <img src="@Model.ClassificacaoEtariaImagemUrl" class="img-fluid rounded" style="max-width: 40px;" alt="Classificação Etária">
+                    }
+                </div>
+
+                <!-- BOTÕES em 2 colunas -->
+                <div class="row g-3">
+                    <div class="col-6">
+                        <a asp-controller="CarrinhoCompra" asp-action="AdicionarItemNoCarrinhoCompra" asp-route-jogoId="@Model.JogoId"
+                           class="btn btn-success w-100 d-flex align-items-center justify-content-center">
+                            <i class="fas fa-bolt me-2"></i> Comprar
+                        </a>
+                    </div>
+                    <div class="col-6">
+                        <a asp-controller="CarrinhoCompra" asp-action="AdicionarItemNoCarrinhoCompra" asp-route-jogoId="@Model.JogoId"
+                           class="btn btn-outline-light w-100 d-flex align-items-center justify-content-center">
+                            <i class="fas fa-cart-plus me-2"></i> Carrinho
+                        </a>
+                    </div>
+                    <div class="col-6">
+                        <a asp-controller="Jogo" asp-action="List"
+                           class="btn btn-primary w-100 d-flex align-items-center justify-content-center">
+                            <i class="fas fa-th-list me-2"></i> Ver Jogos
+                        </a>
+                    </div>
+                    @if (!string.IsNullOrEmpty(Model.TrailerYoutubeUrl))
+                    {
+                        <div class="col-6">
+                            <a href="@Model.TrailerYoutubeUrl" target="_blank"
+                               class="btn btn-danger w-100 d-flex align-items-center justify-content-center">
+                                <i class="fab fa-youtube me-2"></i> Trailer
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+
+
+
+            <br />
+            <div class="descricao-detalhada">
+                <h3>Descrição do Jogo</h3>
+                <p class="text-justify text-muted">@Model.DescricaoDetalhada</p>
+            </div>
+
+
+            <br />
+            <br />
+            <!-- Informações Extras -->
+            @{
+                // Divide as informações extras usando delimitadores ##
+                var informacoesExtras = !string.IsNullOrEmpty(Model.InformacoesExtras)
+                ? Model.InformacoesExtras.Split("##", StringSplitOptions.RemoveEmptyEntries)
+                : Array.Empty<string>();
+            }
+            <div class="descricao-detalhada">
+                <h3>Informações Extras</h3>
+
+                @if (informacoesExtras.Length > 0)
+                {
+                    @for (int i = 0; i < informacoesExtras.Length; i++)
+                    {
+                        if (i % 2 == 0) // Índices pares são títulos
+                        {
+                            <h4>@informacoesExtras[i].Trim()</h4>
+                        }
+                        else // Índices ímpares são descrições
+                        {
+                            <p>@informacoesExtras[i].Trim()</p>
+                        }
+                    }
+                }
+                else
+                {
+                    <p>Não há informações adicionais disponíveis.</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Estilo Geral */
+    body {
+        background-color: #3A0066;
+        color: #333;
+        font-family: Arial, sans-serif;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    p {
+        font-size: 1rem;
+    }
+
+    .carousel-container {
+        background: #3B0056;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        padding: 20px;
+        border-radius: 15px;
+    }
+
+    .text-white {
+    color: white;
+}
+
+
+    .carousel-item img {
+        object-fit: cover;
+        border-radius: 10px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        transition: transform 0.5s ease;
+    }
+
+    .carousel-item:hover img {
+        transform: scale(1.05);
+    }
+
+    .thumbnail {
+        border: 2px solid #ddd;
+        border-radius: 10px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        cursor: pointer;
+        transition: transform 0.3s ease, border-color 0.3s ease;
+    }
+
+        .thumbnail:hover {
+            transform: scale(1.1);
+            border-color: #6c757d;
+        }
+
+    /*Estido texto detalhado*/
+    .descricao-detalhada {
+        background-color: #3B0056;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        line-height: 1.6;
+    }
+
+        .descricao-detalhada h3 {
+            font-size: 1.8rem;
+            color: #fff;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+
+        .descricao-detalhada h4 {
+            font-size: 1.3rem;
+            color: #555;
+            margin-top: 15px;
+            margin-bottom: 10px;
+        }
+
+        .descricao-detalhada p {
+            font-size: 1rem;
+            color: #666;
+            text-align: justify;
+        }
+
+   
+
+    /* Imagens Menores */
+    .img-fluid {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .badge {
+        font-size: 0.9rem;
+    }
+
+    .alert-info {
+        background-color: #f8f9fa;
+        border: 1px solid #d1d1d1;
+        color: #333;
+    }
+</style>

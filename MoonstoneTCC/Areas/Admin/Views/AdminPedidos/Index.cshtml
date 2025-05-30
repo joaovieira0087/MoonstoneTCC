@@ -1,0 +1,148 @@
+﻿@model ReflectionIT.Mvc.Paging.PagingList<MoonstoneTCC.Models.Pedido>
+
+
+@{
+    ViewData["Title"] = "Pedidos";
+}
+
+<h1>PEDIDOS</h1>
+
+<!-- Formulário de Pesquisa -->
+<form method="get" class="d-flex justify-content-between align-items-center mb-4 mx-auto" action="@Url.Action("Index", "AdminPedidos")" style="max-width: 800px;">
+    <div class="input-group w-100">
+        <input name="filter" class="form-control" placeholder="Pesquisar por Nome, Endereço, Cidade, CEP, Telefone, Email"
+               value="@Model.RouteValue["filter"]" aria-label="Pesquisar pedidos" />
+        <button type="submit" class="btn btn-info ms-2">
+            <i class="fas fa-search"></i> Procurar
+        </button>
+    </div>
+</form>
+
+
+<!-- Contador de Pedidos -->
+<div class="mb-3">
+    <span class="fw-bold">Total de Pedidos:</span> <span class="text-primary">@Model.TotalRecordCount</span>
+</div>
+
+<!-- Paginação -->
+<div class="mb-4">
+    <vc:pager paging-list="@Model"></vc:pager>
+</div>
+
+<!-- Link para Criar Novo Pedido -->
+<p>
+    <a asp-action="Create" class="btn btn-success btn-lg">
+        <i class="fas fa-plus-circle"></i> Criar Novo Pedido
+    </a>
+</p>
+
+<div class="container">
+    <div class="row">
+        @foreach (var item in Model.OrderBy(p => p.PedidoId)) // Ordenando pelo PedidoId
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="card-title">Pedido #@item.PedidoId</h5>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Nome:</strong> @item.Nome</p>
+                        <p><strong>Endereço:</strong> @item.Endereco1, @item.Endereco2</p>
+                        <p><strong>Cidade:</strong> @item.Cidade - @item.Estado</p>
+                        <p><strong>CEP:</strong> @item.Cep</p>
+                        <p><strong>Telefone:</strong> @item.Telefone</p>
+                        <p><strong>Email:</strong> <a href="mailto:@item.Email">@item.Email</a></p>
+                        <p><strong>Enviado em:</strong> </p>
+                        <p><strong>Entregue em:</strong> @item.PedidoEntregueEm?.ToString("dd/MM/yyyy")</p>
+                        <p><strong>Pedido feito:</strong>@Html.DisplayFor(modelItem => item.PedidoEnviado)</p>
+                    </div>
+                    <div class="card-footer">
+                        <div class="row">
+                            <!-- Primeira linha com 3 botões -->
+                            <div class="col-md-12 mb-3 d-flex justify-content-between">
+                                <a asp-action="Edit" asp-route-id="@item.PedidoId" class="btn btn-warning btn-sm">
+                                    <i class="fa fa-edit"></i> Editar
+                                </a>
+                                <a asp-action="Details" asp-route-id="@item.PedidoId" class="btn btn-info btn-sm">
+                                    <i class="fa fa-info-circle"></i> Detalhes
+                                </a>
+                                <a asp-action="Delete" asp-route-id="@item.PedidoId" class="btn btn-danger btn-sm">
+                                    <i class="fa fa-trash"></i> Excluir
+                                </a>
+                            </div>
+                            <!-- Segunda linha com 3 botões -->
+                            <div class="col-md-12 mb-3 d-flex justify-content-between">
+                                <a asp-action="PedidoJogos" asp-route-id="@item.PedidoId" class="btn btn-secondary btn-sm">
+                                    <i class="fa fa-gamepad"></i> Ver Itens
+                                </a>
+                                <a href="mailto:@item.Email" title="Enviar e-mail para o cliente" class="btn btn-primary btn-sm">
+                                    <i class="fa fa-envelope"></i> Enviar
+                                </a>
+                                <button class="btn btn-success btn-sm" onclick="copiarInformacoesPedido(@item.PedidoId)">
+                                    <i class="fa fa-copy"></i> Copiar
+                                </button>
+                            </div>
+                            <!-- Terceira linha com 1 botão -->
+                            <div class="col-md-12 d-flex justify-content-center">
+                                <button class="btn btn-dark btn-sm" onclick="exportarPedidoTexto(@item.PedidoId)">
+                                    <i class="fa fa-file-alt"></i> Exportar(TXT)
+                                </button>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contêiner oculto para armazenar as informações do pedido -->
+                    <div id="pedido-info-@item.PedidoId" style="display:none;">
+                        Pedido #: @item.PedidoId
+                        Nome: @item.Nome
+                        Endereço: @item.Endereco1, @item.Endereco2
+                        Cidade: @item.Cidade - @item.Estado
+                        CEP: @item.Cep
+                        Telefone: @item.Telefone
+                        Email: @item.Email
+                        Enviado em: @item.PedidoEnviado.ToString("dd/MM/yyyy")
+                        Entregue em: @item.PedidoEntregueEm?.ToString("dd/MM/yyyy")
+                    </div>
+
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<script>
+    function copiarInformacoesPedido(pedidoId) {
+        // Seleciona o elemento oculto com as informações do pedido
+        const pedidoInfo = document.getElementById(`pedido-info-${pedidoId}`);
+        if (pedidoInfo) {
+            // Cria um elemento temporário para copiar o texto
+            const tempInput = document.createElement("textarea");
+            tempInput.value = pedidoInfo.innerText; // Define o valor como o texto das informações do pedido
+            document.body.appendChild(tempInput);
+            tempInput.select(); // Seleciona o conteúdo
+            document.execCommand("copy"); // Copia para a área de transferência
+            document.body.removeChild(tempInput); // Remove o elemento temporário
+
+            // Exibe uma mensagem de confirmação (opcional)
+            alert("Informações do pedido copiadas com sucesso!");
+        } else {
+            alert("Erro ao copiar as informações do pedido.");
+        }
+    }
+
+
+    function exportarPedidoTexto(pedidoId) {
+        window.location.href = `/Admin/AdminPedidos/ExportarPedidoTexto?id=${pedidoId}`;
+    }
+</script>
+
+<style>
+    h1 {
+        color: #333;
+        font-size: 2.5em;
+        margin-bottom: 20px;
+        font-weight: bold;
+        text-align:center;
+    }
+</style>

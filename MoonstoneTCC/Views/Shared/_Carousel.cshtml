@@ -1,0 +1,106 @@
+﻿<div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-indicators">
+        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="3" aria-label="Slide 4"></button>
+        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="4" aria-label="Slide 5"></button>
+    </div>
+
+    <div class="carousel-inner">
+        <!-- Slide 1: Imagem -->
+        <div class="carousel-item active">
+            <img src="~/img/EGS_TheEvilWithin2_TangoGameworks_S1_2560x1440-c87f377e1990d84a98db5fb4836af9a9.jpg" class="d-block w-100" alt="Imagem 1">
+        </div>
+        <!-- Slide 2: Imagem -->
+        <div class="carousel-item">
+            <img src="~/img/carrossel_far_cry_6.jpg" class="d-block w-100" alt="Imagem 2">
+        </div>
+        <!-- Slide 3: Vídeo -->
+        <div class="carousel-item">
+            <video id="videoSlide" class="d-block w-100">
+                <source src="~/img/$RRWDB4N.webm" type="video/mp4">
+                Seu navegador não suporta o elemento vídeo.
+            </video>
+            <div class="carousel-caption d-none d-md-block">
+                <a href="https://example.com" target="_blank" class="btn btn-primary">COMPRE AGORA</a>
+            </div>
+        </div>
+        <!-- Slide 4: Imagem -->
+        <div class="carousel-item">
+            <img src="~/img/poster-grand-theft-auto-v-gta-5-c-afe2ac45.jpg" class="d-block w-100" alt="Imagem 4">
+        </div>
+        <!-- Slide 5: Imagem -->
+        <div class="carousel-item">
+            <img src="~/img/carrossel_call-of-duty-modern-warfare.jpeg" class="d-block w-100" alt="Imagem 5">
+        </div>
+    </div>
+
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Anterior</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Próximo</span>
+    </button>
+</div>
+
+<style>
+    .carousel {
+        margin-bottom: 50px;
+    }
+
+    .carousel-item img,
+    .carousel-item video {
+        height: 600px;
+        object-fit: cover;
+        border-radius: 10px;
+        box-shadow: 0 10px 30px rgba(0, 255, 255, 0.5), 0 0 15px rgba(255, 0, 230, 0.5);
+        transition: transform 0.5s ease;
+    }
+
+    .carousel-item:hover img,
+    .carousel-item:hover video {
+        transform: scale(1.05);
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var carouselElement = document.getElementById('carouselExampleIndicators');
+        var myCarousel = new bootstrap.Carousel(carouselElement, {
+            interval: 5000, // intervalo para slides de imagem
+            ride: 'carousel'
+        });
+
+        // Evento disparado após a transição do slide
+        carouselElement.addEventListener('slid.bs.carousel', function () {
+            var activeSlide = carouselElement.querySelector('.carousel-item.active');
+            var video = activeSlide.querySelector('video');
+
+            if (video) {
+                // Se o slide ativo é o de vídeo, pausa a rotação automática e inicia o vídeo
+                myCarousel.pause();
+                // Reinicia o vídeo (opcional) e inicia o play automaticamente
+                video.currentTime = 0;
+                video.play().catch(function (error) {
+                    // Em alguns navegadores o autoplay pode ser bloqueado se não houver interação do usuário
+                    console.error("Autoplay do vídeo foi bloqueado:", error);
+                });
+            } else {
+                // Se não for o slide de vídeo, retoma a rotação automática
+                myCarousel.cycle();
+            }
+        });
+
+        // Quando o vídeo terminar, avança para o próximo slide e retoma o ciclo automático
+        var videoElement = document.getElementById('videoSlide');
+        if (videoElement) {
+            videoElement.addEventListener('ended', function () {
+                myCarousel.next();
+                myCarousel.cycle();
+            });
+        }
+    });
+</script>

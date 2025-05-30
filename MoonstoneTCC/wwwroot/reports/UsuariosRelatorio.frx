@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Description="Relatório de Usuários" ReportInfo.Created="2025-05-16T12:00:00" ReportInfo.Modified="2025-05-16T12:00:00" ReportInfo.CreatorVersion="2022.1.18">
+  <Dictionary>
+    <TableDataSource Name="UsuariosReport" ReferenceName="UsuariosReport" DataType="System.Collections.IEnumerable" Enabled="true">
+      <Column Name="Id" DataType="System.String"/>
+      <Column Name="Email" DataType="System.String"/>
+      <Column Name="UserName" DataType="System.String"/>
+      <Column Name="PedidosQuantidade" DataType="System.Int32"/>
+      <Column Name="DataCadastro" DataType="System.String"/>
+    </TableDataSource>
+  </Dictionary>
+  <ReportPage Name="Page1">
+    <ReportTitleBand Name="ReportTitle1" Width="718.2" Height="37.8">
+      <TextObject Left="0" Top="9.45" Width="718.2" Height="28.35" Text="RELATÓRIO DE USUÁRIOS" HorzAlign="Center" Font="Arial, 14pt, style=Bold"/>
+    </ReportTitleBand>
+    <PageHeaderBand Name="PageHeader1" Width="718.2" Height="28.35">
+      <TextObject Left="0" Top="0" Width="132" Height="28.35" Text="Email" Border.Lines="All" Fill.Color="LightGray" Padding="2"/>
+      <TextObject Left="132" Top="0" Width="150" Height="28.35" Text="Nome de Usuário" Border.Lines="All" Fill.Color="LightGray" Padding="2"/>
+      <TextObject Left="282" Top="0" Width="120" Height="28.35" Text="Pedidos" Border.Lines="All" Fill.Color="LightGray" Padding="2"/>
+      <TextObject Left="402" Top="0" Width="150" Height="28.35" Text="Data de Cadastro" Border.Lines="All" Fill.Color="LightGray" Padding="2"/>
+    </PageHeaderBand>
+    <DataBand Name="Data1" Width="718.2" Height="24" DataSource="UsuariosReport">
+      <TextObject Left="0" Top="0" Width="132" Height="24" Text="[UsuariosReport.Email]" Border.Lines="All" Padding="2"/>
+      <TextObject Left="132" Top="0" Width="150" Height="24" Text="[UsuariosReport.UserName]" Border.Lines="All" Padding="2"/>
+      <TextObject Left="282" Top="0" Width="120" Height="24" Text="[UsuariosReport.PedidosQuantidade]" Border.Lines="All" Padding="2"/>
+      <TextObject Left="402" Top="0" Width="150" Height="24" Text="[UsuariosReport.DataCadastro]" Border.Lines="All" Padding="2"/>
+    </DataBand>
+    <PageFooterBand Name="PageFooter1" Width="718.2" Height="28.35">
+      <TextObject Left="0" Top="0" Width="718.2" Height="28.35" Text="Página [Page#] de [TotalPages#]" HorzAlign="Right" Font="Arial, 9pt"/>
+    </PageFooterBand>
+  </ReportPage>
+</Report>

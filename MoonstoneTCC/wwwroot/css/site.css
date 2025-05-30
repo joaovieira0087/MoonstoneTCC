@@ -1,0 +1,20 @@
+body {
+    background-color: #2F2F2F; /* Cinza escuro */
+}
+
+@media (max-width: 992px) {
+    .nav-icons {
+        display: none; /* Some com os ícones em telas menores */
+    }
+
+    .search-form {
+        flex-grow: 1;
+        justify-content: center !important;
+    }
+
+    .search-bar {
+        margin: 10px auto;
+        width: 100%;
+        max-width: 500px;
+    }
+}

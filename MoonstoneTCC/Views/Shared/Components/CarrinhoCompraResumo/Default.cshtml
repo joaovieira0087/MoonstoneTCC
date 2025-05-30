@@ -1,0 +1,55 @@
+﻿@{
+    ViewData["HideFooter"] = true;
+}
+
+
+@model CarrinhoCompraViewModel
+
+@if (Model.CarrinhoCompra.CarrinhoCompraItems.Count > 0)
+{
+    <a asp-controller="CarrinhoCompra" asp-action="Index" class="carrinho-resumo-link">
+        <div class="carrinho-resumo">
+            <i class="fa-solid fa-cart-shopping carrinho-resumo-icon"></i>
+            <span class="carrinho-resumo-quantidade">
+                @Model.CarrinhoCompra.CarrinhoCompraItems.Count
+            </span>
+        </div>
+    </a>
+}
+<style>
+    .carrinho-resumo-link {
+        text-decoration: none;
+        color: white; /* Cor do texto/ícone */
+        margin-left:10px;
+    }
+
+    .carrinho-resumo {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .carrinho-resumo-icon {
+        font-size: 28px; /* Tamanho do ícone */
+        color: white; /* Cor do ícone */
+    }
+
+    .carrinho-resumo-quantidade {
+        position: absolute;
+        top: -5px; /* Ajuste vertical */
+        right: -10px; /* Ajuste horizontal */
+        background-color: #3B0056; /* Cor de fundo */
+        color: #fff; /* Cor do texto */
+        width: 28px; /* Largura do círculo */
+        height: 28px; /* Altura do círculo */
+        border-radius: 50%; /* Torna o elemento circular */
+        font-size: 12px; /* Tamanho do texto */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold; /* Texto em negrito */
+        box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2); /* Sombra para destaque */
+    }
+
+</style>
