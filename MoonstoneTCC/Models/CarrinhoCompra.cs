@@ -18,86 +18,122 @@ namespace MoonstoneTCC.Models
 
         public static CarrinhoCompra GetCarrinho(IServiceProvider services)
         {
-            ISession session = 
-                services.GetRequiredService<IHttpContextAccessor>()?.HttpContext.Session;
-
+            ISession session = services.GetRequiredService<IHttpContextAccessor>()?.HttpContext.Session;
             var context = services.GetService<AppDbContext>();
 
             string carrinhoId = session.GetString("CarrinhoId") ?? Guid.NewGuid().ToString();
-
             session.SetString("CarrinhoId", carrinhoId);
 
-            return new CarrinhoCompra(context)
-            {
-                CarrinhoCompraId = carrinhoId,
-            };
-
+            return new CarrinhoCompra(context) { CarrinhoCompraId = carrinhoId };
         }
 
-        public void AdicionarAoCarrinho(Jogo jogo)
+        // ✅ Adicionar jogo
+        public void AdicionarAoCarrinho(Jogo jogo, int quantidade = 1)
         {
-            var carrinhoCompraItem = _context.CarrinhoCompraItens.SingleOrDefault(
-                s => s.Jogo.JogoId == jogo.JogoId &&
-                s.CarrinhoCompraId == CarrinhoCompraId);
+            var precoFinal = jogo.PrecoPromocional ?? jogo.Preco;
 
-            if(carrinhoCompraItem == null )
+            var itemAtual = _context.CarrinhoCompraItens
+                .FirstOrDefault(c => c.JogoId == jogo.JogoId && c.CarrinhoCompraId == CarrinhoCompraId);
+
+            if (itemAtual == null)
             {
-                carrinhoCompraItem = new CarrinhoCompraItem
+                itemAtual = new CarrinhoCompraItem
                 {
                     CarrinhoCompraId = CarrinhoCompraId,
-                    Jogo = jogo,
-                    Quantidade = 1
+                    JogoId = jogo.JogoId,
+                    Quantidade = quantidade,
+                    PrecoUnitario = precoFinal
                 };
-                _context.CarrinhoCompraItens.Add(carrinhoCompraItem);
+                _context.CarrinhoCompraItens.Add(itemAtual);
             }
             else
             {
-                carrinhoCompraItem.Quantidade++;
+                itemAtual.Quantidade += quantidade;
             }
 
             _context.SaveChanges();
         }
 
-        public int RemoverDoCarrinho(Jogo jogo)
+        // ✅ Adicionar acessório
+        public void AdicionarAoCarrinho(Acessorio acessorio, int quantidade = 1)
         {
-            var carrinhoCompraItem = _context.CarrinhoCompraItens.SingleOrDefault(
-                s => s.Jogo.JogoId == jogo.JogoId &&
-                s.CarrinhoCompraId == CarrinhoCompraId);
+            var precoFinal = acessorio.PrecoPromocional ?? acessorio.Preco;
 
-            var quantidadeLocal = 0;
+            var itemAtual = _context.CarrinhoCompraItens
+                .FirstOrDefault(c => c.AcessorioId == acessorio.AcessorioId && c.CarrinhoCompraId == CarrinhoCompraId);
 
-            if (carrinhoCompraItem != null)
+            if (itemAtual == null)
             {
-                if(carrinhoCompraItem.Quantidade > 1)
+                itemAtual = new CarrinhoCompraItem
                 {
-                    carrinhoCompraItem.Quantidade--;
-                    quantidadeLocal = carrinhoCompraItem.Quantidade;
-                }
-                else
-                {
-                    _context.CarrinhoCompraItens.Remove(carrinhoCompraItem);
-                }
+                    CarrinhoCompraId = CarrinhoCompraId,
+                    AcessorioId = acessorio.AcessorioId,
+                    Quantidade = quantidade,
+                    PrecoUnitario = precoFinal
+                };
+                _context.CarrinhoCompraItens.Add(itemAtual);
+            }
+            else
+            {
+                itemAtual.Quantidade += quantidade;
             }
 
             _context.SaveChanges();
+        }
+
+        // ✅ Remover jogo
+        public int RemoverDoCarrinho(Jogo jogo)
+        {
+            var item = _context.CarrinhoCompraItens
+                .FirstOrDefault(i => i.JogoId == jogo.JogoId && i.CarrinhoCompraId == CarrinhoCompraId);
+
+            return RemoverItem(item);
+        }
+
+        // ✅ Remover acessório
+        public int RemoverDoCarrinho(Acessorio acessorio)
+        {
+            var item = _context.CarrinhoCompraItens
+                .FirstOrDefault(i => i.AcessorioId == acessorio.AcessorioId && i.CarrinhoCompraId == CarrinhoCompraId);
+
+            return RemoverItem(item);
+        }
+
+        private int RemoverItem(CarrinhoCompraItem item)
+        {
+            int quantidadeLocal = 0;
+
+            if (item != null)
+            {
+                if (item.Quantidade > 1)
+                {
+                    item.Quantidade--;
+                    quantidadeLocal = item.Quantidade;
+                }
+                else
+                {
+                    _context.CarrinhoCompraItens.Remove(item);
+                }
+
+                _context.SaveChanges();
+            }
+
             return quantidadeLocal;
-            
         }
 
         public List<CarrinhoCompraItem> GetCarrinhoCompraItens()
         {
-            return CarrinhoCompraItems ??
-                   (CarrinhoCompraItems =
-                   _context.CarrinhoCompraItens
-                   .Where(c => c.CarrinhoCompraId == CarrinhoCompraId)
-                   .Include(s => s.Jogo)
-                   .ToList());
+            return CarrinhoCompraItems ??= _context.CarrinhoCompraItens
+                .Where(c => c.CarrinhoCompraId == CarrinhoCompraId)
+                .Include(c => c.Jogo)
+                .Include(c => c.Acessorio)
+                .ToList();
         }
 
         public void LimparCarrinho()
         {
             var carrinhoItens = _context.CarrinhoCompraItens
-                                .Where(carrinho => carrinho.CarrinhoCompraId == CarrinhoCompraId);
+                .Where(c => c.CarrinhoCompraId == CarrinhoCompraId);
 
             _context.CarrinhoCompraItens.RemoveRange(carrinhoItens);
             _context.SaveChanges();
@@ -105,11 +141,10 @@ namespace MoonstoneTCC.Models
 
         public decimal GetCarrinhoCompraTotal()
         {
-            var total = _context.CarrinhoCompraItens
-                        .Where(c => c.CarrinhoCompraId == CarrinhoCompraId)
-                        .Select(c => c.Jogo.Preco * c.Quantidade).Sum();
-
-            return total;
+            return _context.CarrinhoCompraItens
+                .Where(c => c.CarrinhoCompraId == CarrinhoCompraId)
+                .Select(c => c.PrecoUnitario * c.Quantidade)
+                .Sum();
         }
     }
 }

@@ -13,5 +13,12 @@ namespace MoonstoneTCC.Repositories.Interfaces
 
         // Novo método para obter jogos recomendados
         IEnumerable<Jogo> GetJogosRecomendados(int jogoId, int quantidade);
+        IEnumerable<Jogo> GetJogosMaisComprados(int quantidade);
+        IEnumerable<Jogo> GetJogosMaisCompradosPorCategoria(int categoriaId, int quantidade);
+        int GetClassificacaoRanking(int jogoId);
+
+        List<Jogo> GetJogosMaisBuscados(int quantidade);
+
+
     }
 }

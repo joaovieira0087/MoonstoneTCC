@@ -1,0 +1,228 @@
+﻿@model MoonstoneTCC.ViewModels.FavoritoIndexViewModel
+@{
+    ViewData["Title"] = "Meus Favoritos";
+}
+
+<div class="container mt-5 text-white">
+    <h2 class="fw-bold mb-4">
+        <i class="fas fa-heart me-2"></i> Meus Jogos Favoritos
+    </h2>
+
+    @if (!Model.Favoritos.Any())
+    {
+        <div class="alert alert-info carousel-container text-center">
+            <i class="fas fa-info-circle me-2"></i>
+            Você ainda não adicionou nenhum jogo aos favoritos.<br />
+            <a href="https://localhost:7105/Jogo" class="btn btn-outline-primary mt-3">
+                <i class="fas fa-gamepad me-2"></i> Ver todos os jogos agora
+            </a>
+        </div>
+
+    }
+
+    <form method="get" class="row g-3 mb-4 align-items-end bg-dark bg-opacity-10 p-3 rounded-4 shadow-sm">
+        <div class="col-md-4">
+            <label class="form-label text-light">Ordenar por</label>
+            <select name="ordem" class="form-select bg-dark text-white border-secondary">
+                <option value="">Padrão</option>
+                <option value="recentes" selected="@("recentes" == Model.FiltroOrdem)">Mais Recentes</option>
+                <option value="antigos" selected="@("antigos" == Model.FiltroOrdem)">Mais Antigos</option>
+                <option value="alfabetica" selected="@("alfabetica" == Model.FiltroOrdem)">Ordem Alfabética</option>
+            </select>
+        </div>
+
+        <div class="col-md-4">
+            <label class="form-label text-light">Visibilidade</label>
+            <select name="visibilidade" class="form-select bg-dark text-white border-secondary">
+                <option value="">Todos</option>
+                <option value="publico" selected="@("publico" == Model.FiltroVisibilidade)">Públicos</option>
+                <option value="privado" selected="@("privado" == Model.FiltroVisibilidade)">Privados</option>
+            </select>
+        </div>
+
+        <div class="col-md-4">
+            <label class="form-label text-light">Plataforma</label>
+            <select name="plataforma" class="form-select bg-dark text-white border-secondary">
+                <option value="">Todas</option>
+                @foreach (var plat in Model.PlataformasDisponiveis)
+                {
+                    <option value="@plat" selected="@(plat == Model.FiltroPlataforma)">
+                        @plat
+                    </option>
+                }
+            </select>
+        </div>
+
+        @{
+            var tagsPadrao = new[] { "Zerados", "Quero Jogar", "Jogando", "Top 10" };
+            var tagsUsuario = ((List<string>)ViewBag.TodasTags ?? new List<string>())
+            .Where(t => !tagsPadrao.Contains(t))
+            .ToList();
+        }
+
+        <div class="col-md-4">
+            <label class="form-label text-light">Categoria</label>
+            <select name="tag" class="form-select bg-dark text-white border-secondary">
+                <option value="">Todas</option>
+
+                @foreach (var t in tagsPadrao)
+                {
+                    <option value="@t" selected="@(t == Model.FiltroTag)">@t</option>
+                }
+
+                @if (tagsUsuario.Any())
+                {
+                    <optgroup label="Minhas Tags">
+                        @foreach (var tag in tagsUsuario)
+                        {
+                            <option value="@tag" selected="@(tag == Model.FiltroTag)">@tag</option>
+                        }
+                    </optgroup>
+                }
+            </select>
+        </div>
+
+
+
+        <div class="col-12 text-end mt-2">
+            <button type="submit" class="btn btn-outline-light rounded-pill px-4 py-2 filtro-btn">
+                <i class="fa-solid fa-filter me-2"></i> Aplicar Filtros
+            </button>
+        </div>
+    </form>
+
+
+
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
+        @foreach (var item in Model.Favoritos)
+        {
+            var jogo = item.Jogo;
+            <div class="col">
+                <div class="carousel-container h-100 d-flex flex-column p-3 rounded-4 shadow-lg">
+                    <!-- Imagem -->
+                    <div class="text-center mb-3">
+                        <img src="@jogo.ImagemThumbnailUrl"
+                             alt="@jogo.Nome"
+                             class="img-fluid rounded shadow"
+                             style="max-height: 200px; object-fit: cover;" />
+                    </div>
+
+                    <!-- Informações -->
+                    <div class="text-white text-center flex-grow-1">
+                        <h5 class="fw-bold">@jogo.Nome</h5>
+                        <p class="mb-1">
+                            Plataforma:
+                            <span class="badge bg-secondary">@jogo.Plataformas</span>
+                        </p>
+                        <p class="fw-semibold text-success">R$ @jogo.Preco.ToString("F2")</p>
+                    </div>
+
+                    <!-- Ações -->
+                    <div class="mt-3 d-grid gap-2">
+                        <a asp-controller="CarrinhoCompra" asp-action="ComprarAgora" asp-route-jogoId="@jogo.JogoId" class="btn btn-success d-flex justify-content-center align-items-center">
+                            <i class="fas fa-bolt me-2"></i> Comprar Agora
+                        </a>
+
+                        <a asp-controller="CarrinhoCompra" asp-action="AdicionarItemNoCarrinhoCompra" asp-route-jogoId="@jogo.JogoId"
+                           class="btn btn-outline-light d-flex justify-content-center align-items-center">
+                            <i class="fas fa-cart-plus me-2"></i> Adicionar ao Carrinho
+                        </a>
+
+                        <a asp-controller="Jogo" asp-action="Details" asp-route-jogoId="@jogo.JogoId"
+                           class="btn btn-primary d-flex justify-content-center align-items-center">
+                            <i class="fas fa-eye me-2"></i> Ver Detalhes
+                        </a>
+
+                        <a asp-controller="Favorito" asp-action="Remover" asp-route-jogoId="@jogo.JogoId"
+                           class="btn btn-outline-danger d-flex justify-content-center align-items-center">
+                            <i class="fas fa-trash-alt me-2"></i> Remover
+                        </a>
+
+                        <form asp-controller="Favorito" asp-action="AlternarVisibilidade" method="post" class="d-grid">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="jogoId" value="@jogo.JogoId" />
+                            <button type="submit" class="btn btn-outline-warning d-flex justify-content-center align-items-center">
+                                <i class="fas fa-shield-alt me-2"></i>
+                                @(item.EPublico ? "Tornar Privado" : "Tornar Público")
+                            </button>
+                        </form>
+
+                        @{
+                            var tagsPadraoGlobais = new[] { "Zerados", "Quero Jogar", "Jogando", "Top 10" };
+                            var tag = item.TagFavorito;
+                            bool tagEhPersonalizada = !string.IsNullOrWhiteSpace(tag) && !tagsPadraoGlobais.Contains(tag);
+                        }
+
+
+                        <form asp-controller="Favorito" asp-action="AtualizarTag" method="post" class="d-flex align-items-center gap-2 mt-2">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="jogoId" value="@jogo.JogoId" />
+
+                            <select name="tag" class="form-select form-select-sm">
+                                <option value="">Sem categoria</option>
+
+                                @foreach (var t in tagsPadraoGlobais)
+                                {
+                                    <option value="@t" selected="@(tag == t)">@t</option>
+                                }
+
+                                @if (tagEhPersonalizada)
+                                {
+                                    <option value="@tag" selected>@tag</option>
+                                }
+
+                                <option value="nova">Criar nova tag…</option>
+                            </select>
+
+                            <input type="text" name="novaTag" class="form-control form-control-sm"
+                                   placeholder="Nova tag"
+                                   style="display:@(tag == "nova" ? "inline-block" : "none");"
+                                   value="@(tag == "nova" ? "" : (tagEhPersonalizada ? tag : ""))" />
+
+                            <button type="submit" class="btn btn-outline-light btn-sm">
+                                <i class="fas fa-check"></i>
+                            </button>
+                        </form>
+
+                        <script>
+                            document.addEventListener('DOMContentLoaded', () => {
+                                document.querySelectorAll('select[name="tag"]').forEach(sel => {
+                                    const input = sel.parentElement.querySelector('input[name="novaTag"]');
+
+                                    function atualizarVisibilidade() {
+                                        const nova = sel.value === 'nova';
+                                        input.style.display = nova ? 'inline-block' : 'none';
+                                        input.required = nova;
+                                        if (!nova) input.value = '';
+                                    }
+
+                                    sel.addEventListener('change', atualizarVisibilidade);
+                                    atualizarVisibilidade(); // executa no carregamento
+                                });
+                            });
+                        </script>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+.filtro-btn {
+    background-color: transparent;
+    border: 1px solid #9d3ce6;
+    color: #fff;
+    transition: 0.3s ease;
+}
+
+.filtro-btn:hover {
+    background-color: #9d3ce6;
+    color: #fff;
+    box-shadow: 0 0 10px #9d3ce677;
+}
+
+.form-select {
+    border-radius: 10px;
+}
+</style>

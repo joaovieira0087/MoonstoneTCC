@@ -1,98 +1,204 @@
-﻿@using MoonstoneTCC.Models
-@model IEnumerable<Comunicado>
+﻿@model IEnumerable<MoonstoneTCC.Models.Comunicado>
 
 @{
-    ViewData["Title"] = "Comunicados Publicados";
+    ViewData["Title"] = "Lista de Comunicados";
 }
 
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<h1 class="text-center text-dark mb-4">COMUNICADOS PUBLICADOS</h1>
 
-<div class="container my-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="text-white"><i class="fas fa-bullhorn"></i> Comunicados Publicados</h2>
-        <a class="btn btn-success shadow" asp-action="Criar">
-            <i class="fas fa-plus-circle"></i> Novo Comunicado
-        </a>
-    </div>
+<p>
+    <a class="btn btn-custom" asp-action="Criar">
+        <i class="fas fa-plus icon"></i> Criar Novo
+    </a>
+</p>
 
-    <div class="table-responsive">
-        <table class="table table-dark table-hover table-bordered shadow-lg rounded">
-            <thead class="table-purple text-white">
-                <tr>
-                    <th style="width: 20%">Título</th>
-                    <th style="width: 50%">Mensagem</th>
-                    <th style="width: 20%">Data</th>
-                    <th style="width: 10%">Ações</th> <!-- nova coluna -->
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var c in Model)
-                {
-                    <tr>
-                        <td class="fw-bold">@c.Titulo</td>
-                        <td>@c.Mensagem</td>
-                        <td>@c.DataCriacao.ToString("dd/MM/yyyy HH:mm")</td>
-                        <td class="text-center">
-                            <a class="btn btn-sm btn-outline-info me-1" asp-action="Respostas" asp-route-id="@c.Id" title="Ver respostas">
-                                <i class="fas fa-eye"></i>
-                            </a>
+<div id="copyNotification" class="copy-message">Copiado para a área de transferência!</div>
 
-                            <a class="btn btn-sm btn-outline-warning me-1" asp-action="Editar" asp-route-id="@c.Id" title="Editar comunicado">
-                                <i class="fas fa-edit"></i>
-                            </a>
-
-                            <form asp-action="Excluir" asp-route-id="@c.Id" method="post" class="d-inline" onsubmit="return confirm('Tem certeza que deseja excluir este comunicado?');">
-                                <button type="submit" class="btn btn-sm btn-outline-danger me-1" title="Excluir comunicado">
-                                    <i class="fas fa-trash-alt"></i>
-                                </button>
-                            </form>
-
-                            <button type="button" class="btn btn-sm btn-outline-secondary" title="Copiar link" onclick="copiarLink('@Url.Action("Comunicados", "ComunicadoUsuario", new { id = c.Id }, Context.Request.Scheme)')">
-                                <i class="fas fa-copy"></i>
-                            </button>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-</div>
-
+<table class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>Título</th>
+            <th>Mensagem</th>
+            <th>Data</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var c in Model)
+        {
+            <tr>
+                <td>@c.Titulo</td>
+                <td>@c.Mensagem</td>
+                <td>@c.DataCriacao.ToString("dd/MM/yyyy HH:mm")</td>
+                <td>
+                    <div class="btn-group">
+                        <a class="btn btn-sm btn-outline-primary" asp-action="Editar" asp-route-id="@c.Id">
+                            <i class="fas fa-edit"></i> Editar
+                        </a>
+                        <a class="btn btn-sm btn-outline-info" asp-action="Respostas" asp-route-id="@c.Id">
+                            <i class="fas fa-info-circle"></i> Detalhes
+                        </a>
+                        <a class="btn btn-sm btn-outline-danger" asp-action="Excluir" asp-route-id="@c.Id">
+                            <i class="fas fa-trash"></i> Excluir
+                        </a>
+                        <button class="btn btn-sm btn-outline-success copy-btn"
+                                data-titulo="@c.Titulo"
+                                data-msg="@c.Mensagem"
+                                data-data="@c.DataCriacao.ToString("dd/MM/yyyy HH:mm")">
+                            <i class="fas fa-copy"></i> Copiar
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
 
 <style>
     body {
-        background-color: #2A003F;
+        background: #f1f4f9;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
-    .table-purple {
-        background-color: #6f42c1;
+    h1 {
+        color: black;
     }
 
-    .table td, .table th {
-        vertical-align: middle;
+    table.table {
+        border-collapse: collapse;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        overflow: hidden;
+        background: white;
     }
 
-    .btn-success {
-        background-color: #28a745;
+        table.table th {
+            background: linear-gradient(90deg, #6a0dad 0%, #3c006e 50%, #2b003f 100%);
+            color: white;
+            text-align: center;
+            padding: 12px;
+        }
+
+        table.table td {
+            text-align: center;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        table.table tbody tr:nth-child(even) {
+            background: #f8f9fc;
+        }
+
+        table.table tbody tr:hover {
+            background: rgba(78, 115, 223, 0.1);
+        }
+
+    .btn-custom {
+        background: #4e73df;
+        color: white;
         border: none;
+        padding: 8px 16px;
+        border-radius: 5px;
+        transition: transform 0.3s ease, background 0.3s ease;
     }
 
-    .btn-success:hover {
-        background-color: #218838;
+        .btn-custom:hover {
+            transform: scale(1.1);
+            background: #375a7f;
+        }
+
+    .btn-outline-primary {
+        color: #4e73df;
+        border-color: #4e73df;
     }
 
-    h2 {
-        font-weight: 600;
+        .btn-outline-primary:hover {
+            background: #375a7f;
+            color: white;
+        }
+
+    .btn-outline-info {
+        color: #36b9cc;
+        border-color: #36b9cc;
     }
+
+        .btn-outline-info:hover {
+            background: #2c9faf;
+            color: white;
+        }
+
+    .btn-outline-danger {
+        color: #e74a3b;
+        border-color: #e74a3b;
+    }
+
+        .btn-outline-danger:hover {
+            background: #c0392b;
+            color: white;
+        }
+
+    .btn-outline-success {
+        border-color: #28a745;
+        color: #28a745;
+    }
+
+        .btn-outline-success:hover {
+            background-color: #28a745;
+            color: white;
+        }
+
+    .copy-message {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background-color: #28a745;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-size: 14px;
+        font-weight: bold;
+        z-index: 9999;
+        display: none;
+        opacity: 0;
+        transition: opacity 0.5s ease;
+    }
+
+        .copy-message.show {
+            display: block;
+            opacity: 1;
+        }
+
+    .btn-group {
+        display: flex;
+        justify-content: flex-start;
+        gap: 5px;
+    }
+
+        .btn-group .btn {
+            padding: 4px 8px;
+            font-size: 14px;
+            min-width: 80px;
+        }
 </style>
 
 <script>
-    function copiarLink(link) {
-        navigator.clipboard.writeText(link).then(function () {
-            alert("Link copiado para a área de transferência!");
-        }, function (err) {
-            alert("Erro ao copiar o link: " + err);
-        });
-    }
-</script>
+    document.querySelectorAll('.copy-btn').forEach(button => {
+        button.addEventListener('click', function () {
+            const titulo = this.getAttribute('data-titulo');
+            const msg = this.getAttribute('data-msg');
+            const data = this.getAttribute('data-data');
 
+            const textToCopy = `📢 Título: ${titulo}\n📝 Mensagem: ${msg}\n📅 Data: ${data}`;
+
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                const notification = document.getElementById('copyNotification');
+                notification.classList.add('show');
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 2000);
+            }).catch(err => {
+                console.error('Erro ao copiar texto: ', err);
+            });
+        });
+    });
+</script>

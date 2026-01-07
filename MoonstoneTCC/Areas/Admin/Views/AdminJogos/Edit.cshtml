@@ -37,6 +37,16 @@
                 </div>
 
                 <div class="form-group col-md-4">
+                    <label asp-for="TrailerYoutubeUrl" class="control-label d-flex align-items-center">
+                        <i class="fab fa-youtube text-danger me-2" style="font-size: 1.5rem;"></i>
+                        <span>Trailer no YouTube</span>
+                    </label>
+                    <input asp-for="TrailerYoutubeUrl" class="form-control border-danger" />
+                    <span asp-validation-for="TrailerYoutubeUrl" class="text-danger"></span>
+                </div>
+
+
+                <div class="form-group col-md-4">
                     <label asp-for="Preco" class="control-label d-flex align-items-center">
                         <i class="fas fa-dollar-sign me-2 text-success" style="font-size: 1.5rem;"></i>
                         <span>Preço</span>
@@ -77,6 +87,31 @@
                 </div>
             </div>
 
+            <div class="row mb-3">
+                <div class="form-group col-md-4">
+                    <label asp-for="ImagensAdicionais" class="control-label">
+                        <i class="fas fa-image text-info"></i> Imagem Adicional 1
+                    </label>
+                    <input asp-for="ImagensAdicionais" class="form-control" />
+                    <span asp-validation-for="ImagensAdicionais" class="text-danger"></span>
+                </div>
+
+                <div class="form-group col-md-4">
+                    <label asp-for="ImagensAdicionais2" class="control-label">
+                        <i class="fas fa-image text-info"></i> Imagem Adicional 2
+                    </label>
+                    <input asp-for="ImagensAdicionais2" class="form-control" />
+                    <span asp-validation-for="ImagensAdicionais2" class="text-danger"></span>
+                </div>
+
+                <div class="form-group col-md-4">
+                    <label asp-for="ImagensAdicionais3" class="control-label">
+                        <i class="fas fa-image text-info"></i> Imagem Adicional 3
+                    </label>
+                    <input asp-for="ImagensAdicionais3" class="form-control" />
+                    <span asp-validation-for="ImagensAdicionais3" class="text-danger"></span>
+                </div>
+            </div>
 
 
             <!-- Terceira Linha -->
@@ -153,6 +188,57 @@
                 </div>
             </div>
 
+            <div class="form-group col-md-4">
+                <label asp-for="DesenvolvedoraId" class="control-label">
+                    <i class="fas fa-building text-info"></i> Desenvolvedora
+                </label>
+                <select asp-for="DesenvolvedoraId" class="form-control" asp-items="@(ViewData["DesenvolvedoraId"] as SelectList)">
+                    <option value="">-- Selecione uma desenvolvedora --</option>
+                </select>
+                <span asp-validation-for="DesenvolvedoraId" class="text-danger"></span>
+            </div>
+
+            <!-- Bloco de Estoque -->
+            <div class="row mb-4">
+                <div class="form-group col-md-4">
+                    <label asp-for="QuantidadeEstoque" class="control-label">
+                        <i class="fas fa-boxes text-info"></i> Quantidade em Estoque
+                    </label>
+                    <input asp-for="QuantidadeEstoque" class="form-control" type="number" min="0" />
+                    <span asp-validation-for="QuantidadeEstoque" class="text-danger"></span>
+                </div>
+
+                <div class="form-group col-md-4">
+                    <label asp-for="EstoqueMinimoAlerta" class="control-label">
+                        <i class="fas fa-bell text-warning"></i> Estoque mínimo de alerta
+                    </label>
+                    <input asp-for="EstoqueMinimoAlerta" class="form-control" type="number" min="0" />
+                    <span asp-validation-for="EstoqueMinimoAlerta" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-4 d-flex align-items-end">
+                    <div class="form-check">
+                        <input class="form-check-input" asp-for="EmEstoque" />
+                        <label class="form-check-label">
+                            <i class="fas fa-box text-success"></i> Em Estoque
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            @section Scripts {
+                <script>
+                    document.addEventListener('DOMContentLoaded', function () {
+                        const qty = document.getElementById('QuantidadeEstoque');
+                        const emEstoque = document.getElementById('EmEstoque');
+                        if (qty && emEstoque) {
+                            const sync = () => { emEstoque.checked = parseInt(qty.value || '0', 10) > 0; };
+                            qty.addEventListener('input', sync);
+                            sync();
+                        }
+                    });
+                </script>
+            }
 
             <!-- Opções Adicionais -->
             <div class="row mb-4">

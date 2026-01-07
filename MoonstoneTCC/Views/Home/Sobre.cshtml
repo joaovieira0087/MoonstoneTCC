@@ -1,0 +1,173 @@
+﻿@{
+    ViewData["Title"] = "Sobre a Moonstone";
+}
+
+<style>
+    .google-style-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 20px;
+        justify-content: center;
+        margin-top: 40px;
+        max-width: 1200px;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 0 15px;
+    }
+
+    .card {
+        background-color: #fff;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        transition: transform 0.2s ease-in-out;
+        position: relative;
+        width: 100%; /* ⬅️ Faz o card ocupar todo o espaço do grid */
+        text-decoration: none;
+        color: inherit;
+        display: flex;
+        flex-direction: column;
+    }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            display: block;
+        }
+
+    .card-content {
+        padding: 16px;
+        position: relative;
+        min-height: 70px;
+        flex: 1;
+    }
+
+        .card-content h3 {
+            font-size: 18px;
+            font-weight: 500;
+            text-align: center;
+            margin: 0;
+            color: #202124;
+        }
+
+        .card-content i {
+            position: absolute;
+            bottom: 12px;
+            right: 16px;
+            color: #5f6368;
+            font-size: 16px;
+        }
+    <!-- Card 1: estilo parte de cima  -->
+
+    .moonstone-footer-highlight {
+        margin-top: 60px;
+        padding: 60px 20px;
+        background: linear-gradient(to right, #3B0056, #220033);
+        border-radius: 20px;
+        color: #ffffff;
+        box-shadow: 0 0 25px rgba(0,0,0,0.4);
+    }
+
+    .moonstone-footer-logo {
+        max-width: 180px;
+        height: auto;
+        margin-bottom: 30px;
+        border-radius: 16px;
+        box-shadow: 0 0 12px rgba(255,255,255,0.15);
+        transition: transform 0.3s ease;
+    }
+
+        .moonstone-footer-logo:hover {
+            transform: scale(1.05);
+        }
+
+    .moonstone-footer-title {
+        font-size: 26px;
+        font-weight: 800;
+        margin-bottom: 15px;
+        color: #e5d0ff;
+        text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.4);
+    }
+
+    .moonstone-footer-subtitle {
+        font-size: 18px;
+        font-weight: 400;
+        color: #cbb3f7;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+</style>
+
+<div class="moonstone-footer-highlight text-center">
+    <img src="~/img/userlmn_190a820892874567a91071d0542da791.png" alt="MoonstoneTCC" class="moonstone-footer-logo" />
+
+    <h3 class="moonstone-footer-title">Moonstone: Mais do que uma loja, um universo em construção.</h3>
+    <p class="moonstone-footer-subtitle">Junte-se à jornada. Viva o novo. Viva Moonstone.</p>
+</div>
+
+
+
+<div class="google-style-cards">
+    <!-- Card 1: Nosso Time -->
+    <a asp-controller="Home" asp-action="NossoTime" class="card">
+        <img src="https://www.gstatic.com/marketing-cms/assets/images/7c/fa/6a5321bf4acd9a7f64d411dfd812/about-companyinfo-5up-devs1.png=n-w390-h221-fcrop64=1,000001a9fffffe93-rw" alt="Time de Desenvolvimento">
+        <div class="card-content">
+            <h3>Nosso Time de Desenvolvimento</h3>
+            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+        </div>
+    </a>
+
+
+    <!-- Card 2: Trabalhe Conosco -->
+    <a asp-controller="Vagas" asp-action="Index" class="card">
+        <img src="https://www.agirsaude.org.br/uploads/tinymce/pagina/Rst54_16_ewiNVV0crhV9ARL5D3fURYk.png" alt="Trabalhe na Moonstone">
+        <div class="card-content">
+            <h3>Trabalhe Conosco</h3>
+            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+        </div>
+    </a>
+
+
+    <!-- Card 3: Iniciativas Futuras -->
+    <a href="/Home/FuturoMoonstone" class="card">
+        <img src="https://img.freepik.com/vetores-gratis/ilustracao-do-conceito-de-objetivos-de-equipe_114360-28763.jpg?semt=ais_hybrid&w=740" alt="Iniciativas da Moonstone">
+        <div class="card-content">
+            <h3>Iniciativas Futuras</h3>
+            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+        </div>
+    </a>
+
+    <!-- Card 4: Nossa História -->
+    <a href="/Home/Historia" class="card">
+        <img src="https://img.freepik.com/fotos-premium/mesa-de-trabalho-com-livros-e-canetas-e-historia-fundo-do-conceito_488220-35401.jpg" alt="História da Moonstone">
+        <div class="card-content">
+            <h3>Nossa História</h3>
+            <i class="fa-solid fa-book-open"></i>
+        </div>
+    </a>
+
+    <!-- Card 5: Missão e Valores -->
+    <a href="/Home/MissaoValores" class="card">
+        <img src="https://img.freepik.com/vetores-gratis/colaboradores-em-reuniao-de-negocios_74855-5915.jpg?w=826&t=st=1719862257~exp=1719862857~hmac=3c3c2b782186f929f99c328296fc79ea5d529a37382a930514f3174c939d9d94" alt="Missão e Valores">
+        <div class="card-content">
+            <h3>Missão e Valores</h3>
+            <i class="fa-solid fa-heart"></i>
+        </div>
+    </a>
+
+    <!-- Card 6: Visão de Futuro -->
+    <a href="/Home/VisaoFuturo" class="card">
+        <img src="https://img.freepik.com/vetores-premium/pessoas-correndo-em-direcao-ao-alvo-conceito-de-negocios-trabalhando-com-objetivo_530733-2031.jpg" alt="Visão de Futuro">
+        <div class="card-content">
+            <h3>Visão de Futuro</h3>
+            <i class="fa-solid fa-forward"></i>
+        </div>
+    </a>
+</div>
+

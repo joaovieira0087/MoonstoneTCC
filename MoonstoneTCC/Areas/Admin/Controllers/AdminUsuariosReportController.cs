@@ -5,6 +5,7 @@ using FastReport.Web;
 using Microsoft.AspNetCore.Mvc;
 using MoonstoneTCC.Areas.Admin.FastReportUtils;
 using MoonstoneTCC.Areas.Admin.Services;
+using MoonstoneTCC.Services;
 
 namespace MoonstoneTCC.Areas.Admin.Controllers
 {
@@ -13,12 +14,16 @@ namespace MoonstoneTCC.Areas.Admin.Controllers
     {
         private readonly IWebHostEnvironment _webHostEnv;
         private readonly RelatorioUsuariosService _relatorioUsuariosService;
+        private readonly LoggerAdminService _logger;
 
-        public AdminUsuariosReportController(IWebHostEnvironment webHostEnv, RelatorioUsuariosService relatorioUsuariosService)
+
+        public AdminUsuariosReportController(IWebHostEnvironment webHostEnv, RelatorioUsuariosService relatorioUsuariosService, LoggerAdminService logger)
         {
             _webHostEnv = webHostEnv;
             _relatorioUsuariosService = relatorioUsuariosService;
+            _logger = logger;
         }
+
 
         public async Task<IActionResult> UsuariosReport()
         {
@@ -30,6 +35,7 @@ namespace MoonstoneTCC.Areas.Admin.Controllers
 
             var usuarios = HelperFastReport.GetTable(await _relatorioUsuariosService.GetUsuariosAsync(), "UsuariosReport");
             webReport.Report.RegisterData(usuarios, "UsuariosReport");
+            await _logger.RegistrarAcaoAsync("Acessou a visualização do relatório de usuários");
 
             return View(webReport);
         }
@@ -50,6 +56,7 @@ namespace MoonstoneTCC.Areas.Admin.Controllers
             var stream = new MemoryStream();
             report.Report.Export(new PDFSimpleExport(), stream);
             stream.Position = 0;
+            await _logger.RegistrarAcaoAsync("Gerou o relatório de usuários (PDF)");
 
             return new FileStreamResult(stream, "application/pdf");
         }

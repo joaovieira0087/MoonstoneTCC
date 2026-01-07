@@ -1,0 +1,34 @@
+﻿@model List<MoonstoneTCC.Models.AvisoEstoque>
+@{
+    ViewData["Title"] = "Usuários aguardando reposição";
+}
+
+<h2 class="my-4">Usuários aguardando pelo jogo: <strong>@ViewBag.JogoNome</strong></h2>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">Nenhum usuário está aguardando esse jogo no momento.</div>
+}
+else
+{
+    <table class="table table-bordered table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>Usuário</th>
+                <th>Email</th>
+                <th>Data de Solicitação</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var aviso in Model)
+            {
+                <tr>
+                    <td>@aviso.Usuario.UserName</td>
+                    <td>@aviso.Usuario.Email</td>
+                    <td>@aviso.Id</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+

@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MoonstoneTCC.Context;
 using MoonstoneTCC.Models;
+using MoonstoneTCC.Services;
 
 namespace MoonstoneTCC.Areas.Admin.Controllers
 {
@@ -17,10 +18,12 @@ namespace MoonstoneTCC.Areas.Admin.Controllers
     {
         private readonly AppDbContext _context;
 
-        public AdminCategoriasController(AppDbContext context)
+        public AdminCategoriasController(AppDbContext context, LoggerAdminService logger)
         {
             _context = context;
+            _logger = logger;
         }
+
 
         // GET: Admin/AdminCategorias
         public async Task<IActionResult> Index()
@@ -63,6 +66,7 @@ namespace MoonstoneTCC.Areas.Admin.Controllers
             {
                 _context.Add(categoria);
                 await _context.SaveChangesAsync();
+                await _logger.RegistrarAcaoAsync($"Criou uma nova categoria: {categoria.CategoriaNome}");
                 return RedirectToAction(nameof(Index));
             }
             return View(categoria);
@@ -102,6 +106,8 @@ namespace MoonstoneTCC.Areas.Admin.Controllers
                 {
                     _context.Update(categoria);
                     await _context.SaveChangesAsync();
+
+                    await _logger.RegistrarAcaoAsync($"Editou a categoria: {categoria.CategoriaNome}");
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -146,15 +152,23 @@ namespace MoonstoneTCC.Areas.Admin.Controllers
             if (categoria != null)
             {
                 _context.Categorias.Remove(categoria);
+                await _context.SaveChangesAsync();
+
+                await _logger.RegistrarAcaoAsync($"Excluiu a categoria: {categoria.CategoriaNome}");
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
 
         private bool CategoriaExists(int id)
         {
             return _context.Categorias.Any(e => e.CategoriaId == id);
         }
+
+        private readonly LoggerAdminService _logger;
+
+
+
     }
 }

@@ -31,5 +31,11 @@ namespace MoonstoneTCC.Models
         public DateTime? DataResposta { get; set; }
 
         public bool Respondido { get; set; } = false;
+
+        // Adicione isso:
+        public int? PedidoId { get; set; }
+
+        [ForeignKey("PedidoId")]
+        public Pedido? Pedido { get; set; } // referência opcional ao Pedido
     }
 }

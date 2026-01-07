@@ -11,23 +11,25 @@ public enum TipoComunicado
     [Display(Name = "Pergunta + Resposta")]
     Pergunta = 2
 }
-
-public class Comunicado
+namespace MoonstoneTCC.Models
 {
-    [Key]
-    public int Id { get; set; }
+    public class Comunicado
+    {
+        [Key]
+        public int Id { get; set; }
 
-    [Required]
-    public TipoComunicado Tipo { get; set; }
+        [Required]
+        public TipoComunicado Tipo { get; set; }
 
-    [Required]
-    [StringLength(200)]
-    public string Titulo { get; set; }
+        [Required]
+        [StringLength(200)]
+        public string Titulo { get; set; }
 
-    [Required]
-    [StringLength(2000)]
-    public string Mensagem { get; set; }
+        [Required]
+        [StringLength(2000)]
+        public string Mensagem { get; set; }
 
-    public string? OpcoesEnquete { get; set; } // Ex: "PlayStation|Xbox|PC"
-    public DateTime DataCriacao { get; set; } = DateTime.Now;
+        public string? OpcoesEnquete { get; set; } // Ex: "PlayStation|Xbox|PC"
+        public DateTime DataCriacao { get; set; } = DateTime.Now;
+    }
 }

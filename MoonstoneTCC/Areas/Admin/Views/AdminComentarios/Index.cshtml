@@ -1,0 +1,212 @@
+﻿@model IEnumerable<MoonstoneTCC.Models.ComentarioJogo>
+
+@{
+    ViewData["Title"] = "Comentários em Jogos";
+    int modalId = 0;
+    var query = Context.Request.Query;
+}
+
+<h1 class="text-center mt-4">COMENTÁRIOS DOS USUÁRIOS</h1>
+
+<!-- Filtros -->
+<div class="card mb-4">
+    <div class="card-header text-white d-flex justify-content-between align-items-center"
+         style="background: linear-gradient(90deg, #6a0dad 0%, #3c006e 50%, #2b003f 100%); cursor: pointer;"
+         onclick="toggleFiltros()">
+        <div>
+            <i class="fas fa-filter me-2"></i>Filtros
+        </div>
+        <i id="iconeFiltro" class="fas fa-chevron-down"></i>
+    </div>
+
+    <div class="card-body" id="filtrosContainer" style="display: none;">
+        <form method="get" asp-action="Index" asp-controller="AdminComentarios" asp-area="Admin" class="row g-3">
+            <div class="col-md-3">
+                <label for="data" class="form-label">Data</label>
+                <input type="date" class="form-control" id="data" name="data" value="@query["data"]" />
+            </div>
+            <div class="col-md-3">
+                <label for="usuario" class="form-label">Usuário</label>
+                <input type="text" class="form-control" id="usuario" name="usuario" placeholder="Nome ou email" value="@query["usuario"]" />
+            </div>
+            <div class="col-md-3">
+                <label for="jogo" class="form-label">Jogo</label>
+                <input type="text" class="form-control" id="jogo" name="jogo" placeholder="Nome do jogo" value="@query["jogo"]" />
+            </div>
+            <div class="col-md-3">
+                <label for="comentario" class="form-label">Comentário</label>
+                <input type="text" class="form-control" id="comentario" name="comentario" placeholder="Palavra-chave" value="@query["comentario"]" />
+            </div>
+            <div class="col-md-3">
+                <label for="curtidas" class="form-label">Ordenar por Curtidas</label>
+                <select class="form-select" id="curtidas" name="curtidas">
+                    <option value="">Padrão</option>
+                    <option value="mais" selected="@(query["curtidas"] == "mais")">Mais Curtidas</option>
+                    <option value="menos" selected="@(query["curtidas"] == "menos")">Menos Curtidas</option>
+                </select>
+            </div>
+
+            <div class="col-md-3">
+                <label for="avaliacao" class="form-label">Classificação</label>
+                <select class="form-select" id="avaliacao" name="avaliacao">
+                    <option value="">Todas</option>
+                    @for (int i = 1; i <= 5; i++)
+                    {
+                        <option value="@i" selected="@(query["avaliacao"] == i.ToString() ? "selected" : null)">@i estrela(s)</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-3 align-self-end">
+                <button type="submit" class="btn w-100 text-white"
+                        style="background: linear-gradient(90deg, #6a0dad 0%, #3c006e 50%, #2b003f 100%);">
+                    <i class="fas fa-search me-1"></i> Filtrar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Tabela -->
+<table class="table">
+    <thead>
+        <tr>
+            <th>Jogo</th>
+            <th>Usuário</th>
+            <th>Data</th>
+            <th>Comentário</th>
+            <th>Classificação</th>
+            <th>Curtidas</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var c in Model)
+        {
+            var idModal = $"modalComentario{modalId++}";
+            <tr>
+                <td>@c.Jogo?.Nome</td>
+                <td>@(c.Usuario?.Email ?? c.Usuario?.UserName)</td>
+                <td>@c.Data.ToString("dd/MM/yyyy HH:mm")</td>
+                <td>@c.Texto</td>
+                <td>
+                    @for (int i = 1; i <= 5; i++)
+                    {
+                        if (i <= c.Avaliacao)
+                        {
+                            <i class="fas fa-star text-warning"></i>
+                        }
+                        else
+                        {
+                            <i class="far fa-star text-muted"></i>
+                        }
+                    }
+                    (@c.Avaliacao)
+                </td>
+                <td>
+                    @{
+                        var curtidas = ViewBag.CurtidasPorComentario as Dictionary<int, int>;
+                        var totalCurtidas = curtidas != null && curtidas.ContainsKey(c.Id)
+                        ? curtidas[c.Id]
+                        : 0;
+                    }
+                    <span class="text-muted"><i class="fas fa-thumbs-up me-1"></i> @totalCurtidas</span>
+                </td>
+
+                <td>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#@idModal" title="Excluir">
+                            <i class="fas fa-trash-alt"></i> Excluir
+                        </button>
+                    </div>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="@idModal" tabindex="-1" aria-labelledby="label@idModal" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content bg-dark text-white border border-danger">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="label@idModal">
+                                        <i class="fas fa-exclamation-triangle text-danger"></i> Confirmar Exclusão
+                                    </h5>
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                                </div>
+                                <div class="modal-body text-center">
+                                    Tem certeza que deseja excluir este comentário?<br />
+                                    <span class="text-warning fw-bold">Comentário: "@c.Texto"</span>
+                                </div>
+                                <div class="modal-footer justify-content-center">
+                                    <form asp-action="Excluir" method="post">
+                                        <input type="hidden" name="id" value="@c.Id" />
+                                        <button type="submit" class="btn btn-danger px-4">Confirmar</button>
+                                        <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Cancelar</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+<style>
+    table.table {
+        margin-top: 20px;
+        border-collapse: collapse;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        overflow: hidden;
+        background: white;
+    }
+
+    table.table th {
+        background: linear-gradient(90deg, #6a0dad 0%, #3c006e 50%, #2b003f 100%);
+        color: white;
+        text-align: center;
+        padding: 12px;
+    }
+
+    table.table td {
+        text-align: center;
+        padding: 10px;
+        border-bottom: 1px solid #ddd;
+    }
+
+    table.table tbody tr:nth-child(even) {
+        background: #f8f9fc;
+    }
+
+    table.table tbody tr:hover {
+        background: rgba(78, 115, 223, 0.1);
+    }
+
+    .btn-group {
+        display: flex;
+        justify-content: center;
+        gap: 5px;
+    }
+
+    .btn-group .btn {
+        padding: 4px 8px;
+        font-size: 14px;
+        min-width: 90px;
+    }
+</style>
+
+<script>
+    function toggleFiltros() {
+        const container = document.getElementById("filtrosContainer");
+        const icone = document.getElementById("iconeFiltro");
+
+        if (container.style.display === "none") {
+            container.style.display = "block";
+            icone.classList.remove("fa-chevron-down");
+            icone.classList.add("fa-chevron-up");
+        } else {
+            container.style.display = "none";
+            icone.classList.remove("fa-chevron-up");
+            icone.classList.add("fa-chevron-down");
+        }
+    }
+</script>

@@ -15,7 +15,11 @@ namespace MoonstoneTCC.Repositories
 
         public IEnumerable<Jogo> Jogos => _context.Jogos.Include(c => c.Categoria);
 
-        public IEnumerable<Jogo> JogosPreferidos => _context.Jogos.Where(j => j.IsJogoPreferido).Include(j => j.Categoria);
+        public IEnumerable<Jogo> JogosPreferidos => _context.Jogos
+        .Where(j => j.IsJogoPreferido)
+        .Include(j => j.Categoria)
+        .Include(j => j.Comentarios); // ← Necessário para AvaliacaoMedia
+
 
         public Jogo GetJogoById(int jogoId)
         {
@@ -35,6 +39,73 @@ namespace MoonstoneTCC.Repositories
                 .Include(j => j.Categoria)
                 .ToList();
         }
+
+        public IEnumerable<Jogo> GetJogosMaisComprados(int quantidade)
+        {
+            return _context.PedidoDetalhes
+                .GroupBy(p => p.JogoId)
+                .Select(g => new
+                {
+                    JogoId = g.Key,
+                    QuantidadeTotal = g.Sum(x => x.Quantidade)
+                })
+                .OrderByDescending(x => x.QuantidadeTotal)
+                .Take(quantidade)
+                .Join(_context.Jogos.Include(j => j.Categoria).Include(j => j.Comentarios),
+                      comp => comp.JogoId,
+                      jogo => jogo.JogoId,
+                      (comp, jogo) => jogo)
+                .ToList();
+        }
+
+        public IEnumerable<Jogo> GetJogosMaisCompradosPorCategoria(int categoriaId, int quantidade)
+        {
+            return _context.PedidoDetalhes
+                .Where(p => p.Jogo.CategoriaId == categoriaId)
+                .GroupBy(p => p.JogoId)
+                .Select(g => new
+                {
+                    JogoId = g.Key,
+                    QuantidadeTotal = g.Sum(x => x.Quantidade)
+                })
+                .OrderByDescending(x => x.QuantidadeTotal)
+                .Take(quantidade)
+                .Join(_context.Jogos.Include(j => j.Categoria),
+                      comp => comp.JogoId,
+                      jogo => jogo.JogoId,
+                      (comp, jogo) => jogo)
+                .ToList();
+        }
+
+        public int GetClassificacaoRanking(int jogoId)
+        {
+            var ranking = _context.PedidoDetalhes
+                .GroupBy(p => p.JogoId)
+                .Select(g => new
+                {
+                    JogoId = g.Key,
+                    Total = g.Sum(x => x.Quantidade)
+                })
+                .OrderByDescending(x => x.Total)
+                .ToList();
+
+            var posicao = ranking.FindIndex(r => r.JogoId == jogoId);
+            return posicao >= 0 ? posicao + 1 : 0; // +1 pois index começa em 0
+        }
+
+        public List<Jogo> GetJogosMaisBuscados(int quantidade)
+        {
+            return _context.HistoricoVisualizacoes
+                .GroupBy(h => h.JogoId)
+                .OrderByDescending(g => g.Count())
+                .Take(quantidade)
+                .Select(g => g.Key)
+                .Join(_context.Jogos, id => id, jogo => jogo.JogoId, (id, jogo) => jogo)
+                .ToList();
+        }
+
+
+
 
     }
 }

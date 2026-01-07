@@ -1,0 +1,35 @@
+﻿@model IEnumerable<MoonstoneTCC.Models.Desenvolvedora>
+
+@{
+    ViewData["Title"] = "Desenvolvedoras";
+}
+
+<h2>Desenvolvedoras</h2>
+
+<a asp-action="Create" class="btn btn-success mb-3">Nova Desenvolvedora</a>
+
+<table class="table table-dark table-striped">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Descrição Curta</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var d in Model)
+        {
+            <tr>
+                <td>@d.Nome</td>
+                <td>@d.Descricao</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@d.DesenvolvedoraId" class="btn btn-sm btn-warning">Editar</a>
+                    <form asp-action="Delete" asp-route-id="@d.DesenvolvedoraId" method="post" style="display:inline;">
+                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Deseja realmente excluir?');">Excluir</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

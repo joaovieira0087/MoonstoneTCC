@@ -1,0 +1,116 @@
+﻿@model MoonstoneTCC.Models.Pedido
+@{
+    ViewData["Title"] = "Ajuda com o Pedido";
+}
+
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-light">
+            <i class="fas fa-life-ring text-cyan me-2"></i> Ajuda com o Pedido
+        </h2>
+
+        <a asp-action="MinhasSolicitacoes" class="circle-link text-center">
+            <i class="fa-solid fa-inbox"></i>
+            <div class="circle-text">Minhas Solicitações</div>
+        </a>
+    </div>
+
+    <div class="card shadow-lg border-0 rounded-4 p-4 mb-5" style="background: linear-gradient(135deg, #2b003f, #3a0066); color: #fff;">
+        <h4 class="mb-3"><i class="fa-solid fa-receipt me-2 text-cyan"></i>Itens do Pedido</h4>
+
+        @foreach (var item in Model.PedidoItens)
+        {
+            <div class="d-flex align-items-center mb-3 border-bottom pb-3">
+                <img src="@item.Jogo.ImagemUrl" alt="@item.Jogo.Nome" class="rounded-3 me-3" style="width: 80px; height: 80px; object-fit: cover;" />
+                <div>
+                    <h5 class="mb-1 text-cyan">@item.Jogo.Nome</h5>
+                    <p class="mb-1">Preço unitário: R$ @item.Preco.ToString("F2")</p>
+                    <p class="mb-1">Quantidade: @item.Quantidade</p>
+                </div>
+            </div>
+        }
+
+        <div class="mt-3 text-end">
+            <h5 class="text-light">Total do Pedido: <span class="text-cyan">R$ @Model.PedidoTotal.ToString("F2")</span></h5>
+        </div>
+    </div>
+
+    <div class="card shadow-lg border-0 rounded-4 p-4" style="background: linear-gradient(135deg, #2b003f, #3a0066); color: #fff;">
+        <form asp-action="Criar" method="post">
+            <input type="hidden" name="id" value="@Model.PedidoId" />
+
+            <div class="mb-3">
+                <label class="form-label"><i class="fas fa-question-circle me-1 text-cyan"></i> Qual o problema?</label>
+                <select class="form-select" name="tipoProblema" required>
+                    <option value="">Selecione...</option>
+                    <option value="Pedido ainda não chegou">Pedido ainda não chegou</option>
+                    <option value="Cobrança indevida">Cobrança indevida</option>
+                    <option value="Jogo com erro ou bug">Jogo com erro ou bug</option>
+                    <option value="Problema com entrega digital">Problema com entrega digital</option>
+                    <option value="Outro">Outro</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label"><i class="fas fa-comment-dots me-1 text-cyan"></i> Descrição adicional (opcional)</label>
+                <textarea name="descricao" class="form-control" rows="4" placeholder="Explique com mais detalhes, se desejar..."></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-success px-4">
+                <i class="fas fa-paper-plane me-1"></i> Enviar solicitação
+            </button>
+        </form>
+    </div>
+</div>
+
+<style>
+    .text-cyan {
+        color: #00d0ff;
+    }
+
+    .card {
+        transition: transform 0.2s ease-in-out;
+    }
+
+    .card:hover {
+        transform: scale(1.01);
+    }
+
+    .circle-link {
+        background-color: #4c0074;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        font-size: 1.3rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        position: relative;
+        transition: all 0.3s ease;
+    }
+
+    .circle-link i {
+        color: white;
+        transition: color 0.3s ease;
+    }
+
+    .circle-link:hover {
+        background-color: #6a0dad;
+        transform: scale(1.1);
+    }
+
+    .circle-link:hover i {
+        color: black;
+    }
+
+    .circle-text {
+        position: absolute;
+        bottom: -22px;
+        font-size: 0.75rem;
+        color: #fff;
+        width: 80px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+</style>

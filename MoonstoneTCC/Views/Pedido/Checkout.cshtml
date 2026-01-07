@@ -4,140 +4,363 @@
 
 @model Pedido
 
+<script src="~/js/checkout-validacao.js" asp-append-version="true"></script>
 <div class="container mt-5">
     <h3 class="texto-branco text-center mb-4">🛒 Você está a um passo de completar o seu pedido</h3>
     <hr class="bg-light" />
-    <form asp-action="Checkout" method="post" class="form-horizontal">
-        <!-- Nome e Sobrenome -->
-        <div class="row mb-4">
-            <div class="form-group col-md-6">
-                <label asp-for="Nome" class="form-label texto-branco"><i class="fa fa-user text-primary"></i> Nome</label>
-                <input asp-for="Nome" class="form-control border border-primary" placeholder="Digite seu nome" />
-                <span asp-validation-for="Nome" class="text-danger"></span>
-            </div>
-            <div class="form-group col-md-6">
-                <label asp-for="Sobrenome" class="form-label texto-branco"><i class="fa fa-user text-primary"></i> Sobrenome</label>
-                <input asp-for="Sobrenome" class="form-control border border-primary" placeholder="Digite seu sobrenome" />
-                <span asp-validation-for="Sobrenome" class="text-danger"></span>
-            </div>
+
+    @if (ViewBag.EnderecoSalvo != null)
+    {
+        <div class="card bg-dark text-white p-3 mb-4">
+            <p><strong>@ViewBag.EnderecoSalvo.Nome</strong></p>
+            <p>@ViewBag.EnderecoSalvo.Endereco1 - @ViewBag.EnderecoSalvo.Cep</p>
+            <p>@ViewBag.EnderecoSalvo.Cidade - @ViewBag.EnderecoSalvo.Estado</p>
+            <p>@ViewBag.EnderecoSalvo.Telefone</p>
+
+            <a class="btn btn-outline-light mt-2" asp-controller="Endereco" asp-action="Index">
+                <i class="fas fa-edit"></i> Usar outro endereço
+            </a>
         </div>
 
-        <!-- Endereço -->
-        <div class="row mb-4">
-            <div class="form-group col-md-6">
-                <label asp-for="Endereco1" class="form-label texto-branco"><i class="fa fa-map-marker text-warning"></i> Endereço</label>
-                <input asp-for="Endereco1" class="form-control border border-warning" placeholder="Digite seu endereço" />
-                <span asp-validation-for="Endereco1" class="text-danger"></span>
-            </div>
-            <div class="form-group col-md-6">
-                <label asp-for="Endereco2" class="form-label texto-branco"><i class="fa fa-map-marker text-warning"></i> Complemento</label>
-                <input asp-for="Endereco2" class="form-control border border-warning" placeholder="Digite o complemento (opcional)" />
-                <span asp-validation-for="Endereco2" class="text-danger"></span>
-            </div>
-        </div>
+        <!-- Apenas botão de finalizar pedido -->
+        <form asp-action="Checkout" method="post">
+            <input type="hidden" name="Nome" value="@ViewBag.EnderecoSalvo.Nome" />
+            <input type="hidden" name="Sobrenome" value="@ViewBag.EnderecoSalvo.Sobrenome" />
+            <input type="hidden" name="Endereco1" value="@ViewBag.EnderecoSalvo.Endereco1" />
+            <input type="hidden" name="Endereco2" value="@ViewBag.EnderecoSalvo.Endereco2" />
+            <input type="hidden" name="Cep" value="@ViewBag.EnderecoSalvo.Cep" />
+            <input type="hidden" name="Cidade" value="@ViewBag.EnderecoSalvo.Cidade" />
+            <input type="hidden" name="Estado" value="@ViewBag.EnderecoSalvo.Estado" />
+            <input type="hidden" name="Telefone" value="@ViewBag.EnderecoSalvo.Telefone" />
+            <input type="hidden" name="Email" value="@ViewBag.Email" />
 
-        <!-- CEP, Cidade e Estado -->
-        <div class="row mb-4">
-            <div class="form-group col-md-4">
-                <label asp-for="Cep" class="form-label texto-branco"><i class="fa fa-envelope text-danger"></i> CEP</label>
-                <input asp-for="Cep" class="form-control border border-danger" placeholder="Digite o CEP" />
-                <span asp-validation-for="Cep" class="text-danger"></span>
-            </div>
-            <div class="form-group col-md-4">
-                <label asp-for="Cidade" class="form-label texto-branco"><i class="fa fa-building text-success"></i> Cidade</label>
-                <input asp-for="Cidade" class="form-control border border-success" value="São Paulo" placeholder="Digite a cidade" />
-                <span asp-validation-for="Cidade" class="text-danger"></span>
-            </div>
-            <div class="form-group col-md-4">
-                <label asp-for="Estado" class="form-label texto-branco"><i class="fa fa-globe text-success"></i> Estado</label>
-                <input asp-for="Estado" class="form-control border border-success" value="São Paulo" placeholder="Digite o estado" />
-                <span asp-validation-for="Estado" class="text-danger"></span>
-            </div>
-        </div>
-
-        <!-- Telefone e Email -->
-        <div class="row mb-4">
-            <div class="form-group col-md-6">
-                <label asp-for="Telefone" class="form-label texto-branco"><i class="fa fa-phone text-info"></i> Telefone</label>
-                <input asp-for="Telefone" class="form-control border border-info" placeholder="Digite o telefone" />
-                <span asp-validation-for="Telefone" class="text-danger"></span>
-            </div>
-            <div class="form-group col-md-6">
-                <label asp-for="Email" class="form-label texto-branco"><i class="fa fa-envelope-open text-info"></i> Email</label>
-                <input asp-for="Email" class="form-control border border-info" placeholder="Digite seu email" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-        </div>
-
-        <!-- Seção de Pagamento -->
-        <div class="row mb-4">
-            <div class="form-group col-md-12">
+            <!-- NOVO BLOCO: Escolha de forma de pagamento (Cartão x Carteira) -->
+            <div class="mb-4">
                 <label class="form-label texto-branco"><i class="fa fa-credit-card text-warning"></i> Forma de Pagamento</label>
-                <div class="d-flex justify-content-start mt-2">
-                    <div class="form-check me-4">
-                        <input class="form-check-input" type="radio" name="FormaPagamento" id="debito" value="Debito" checked>
-                        <label class="form-check-label texto-branco" for="debito">
-                            <i class="fa fa-university text-primary"></i> Débito
-                        </label>
+                <div class="d-flex gap-4 mt-2">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="formaPagamento" id="fpCartao1" value="Cartao" checked>
+                        <label class="form-check-label texto-branco" for="fpCartao1">Cartão de crédito</label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="FormaPagamento" id="credito" value="Credito">
-                        <label class="form-check-label texto-branco" for="credito">
-                            <i class="fa fa-credit-card text-success"></i> Crédito
-                        </label>
+                        <input class="form-check-input" type="radio" name="formaPagamento" id="fpCarteira1" value="Carteira">
+                        <label class="form-check-label texto-branco" for="fpCarteira1">Saldo da Carteira</label>
+                    </div>
+                </div>
+
+                <!-- Seção CARTÃO (mantendo seu conteúdo original de cartão salvo) -->
+                <div id="secCartao1" class="mt-3">
+                    @if (ViewBag.CartaoSalvo != null)
+                    {
+                        <div class="alert alert-success mb-4">
+                            <strong>💳 Cartão salvo:</strong> final @ViewBag.CartaoSalvo.NumeroParcial — @ViewBag.CartaoSalvo.Validade
+                            <label for="codigoVerificacaoCartao" class="form-label mt-2 texto-branco">Código de verificação:</label>
+                            <input type="password"
+                                   name="codigoVerificacaoCartao"
+                                   class="form-control border border-warning"
+                                   placeholder="Digite o código de segurança" />
+                        </div>
+                    }
+                    else
+                    {
+                        <!-- Campos opcionais para novo cartão quando não houver salvo -->
+                        <div class="card bg-dark text-white p-3">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Número do cartão</label>
+                                    <input name="numeroCartao" class="form-control" placeholder="**** **** **** ****" />
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Validade (MM/AA)</label>
+                                    <input name="validadeCartao" class="form-control" placeholder="MM/AA" />
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">CVV</label>
+                                    <input name="cvvCartao" class="form-control" placeholder="***" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Nome do titular</label>
+                                    <input name="nomeTitular" class="form-control" placeholder="Como no cartão" />
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <!-- Seção CARTEIRA -->
+                <div id="secCarteira1" class="mt-3" style="display:none;">
+                    <div class="alert alert-info mb-2">
+                        <strong>💼 Saldo disponível:</strong> R$ @((decimal)(ViewBag.CarteiraSaldo ?? 0m))
+                    </div>
+                    <small class="text-muted">
+                        O valor do pedido será debitado do seu saldo da carteira.
+                        <a class="link-info" asp-controller="Carteira" asp-action="AdicionarSaldo">Adicionar saldo</a>
+                    </small>
+                </div>
+            </div>
+            <!-- FIM NOVO BLOCO -->
+
+            <div class="row mt-4">
+                <div class="form-group col-md-3">
+                    <button class="btn btn-success btn-block px-4 py-2">
+                        <i class="fa fa-check-circle"></i> Concluir Pedido
+                    </button>
+                </div>
+                <div class="form-group col-md-3">
+                    <a class="btn btn-outline-info btn-block px-4 py-2" asp-controller="CarrinhoCompra" asp-action="Index">
+                        <i class="fa fa-arrow-left"></i> Retornar ao Carrinho
+                    </a>
+                </div>
+            </div>
+        </form>
+    }
+    else
+    {
+        <form asp-action="Checkout" method="post" class="form-horizontal">
+            <!-- Nome e Sobrenome -->
+            <div class="row mb-4">
+                <div class="form-group col-md-6">
+                    <label asp-for="Nome" class="form-label texto-branco"><i class="fa fa-user text-primary"></i> Nome</label>
+                    <input asp-for="Nome" class="form-control border border-primary" placeholder="Digite seu nome" />
+                    <span asp-validation-for="Nome" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-6">
+                    <label asp-for="Sobrenome" class="form-label texto-branco"><i class="fa fa-user text-primary"></i> Sobrenome</label>
+                    <input asp-for="Sobrenome" class="form-control border border-primary" placeholder="Digite seu sobrenome" />
+                    <span asp-validation-for="Sobrenome" class="text-danger"></span>
+                </div>
+            </div>
+
+            <!-- Endereço -->
+            <div class="row mb-4">
+                <div class="form-group col-md-6">
+                    <label asp-for="Endereco1" class="form-label texto-branco"><i class="fa fa-map-marker text-warning"></i> Endereço</label>
+                    <input asp-for="Endereco1" class="form-control border border-warning" placeholder="Digite seu endereço" />
+                    <span asp-validation-for="Endereco1" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-6">
+                    <label asp-for="Endereco2" class="form-label texto-branco"><i class="fa fa-map-marker text-warning"></i> Complemento</label>
+                    <input asp-for="Endereco2" class="form-control border border-warning" placeholder="Digite o complemento (opcional)" />
+                    <span asp-validation-for="Endereco2" class="text-danger"></span>
+                </div>
+            </div>
+
+            <!-- CEP, Cidade e Estado -->
+            <div class="row mb-4">
+                <div class="form-group col-md-4">
+                    <label asp-for="Cep" class="form-label texto-branco"><i class="fa fa-envelope text-danger"></i> CEP</label>
+                    <input asp-for="Cep" class="form-control border border-danger" placeholder="Digite o CEP" />
+                    <span asp-validation-for="Cep" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-4">
+                    <label asp-for="Cidade" class="form-label texto-branco"><i class="fa fa-building text-success"></i> Cidade</label>
+                    <input asp-for="Cidade" class="form-control border border-success" value="São Paulo" placeholder="Digite a cidade" />
+                    <span asp-validation-for="Cidade" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-4">
+                    <label asp-for="Estado" class="form-label texto-branco"><i class="fa fa-globe text-success"></i> Estado</label>
+                    <input asp-for="Estado" class="form-control border border-success" value="São Paulo" placeholder="Digite o estado" />
+                    <span asp-validation-for="Estado" class="text-danger"></span>
+                </div>
+            </div>
+
+            <!-- Telefone e Email -->
+            <div class="row mb-4">
+                <div class="form-group col-md-6">
+                    <label asp-for="Telefone" class="form-label texto-branco"><i class="fa fa-phone text-info"></i> Telefone</label>
+                    <input asp-for="Telefone" class="form-control border border-info" placeholder="Digite o telefone" />
+                    <span asp-validation-for="Telefone" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-6">
+                    <p class="texto-branco">
+                        <i class="fa fa-envelope-open text-info"></i> @ViewBag.Email
+                    </p>
+                </div>
+            </div>
+
+            <!-- Seção de Pagamento (ORIGINAL - mantida) -->
+            <div class="row mb-4">
+                <div class="form-group col-md-12">
+                    <label class="form-label texto-branco"><i class="fa fa-credit-card text-warning"></i> Forma de Pagamento</label>
+                    <div class="d-flex justify-content-start mt-2">
+                        <div class="form-check me-4">
+                            <input class="form-check-input" type="radio" name="FormaPagamento" id="debito" value="Debito" checked>
+                            <label class="form-check-label texto-branco" for="debito">
+                                <i class="fa fa-university text-primary"></i> Débito
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="FormaPagamento" id="credito" value="Credito">
+                            <label class="form-check-label texto-branco" for="credito">
+                                <i class="fa fa-credit-card text-success"></i> Crédito
+                            </label>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="row">
-            <div class="form-group col-md-6">
-                <label for="numeroCartao" class="form-label texto-branco"><i class="fa fa-credit-card"></i> Número do Cartão</label>
-                <input type="text"
-                       id="numeroCartao"
-                       class="form-control border border-warning"
-                       placeholder="Digite o número do cartão"
-                       maxlength="19">
-            </div>
-            <div class="form-group col-md-3">
-                <label for="validadeCartao" class="form-label texto-branco"><i class="fa fa-calendar"></i> Validade</label>
-                <input type="text"
-                       id="validadeCartao"
-                       class="form-control border border-warning"
-                       placeholder="MM/AA"
-                       maxlength="5"
-                       pattern="^(0[1-9]|1[0-2])\/\d{2}$"
-                       title="Insira uma validade no formato MM/AA, onde MM é um mês válido e AA são os dois últimos dígitos do ano.">
-            </div>
-            <div class="form-group col-md-3">
-                <label for="cvvCartao" class="form-label texto-branco"><i class="fa fa-lock"></i> CVV</label>
-                <input type="text" id="cvvCartao" class="form-control border border-warning" placeholder="3 dígitos" maxlength="3">
-            </div>
-        </div>
+            <!-- NOVO BLOCO: Forma de pagamento (Cartão x Carteira) -->
+            <div class="row mb-4">
+                <div class="form-group col-md-12">
+                    <label class="form-label texto-branco"><i class="fa fa-credit-card text-warning"></i> Escolha como deseja pagar</label>
+                    <div class="d-flex justify-content-start mt-2 gap-4">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="formaPagamento" id="fpCartao2" value="Cartao" checked>
+                            <label class="form-check-label texto-branco" for="fpCartao2">Cartão de crédito</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="formaPagamento" id="fpCarteira2" value="Carteira">
+                            <label class="form-check-label texto-branco" for="fpCarteira2">Saldo da Carteira</label>
+                        </div>
+                    </div>
 
-        <div class="row mt-3">
-            <div class="form-group col-md-12">
-                <label for="nomeTitular" class="form-label texto-branco"><i class="fa fa-user"></i> Nome do Titular</label>
-                <input type="text" id="nomeTitular" class="form-control border border-warning" placeholder="Digite o nome do titular do cartão">
-            </div>
-        </div>
+                    <!-- CARTÃO -->
+                    <div id="secCartao2" class="mt-3">
+                        @* Se tiver cartão salvo, o bloco abaixo no final da view (else/if) também exibe CVV *@
+                    </div>
 
+                    <!-- CARTEIRA -->
+                    <div id="secCarteira2" class="mt-3" style="display:none;">
+                        <div class="alert alert-info mb-2">
+                            <strong>💼 Saldo disponível:</strong> R$ @((decimal)(ViewBag.CarteiraSaldo ?? 0m))
+                        </div>
+                        <small class="text-muted">
+                            O valor do pedido será debitado do seu saldo da carteira.
+                            <a class="link-info" asp-controller="Carteira" asp-action="AdicionarSaldo">Adicionar saldo</a>
+                        </small>
+                    </div>
+                </div>
+            </div>
+            <!-- FIM NOVO BLOCO -->
+            <!-- Botões -->
+            <div class="row mt-4">
+                <div class="form-group col-md-3">
+                    <button class="btn btn-success btn-block px-4 py-2">
+                        <i class="fa fa-check-circle"></i> Concluir Pedido
+                    </button>
+                </div>
+                <div class="form-group col-md-3">
+                    <a class="btn btn-outline-info btn-block px-4 py-2" asp-controller="CarrinhoCompra" asp-action="Index">
+                        <i class="fa fa-arrow-left"></i> Retornar ao Carrinho
+                    </a>
+                </div>
+            </div>
 
-        <!-- Botões -->
-        <div class="row mt-4">
-            <div class="form-group col-md-3">
-                <button class="btn btn-success btn-block px-4 py-2">
-                    <i class="fa fa-check-circle"></i> Concluir Pedido
-                </button>
-            </div>
-            <div class="form-group col-md-3">
-                <a class="btn btn-outline-info btn-block px-4 py-2" asp-controller="CarrinhoCompra" asp-action="Index">
-                    <i class="fa fa-arrow-left"></i> Retornar ao Carrinho
-                </a>
-            </div>
-        </div>
-    </form>
+            @if (ViewBag.CartaoSalvo == null)
+            {
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label for="numeroCartao" class="form-label texto-branco">
+                            <i class="fa fa-credit-card"></i> Número do Cartão
+                        </label>
+                        <input type="text"
+                               id="numeroCartao"
+                               name="numeroCartao"
+                               class="form-control border border-warning"
+                               placeholder="Digite o número do cartão"
+                               maxlength="19"
+                               required
+                               pattern="(\d{4} ?){4}"
+                               title="Digite os 16 números do cartão, separados ou não por espaço">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="validadeCartao" class="form-label texto-branco">
+                            <i class="fa fa-calendar"></i> Validade
+                        </label>
+                        <input type="text"
+                               id="validadeCartao"
+                               name="validadeCartao"
+                               class="form-control border border-warning"
+                               placeholder="MM/AA"
+                               maxlength="5"
+                               required
+                               pattern="^(0[1-9]|1[0-2])\/\d{2}$"
+                               title="Insira uma validade no formato MM/AA. Exemplo: 09/26">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="cvvCartao" class="form-label texto-branco">
+                            <i class="fa fa-lock"></i> CVV
+                        </label>
+                        <input type="text"
+                               id="cvvCartao"
+                               name="cvvCartao"
+                               class="form-control border border-warning"
+                               placeholder="3 dígitos"
+                               maxlength="3"
+                               required
+                               pattern="^\d{3}$"
+                               title="Insira os 3 dígitos do CVV do seu cartão">
+                    </div>
+                </div>
+
+                <div class="row mt-3">
+                    <div class="form-group col-md-12">
+                        <label for="nomeTitular" class="form-label texto-branco">
+                            <i class="fa fa-user"></i> Nome do Titular
+                        </label>
+                        <input type="text"
+                               id="nomeTitular"
+                               name="nomeTitular"
+                               class="form-control border border-warning"
+                               placeholder="Digite o nome do titular do cartão"
+                               required
+                               pattern="^[A-Za-zÀ-ÿ\s]{3,}$"
+                               title="Insira o nome completo do titular do cartão (mínimo 3 letras)">
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-success mb-4">
+                    <strong>💳 Cartão salvo:</strong> final @ViewBag.CartaoSalvo.NumeroParcial — @ViewBag.CartaoSalvo.Validade
+                    <label for="codigoVerificacaoCartao" class="form-label mt-2 texto-branco">Código de verificação:</label>
+                    <input type="password"
+                           name="codigoVerificacaoCartao"
+                           class="form-control border border-warning"
+                           placeholder="Digite o código de segurança" />
+                </div>
+            }
+        </form>
+    }
 </div>
+
+<!-- JS para alternar seções de pagamento (Cartão x Carteira) sem remover nada existente -->
+<script>
+    (function () {
+        function wire(radiosName, secCartaoId, secCarteiraId) {
+            const radios = document.querySelectorAll(`input[name="${radiosName}"]`);
+            const secCartao = document.getElementById(secCartaoId);
+            const secCarteira = document.getElementById(secCarteiraId);
+
+            function update() {
+                const val = document.querySelector(`input[name="${radiosName}"]:checked`)?.value;
+                const isCarteira = val === "Carteira";
+                if (secCartao) secCartao.style.display = isCarteira ? "none" : "";
+                if (secCarteira) secCarteira.style.display = isCarteira ? "" : "none";
+
+                // alterna obrigatoriedade dos campos de cartão visíveis neste bloco
+                const cardInputs = secCartao ? secCartao.querySelectorAll('input[name="numeroCartao"], input[name="validadeCartao"], input[name="cvvCartao"], input[name="nomeTitular"], input[name="codigoVerificacaoCartao"]') : [];
+                cardInputs.forEach(inp => {
+                    if (!inp) return;
+                    if (isCarteira) {
+                        inp.removeAttribute('required');
+                    } else {
+                        inp.setAttribute('required', 'required');
+                    }
+                });
+            }
+
+            radios.forEach(r => r.addEventListener('change', update));
+            update();
+        }
+
+        // Branch com endereço salvo
+        wire("formaPagamento", "secCartao1", "secCarteira1");
+        // Branch sem endereço salvo (mantendo seção original e adicionando a nova)
+        wire("formaPagamento", "secCartao2", "secCarteira2");
+    })();
+</script>
+
 
 <style>
     .texto-branco {
@@ -219,59 +442,6 @@
 
 
 </style>
-<script>
-    document.querySelector('form').addEventListener('submit', function (e) {
-        const numeroCartao = document.getElementById('numeroCartao').value;
-        const validadeCartao = document.getElementById('validadeCartao').value;
-        const cvvCartao = document.getElementById('cvvCartao').value;
-        const nomeTitular = document.getElementById('nomeTitular').value;
-
-        if (!numeroCartao || numeroCartao.length !== 16) {
-            alert('Por favor, insira um número de cartão válido com 16 dígitos.');
-            e.preventDefault();
-            return;
-        }
-
-        if (!validadeCartao || !/^\d{2}\/\d{2}$/.test(validadeCartao)) {
-            alert('Por favor, insira uma validade válida no formato MM/AA.');
-            e.preventDefault();
-            return;
-        }
-
-        if (!cvvCartao || cvvCartao.length !== 3) {
-            alert('Por favor, insira um CVV válido com 3 dígitos.');
-            e.preventDefault();
-            return;
-        }
-
-        if (!nomeTitular) {
-            alert('Por favor, insira o nome do titular do cartão.');
-            e.preventDefault();
-            return;
-        }
-    });
 
 
 
-
-
-
-
-    document.getElementById('numeroCartao').addEventListener('input', function (e) {
-        let input = e.target.value;
-
-        // Remove todos os caracteres que não sejam números
-        input = input.replace(/\D/g, '');
-
-        // Adiciona espaços a cada 4 dígitos
-        input = input.replace(/(\d{4})(?=\d)/g, '$1 ');
-
-        // Limita o comprimento a 19 caracteres (16 dígitos + 3 espaços)
-        input = input.substring(0, 19);
-
-        // Atualiza o valor do campo com o formato correto
-        e.target.value = input;
-    });
-
-
-</script>

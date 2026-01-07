@@ -1,0 +1,38 @@
+﻿@model MoonstoneTCC.ViewModels.SecaoGridViewModel
+
+<div class="section-wrap @(Model.Destaque ? "section-destaque" : "")">
+    <div class="d-flex justify-content-between align-items-end mb-3">
+        <div>
+            <h2 class="section-title mb-0">@Model.Titulo</h2>
+            @if (!string.IsNullOrWhiteSpace(Model.Subtitulo))
+            {
+                <div class="section-sub">@Model.Subtitulo</div>
+            }
+        </div>
+        @* espaço para um botão "Ver tudo" futuro *@
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4">
+        @foreach (var jogo in Model.Jogos)
+        {
+            <div class="col">
+                @{
+                    // Injeta ranking via ViewData para o card (reutiliza seu _JogosResumo)
+                    var vd = new ViewDataDictionary(ViewData);
+                    if (Model.Ranking != null && Model.Ranking.TryGetValue(jogo.JogoId, out var pos))
+                    {
+                        // Cria HomeModel “fake” só com Ranking (para seu card atual funcionar)
+                        vd["HomeModel"] = new MoonstoneTCC.ViewModels.HomeViewModel
+                    {
+                        RankingMaisVendidos = Model.Ranking.Select(kv => (kv.Key, kv.Value))
+                    .Select(x => (JogoId: x.Key, Posicao: x.Value))
+                    .ToList()
+                    };
+                    }
+                }
+
+                <partial name="_JogosResumo" model="jogo" view-data="vd" />
+            </div>
+        }
+    </div>
+</div>

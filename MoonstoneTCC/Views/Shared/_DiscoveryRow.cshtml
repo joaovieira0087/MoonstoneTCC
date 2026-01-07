@@ -1,0 +1,633 @@
+﻿@model MoonstoneTCC.ViewModels.DiscoverRowVM
+@using System.Text.Json
+@using System.Globalization
+
+<div class="discover-row one-line"
+     id="@Model.RowId"
+     data-size="5"
+     data-panels='@Html.Raw(JsonSerializer.Serialize(Model.Colunas))'
+     role="region"
+     aria-roledescription="carrossel"
+     aria-label="Descobertas para você">
+
+    <div class="discover-row-header">
+        <div class="discover-row-title">DESCOBERTAS PARA VOCÊ</div>
+    </div>
+
+    <!-- Grid preenchido via JS -->
+    <div class="discover-grid" role="list" aria-live="polite" aria-atomic="false"></div>
+
+    <!-- setas laterais -->
+    <button class="row-arrow prev" aria-label="Voltar" aria-hidden="true" type="button"><span>‹</span></button>
+    <button class="row-arrow next" aria-label="Avançar" type="button"><span>›</span></button>
+
+    <!-- Fallback sem JS: renderiza os 5 primeiros painéis com o 1º item de cada -->
+    <noscript>
+        <div class="discover-grid" role="list">
+            @{
+                var br = new CultureInfo("pt-BR");
+            }
+            @foreach (var p in Model.Colunas.Take(5))
+            {
+                var it = p.Itens?.FirstOrDefault();
+                var link = it?.Link ?? (it?.JogoId != null ? $"/Jogo/Details?jogoId={it.JogoId}" : "javascript:void(0)");
+                var hasImg = !string.IsNullOrWhiteSpace(it?.ImagemUrl);
+                var nome = string.IsNullOrWhiteSpace(it?.Nome) ? "Sem itens por aqui" : it.Nome;
+                var isUtility = it?.IsUtility == true;
+
+                decimal? now = null;
+                decimal? old = null;
+                if (!isUtility && it != null)
+                {
+                    now = it.PrecoPromocional ?? it.Preco;
+                    old = it.PrecoPromocional != null ? it.Preco : null;
+                }
+
+                <div class="d-panel" role="listitem">
+                    <div class="d-panel-title">@p.Titulo</div>
+                    <a class="d-card @(isUtility ? "is-utility" : null)" href="@link">
+                        <div class="thumb-wrap @(hasImg ? "" : "no-img")">
+                            @if (hasImg)
+                            {
+                                <img class="thumb" src="@it.ImagemUrl" alt="@nome" loading="lazy" />
+                            }
+                            else
+                            {
+                                <i class="fa-solid fa-image thumb-icon" aria-hidden="true"></i>
+                                <span class="visually-hidden">Sem imagem</span>
+                            }
+                        </div>
+                        <div class="d-name line-2">@nome</div>
+
+                        @if (!isUtility && now.HasValue)
+                        {
+                            <div class="d-price">
+                                <span class="now">@now.Value.ToString("C", br)</span>
+                                @if (old.HasValue && old.Value > now.Value)
+                                {
+                                    <s class="old">@old.Value.ToString("C", br)</s>
+                                }
+                            </div>
+                            <div class="d-extra">Frete grátis ⚡ FULL</div>
+                        }
+                    </a>
+                </div>
+            }
+        </div>
+    </noscript>
+
+    <!-- Região para leitores de tela anunciar mudanças -->
+    <span class="visually-hidden" id="@Model.RowId-status" aria-live="polite"></span>
+</div>
+
+
+<style>
+
+/* ===================== THEME (Moonstone – Deep Purple) ===================== */
+:root{
+  --mx-bg: #160337;
+  --mx-card-a:#1a1240;
+  --mx-card-b:#0f0a22;
+  --mx-ink-1:#F6F4FF;
+  --mx-ink-2:#D1C8F2;
+  --mx-ink-3:#9E96BF;
+  --mx-brand:#7C3AED;     /* purple */
+  --mx-cyan:#22D3EE;      /* cyan */
+  --mx-green:#10B981;     /* success */
+  --mx-border-1: rgba(124,58,237,.45);
+  --mx-border-2: rgba(124,58,237,.25);
+  --mx-shadow: 0 20px 60px rgba(0,0,0,.45);
+  --mx-glow: 0 0 0 1px rgba(255,255,255,.06), 0 12px 30px rgba(124,58,237,.18);
+}
+
+/* ===================== ROW WRAPPER ===================== */
+.discover-row.one-line{
+  position:relative;
+  margin:28px 0 36px;
+  isolation:isolate;
+}
+.discover-row-header{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  margin-bottom:14px;
+}
+.discover-row-title{
+  color:var(--mx-ink-1);
+  font-weight:900;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  text-shadow:0 2px 14px rgba(124,58,237,.35);
+}
+
+/* ===================== GRID (ALWAYS 5) ===================== */
+.discover-grid{
+  position:relative;
+  display:grid;
+  grid-template-columns:repeat(5,minmax(0,1fr));
+  gap:18px;
+  will-change:transform,opacity;
+}
+
+/* ===================== PANEL / CARD ===================== */
+.d-panel{
+  position:relative;
+  border-radius:16px;
+  padding:14px;
+  color:var(--mx-ink-1);
+  background:
+    linear-gradient(180deg,var(--mx-card-a),var(--mx-card-b));
+  border:1px solid var(--mx-border-2);
+  box-shadow:var(--mx-shadow);
+  overflow:hidden;
+  transition:transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+}
+.d-panel:before{
+  /* subtle gradient border-glow */
+  content:"";
+  position:absolute; inset:0;
+  border-radius:inherit;
+  pointer-events:none;
+  background:linear-gradient(135deg,rgba(124,58,237,.5),rgba(34,211,238,.35));
+  mix-blend-mode:overlay;
+  opacity:.12;
+}
+.d-panel:hover{
+  transform:translateY(-4px);
+  box-shadow:var(--mx-glow);
+  border-color:var(--mx-border-1);
+}
+
+/* Header inside panel */
+.d-panel-title{
+  font-weight:800;
+  letter-spacing:.02em;
+  margin:0 0 10px 0;
+  color:var(--mx-ink-1);
+  text-shadow:0 1px 6px rgba(0,0,0,.25);
+}
+
+/* Clickable area */
+.d-card{
+  display:block;
+  color:inherit;
+  text-decoration:none;
+  outline:0;
+  border-radius:12px;
+}
+.d-card:focus-visible{
+  outline:2px solid var(--mx-cyan);
+  outline-offset:6px;
+  box-shadow:0 0 0 6px rgba(34,211,238,.15);
+  border-radius:14px;
+}
+
+/* Thumbnail area + skeleton */
+.thumb-wrap{
+  position:relative;
+  width:100%;
+  aspect-ratio:16/9;
+  border-radius:12px;
+  overflow:hidden;
+  display:grid;
+  place-items:center;
+  background:
+    radial-gradient(60% 80% at 50% 25%, rgba(124,58,237,.20), rgba(34,211,238,.10) 55%, rgba(0,0,0,.35) 100%);
+  border:1px solid var(--mx-border-2);
+  transition:border-color .25s ease, box-shadow .25s ease, transform .25s ease;
+}
+.thumb{
+  width:100%; height:100%; object-fit:cover;
+  transform:scale(1.001);
+  transition:transform .45s cubic-bezier(.22,.61,.36,1);
+  will-change:transform;
+}
+.d-panel:hover .thumb{ transform:scale(1.04); }
+.d-panel:hover .thumb-wrap{ border-color:var(--mx-border-1); box-shadow:inset 0 0 0 1px rgba(255,255,255,.04); }
+
+/* shimmering skeleton while image loads */
+.thumb-skeleton{
+  position:absolute; inset:0;
+  background:
+    linear-gradient(100deg, rgba(255,255,255,.06) 20%, rgba(255,255,255,.18) 40%, rgba(255,255,255,.06) 60%) ;
+  background-size:200% 100%;
+  animation:mx-shimmer 1.2s linear infinite;
+  filter:saturate(.7);
+}
+
+/* Name + price */
+.d-name{
+  margin-top:10px;
+  min-height:2.6em;
+  font-weight:800;
+  color:var(--mx-ink-1);
+}
+.line-2{
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+}
+
+.d-price{
+  margin-top:8px;
+  display:flex;
+  align-items:baseline;
+  gap:10px;
+}
+.d-price .now{
+  font-weight:900;
+  letter-spacing:.01em;
+  color:#fff;
+}
+.d-price .old{
+  color:var(--mx-ink-3);
+  text-decoration:line-through;
+}
+
+/* Badge (shipping) */
+.d-extra{
+  margin-top:8px;
+  color:var(--mx-green);
+  font-weight:900;
+  font-size:.92rem;
+}
+
+/* Utility cards (sem preço) – só reforça visual */
+.d-panel .is-utility .d-price,
+.d-panel .is-utility .d-extra{ display:none; }
+
+/* ===================== ROW ARROWS (glass, inner) ===================== */
+.row-arrow{
+  position:absolute; top:50%;
+  transform:translateY(-50%);
+  width:50px; height:50px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.38);
+  background:linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.06));
+  backdrop-filter:blur(8px);
+  box-shadow:0 12px 30px rgba(0,0,0,.45), inset 0 0 0 1px rgba(255,255,255,.15);
+  display:grid; place-items:center;
+  cursor:pointer; z-index:3;
+  transition:transform .18s ease, box-shadow .2s ease, opacity .2s ease, background .2s ease;
+  user-select:none;
+}
+.row-arrow.prev{ left:8px; }
+.row-arrow.next{ right:8px; }
+.row-arrow span{
+  font-size:26px; line-height:1;
+  color:var(--mx-brand);
+  filter:drop-shadow(0 2px 6px rgba(0,0,0,.45));
+}
+.row-arrow:hover{
+  transform:translateY(-50%) scale(1.06);
+  background:linear-gradient(180deg, rgba(124,58,237,.24), rgba(255,255,255,.08));
+  box-shadow:0 18px 40px rgba(124,58,237,.35);
+}
+.row-arrow.prev[aria-hidden="true"]{ opacity:0; pointer-events:none; }
+
+/* mostrar setas apenas quando o usuário interage (desktop) */
+    /* Estado sem imagem */
+    .thumb-wrap.no-img {
+        display: grid;
+        place-items: center;
+    }
+
+    .thumb-icon {
+        font-size: clamp(40px, 6vw, 78px);
+        color: var(--mx-ink-2);
+        opacity: .95;
+        filter: drop-shadow(0 6px 22px rgba(0,0,0,.55));
+    }
+
+
+
+</style>
+
+
+<script>
+       (function () {
+      // Root (this partial is rendered with a unique RowId)
+      const row = document.getElementById('@Model.RowId');
+      if (!row) return;
+
+      // Elements
+      const grid  = row.querySelector('.discover-grid');
+      const prevB = row.querySelector('.row-arrow.prev');
+      const nextB = row.querySelector('.row-arrow.next');
+
+      // Config
+      const SIZE   = parseInt(row.getAttribute('data-size') || '5', 10); // 5 painéis por fileira
+      let   PANELS = [];
+      try { PANELS = JSON.parse(row.dataset.panels || '[]') || []; } catch { PANELS = []; }
+
+      // Helpers
+      const BRL = (n) => (n ?? 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+      const manyPanels = () => PANELS.length > SIZE;
+
+      // State
+      let head       = 0;       // índice do 1º painel visível
+      let movedOnce  = false;   // controla visibilidade da seta esquerda
+      let animating  = false;   // trava cliques durante animação
+      let autoplayId = null;    // setInterval
+      let hoverCount = 0;       // pausar ao passar o mouse (suporta hover aninhado)
+      let focusCount = 0;       // pausar ao focar (teclado)
+
+
+      // --- Card factory ---------------------------------------------------------
+        function createCard(panel) {
+      const p = document.createElement('div');
+      p.className = 'd-panel';
+      p.setAttribute('role', 'group');
+      p.setAttribute('aria-label', panel?.Titulo || 'Painel');
+
+      const t = document.createElement('div');
+      t.className = 'd-panel-title';
+      t.textContent = panel?.Titulo || '';
+      p.appendChild(t);
+
+      const a = document.createElement('a');
+      a.className = 'd-card';
+
+      const wrap = document.createElement('div');
+      wrap.className = 'thumb-wrap';
+
+      // skeleton
+      const sk = document.createElement('div');
+      sk.className = 'thumb-skeleton';
+      wrap.appendChild(sk);
+
+      // imagem (pode ser removida se cair no fallback)
+      const img = document.createElement('img');
+      img.className = 'thumb';
+      img.decoding = 'async';
+      img.loading = 'lazy';
+      wrap.appendChild(img);
+
+      a.appendChild(wrap);
+
+      const name = document.createElement('div');
+      name.className = 'd-name line-2';
+      a.appendChild(name);
+
+      const price = document.createElement('div');
+      price.className = 'd-price';
+      const now = document.createElement('span'); now.className = 'now';
+      const old = document.createElement('s');    old.className = 'old';
+      price.appendChild(now); price.appendChild(old);
+      a.appendChild(price);
+
+      const extra = document.createElement('div');
+      extra.className = 'd-extra';
+      extra.textContent = 'Frete grátis ⚡ FULL';
+      a.appendChild(extra);
+
+      p.appendChild(a);
+
+      // Helper para exibir ícone quando não há imagem
+      function useIcon(iconClass = 'fa-solid fa-image') {
+        wrap.classList.add('no-img');
+        try { sk.remove(); } catch { }
+        try { img.remove(); } catch { }
+        const i = document.createElement('i');
+        i.className = `${iconClass} thumb-icon`;
+        i.setAttribute('aria-hidden', 'true');
+        wrap.appendChild(i);
+      }
+
+      // Conteúdo (sempre o PRIMEIRO item do painel)
+      const items = panel?.Itens || [];
+      if (!items.length) {
+        a.href = 'javascript:void(0)';
+        name.textContent = 'Sem itens por aqui';
+        // ícone para “sem itens”
+        useIcon('fa-solid fa-box-open');
+        now.textContent = '';
+        old.textContent = '';
+        extra.style.display = 'none';
+        return p;
+      }
+
+      const it = items[0];
+      a.href = it?.Link || `/Jogo/Details?jogoId=${it?.JogoId ?? 0}`;
+      name.textContent = it?.Nome || '';
+      img.alt = it?.Nome || '';
+
+      const hasImg = !!(it?.ImagemUrl && it.ImagemUrl.trim().length > 0);
+      if (hasImg) {
+        // remove skeleton quando carregar
+        img.addEventListener('load', () => { try { sk.remove(); } catch {} }, { once: true });
+        // se quebrar a imagem, cai para ícone
+        img.addEventListener('error', () => { useIcon('fa-solid fa-image'); }, { once: true });
+        img.src = it.ImagemUrl;
+      } else {
+        // sem URL de imagem -> ícone
+        useIcon(it?.IsUtility ? 'fa-solid fa-wand-magic-sparkles' : 'fa-solid fa-gamepad');
+      }
+
+      if (it?.IsUtility) {
+        // cards utilitários (sem preço)
+        now.textContent = it?.UtilitySubtitle || '';
+        old.textContent = '';
+        old.style.display = 'none';
+        extra.style.display = 'none';
+      } else {
+        const nowVal = (it?.PrecoPromocional ?? it?.Preco) ?? 0;
+        const oldVal = it?.PrecoPromocional != null ? it?.Preco : null;
+        now.textContent = BRL(nowVal);
+        if (oldVal != null && oldVal > nowVal) {
+          old.textContent = BRL(oldVal);
+          old.style.display = '';
+        } else {
+          old.textContent = '';
+          old.style.display = 'none';
+        }
+        extra.style.display = '';
+      }
+
+      return p;
+    }
+
+
+      // --- Render window (SIZE painéis) ----------------------------------------
+      function render(force = false) {
+        if (!PANELS.length) {
+          grid.innerHTML = '';
+          return;
+        }
+
+        // Preenche o grid com SIZE painéis a partir de head, usando fragment para performance
+        const frag = document.createDocumentFragment();
+        const show = Math.min(SIZE, PANELS.length);
+        for (let i = 0; i < show; i++) {
+          const pane = PANELS[(head + i) % PANELS.length];
+          frag.appendChild(createCard(pane));
+        }
+        grid.innerHTML = '';
+        grid.appendChild(frag);
+
+        // Acessibilidade
+        grid.setAttribute('aria-live', 'polite');
+        grid.setAttribute('aria-busy', 'false');
+
+        // Setas
+        const many = manyPanels();
+        prevB.style.display = many ? '' : 'none';
+        nextB.style.display = many ? '' : 'none';
+        prevB.setAttribute('aria-hidden', movedOnce ? 'false' : 'true');
+      }
+
+      // --- Slide animation (fade + translate) ----------------------------------
+      function animateStep(delta, doAfter) {
+        if (animating) return;
+        animating = true;
+
+        // anima saída
+        grid.style.transition = 'transform .35s cubic-bezier(.22,.61,.36,1), opacity .28s ease';
+        grid.style.transform  = `translateX(${delta > 0 ? '-24px' : '24px'})`;
+        grid.style.opacity    = '0';
+
+        const onEnd = () => {
+          grid.removeEventListener('transitionend', onEnd);
+
+          // aplica mudança (render)
+          doAfter();
+
+          // prepara entrada
+          grid.style.transition = 'none';
+          grid.style.transform  = `translateX(${delta > 0 ? '24px' : '-24px'})`;
+          grid.style.opacity    = '0';
+
+          // próximo frame → anima para posição final
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              grid.style.transition = 'transform .35s cubic-bezier(.22,.61,.36,1), opacity .28s ease';
+              grid.style.transform  = 'translateX(0)';
+              grid.style.opacity    = '1';
+
+              const onEndIn = () => {
+                grid.removeEventListener('transitionend', onEndIn);
+                grid.style.transition = '';
+                animating = false;
+              };
+              grid.addEventListener('transitionend', onEndIn, { once: true });
+            });
+          });
+        };
+
+        grid.addEventListener('transitionend', onEnd, { once: true });
+      }
+
+      function step(delta) {
+        if (!PANELS.length || !manyPanels()) return;
+        grid.setAttribute('aria-busy', 'true');
+
+        animateStep(delta, () => {
+          head = (head + (delta > 0 ? 1 : -1) + PANELS.length) % PANELS.length;
+          if (delta > 0) movedOnce = true;
+          render();
+        });
+      }
+
+      // --- Autoplay (pausa se fora da viewport / hover / foco) ------------------
+      const AUTOPLAY_MS = 8000;
+
+      function startAutoplay() {
+        if (autoplayId || !manyPanels()) return;
+        autoplayId = setInterval(() => {
+          if (!isPaused()) step(+1);
+        }, AUTOPLAY_MS);
+      }
+      function stopAutoplay() {
+        clearInterval(autoplayId);
+        autoplayId = null;
+      }
+
+      function isPaused() {
+        return hoverCount > 0 || focusCount > 0 || !isOnScreen;
+      }
+
+      // Visibilidade na tela
+      let isOnScreen = true;
+      const io = new IntersectionObserver((entries) => {
+        isOnScreen = entries.some(e => e.isIntersecting);
+        if (isOnScreen) startAutoplay(); else stopAutoplay();
+      }, { threshold: 0.15 });
+      io.observe(row);
+
+      // Hover / Focus (pausa)
+      row.addEventListener('mouseenter', () => { hoverCount++; });
+      row.addEventListener('mouseleave', () => { hoverCount = Math.max(0, hoverCount - 1); });
+      row.addEventListener('focusin',  () => { focusCount++; });
+      row.addEventListener('focusout', () => { focusCount = Math.max(0, focusCount - 1); });
+
+      // --- Mouse e teclado ------------------------------------------------------
+      prevB.addEventListener('click', () => step(-1));
+      nextB.addEventListener('click', () => step(+1));
+
+      // Acessibilidade teclado: esquerda/direita em foco no container
+      row.tabIndex = 0;
+      row.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight') { e.preventDefault(); step(+1); }
+        if (e.key === 'ArrowLeft')  { e.preventDefault(); step(-1); }
+      });
+
+      // --- Swipe (touch / pointer) ---------------------------------------------
+      let touchX  = 0;
+      let touchDX = 0;
+      let touching = false;
+
+      function onDown(e) {
+        if (animating) return;
+        touching = true;
+        touchX = (e.touches ? e.touches[0].clientX : e.clientX);
+        touchDX = 0;
+      }
+      function onMove(e) {
+        if (!touching) return;
+        const x = (e.touches ? e.touches[0].clientX : e.clientX);
+        touchDX = x - touchX;
+        // feedback visual leve
+        grid.style.transition = 'none';
+        grid.style.transform = `translateX(${touchDX * 0.2}px)`;
+      }
+      function onUp() {
+        if (!touching) return;
+        touching = false;
+
+        grid.style.transition = '';
+        grid.style.transform = '';
+
+        const THRESH = 40;
+        if (Math.abs(touchDX) > THRESH) {
+          step(touchDX < 0 ? +1 : -1);
+        }
+      }
+
+      row.addEventListener('pointerdown', onDown);
+      row.addEventListener('pointermove', onMove);
+      row.addEventListener('pointerup', onUp);
+      row.addEventListener('pointercancel', onUp);
+      row.addEventListener('touchstart', onDown, { passive: true });
+      row.addEventListener('touchmove',  onMove, { passive: true });
+      row.addEventListener('touchend',   onUp);
+
+      // --- Reagir a mudanças de dados no HTML (se necessário) -------------------
+      // Caso você atualize data-panels via AJAX, basta disparar:
+      // row.dispatchEvent(new CustomEvent('discover:update', { detail: { panels: [...] }}))
+      row.addEventListener('discover:update', (ev) => {
+        const newPanels = ev?.detail?.panels;
+        if (Array.isArray(newPanels)) {
+          PANELS = newPanels;
+          head = 0; movedOnce = false;
+          render(true);
+          stopAutoplay(); startAutoplay();
+        }
+      });
+
+      // --- Init -----------------------------------------------------------------
+      render(true);
+      startAutoplay();
+    })();
+
+</script>

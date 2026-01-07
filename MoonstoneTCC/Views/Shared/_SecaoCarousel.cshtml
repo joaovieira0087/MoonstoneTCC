@@ -1,0 +1,54 @@
+﻿@model MoonstoneTCC.ViewModels.SecaoCarouselViewModel
+@{
+    var jogos = Model.Jogos?.ToList() ?? new List<MoonstoneTCC.Models.Jogo>();
+    var total = jogos.Count;
+    var pageSize = Model.ItensPorPagina > 0 ? Model.ItensPorPagina : 4;
+}
+@if (total > 0)
+{
+    <div id="@Model.SectionId"
+         class="sec-carousel @(Model.Destaque ? "sec-carousel--highlight" : "")"
+         data-page="0" data-size="@pageSize">
+
+        <div class="sec-header">
+            <div>
+                <h2 class="section-title">@Model.Titulo</h2>
+                @if (!string.IsNullOrWhiteSpace(Model.Subtitulo))
+                {
+                    <div class="section-sub">@Model.Subtitulo</div>
+                }
+            </div>
+
+            <div class="nav-wrap">
+                <button class="nav-btn nav-prev" type="button" aria-label="Anterior">
+                    <span>&lsaquo;</span>
+                </button>
+                <button class="nav-btn nav-next" type="button" aria-label="Próximo">
+                    <span>&rsaquo;</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4 sec-grid">
+            @for (int i = 0; i < total; i++)
+            {
+                var j = jogos[i];
+                Model.Ranking.TryGetValue(j.JogoId, out var pos);
+                var ehFav = Model.UsuarioAutenticado && Model.FavoritosIds.Contains(j.JogoId);
+
+                <div class="col item" data-index="@i">
+                    @await Html.PartialAsync("_JogoCard",
+                             new MoonstoneTCC.ViewModels.CardJogoViewModel
+            {
+                Jogo = j,
+                Badge = Model.Badge,
+                Destaque = Model.Destaque,
+                RankingPosicao = pos > 0 ? pos : null,
+                UsuarioAutenticado = Model.UsuarioAutenticado,
+                EhFavorito = ehFav
+            })
+                </div>
+            }
+        </div>
+    </div>
+}

@@ -1,0 +1,104 @@
+﻿@model MoonstoneTCC.Models.EnderecoEntrega
+
+<div class="container-md text-white my-5">
+    <div class="bg-gradient p-4 rounded shadow-lg mb-4" style="background: linear-gradient(90deg, #3A0066, #5E00A8);">
+        <h2 class="mb-0 text-white">
+            <i class="fas fa-edit me-2"></i> Editar Endereço de Entrega
+        </h2>
+    </div>
+
+    <form asp-action="Editar" method="post" class="bg-dark p-4 rounded shadow">
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label asp-for="Nome" class="form-label text-light">
+                    <i class="fas fa-user me-1 text-purple"></i> Nome
+                </label>
+                <input asp-for="Nome" class="form-control border border-purple shadow-sm" />
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="Sobrenome" class="form-label text-light">
+                    <i class="fas fa-user-tag me-1 text-purple"></i> Sobrenome
+                </label>
+                <input asp-for="Sobrenome" class="form-control border border-purple shadow-sm" />
+            </div>
+
+            <div class="col-md-8">
+                <label asp-for="Endereco1" class="form-label text-light">
+                    <i class="fas fa-home me-1 text-purple"></i> Endereço
+                </label>
+                <input asp-for="Endereco1" class="form-control border border-purple shadow-sm" />
+            </div>
+
+            <div class="col-md-4">
+                <label asp-for="Endereco2" class="form-label text-light">
+                    <i class="fas fa-door-open me-1 text-purple"></i> Complemento
+                </label>
+                <input asp-for="Endereco2" class="form-control border border-purple shadow-sm" />
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="Cidade" class="form-label text-light">
+                    <i class="fas fa-city me-1 text-purple"></i> Cidade
+                </label>
+                <input asp-for="Cidade" class="form-control border border-purple shadow-sm" />
+            </div>
+
+            <div class="col-md-3">
+                <label asp-for="Estado" class="form-label text-light">
+                    <i class="fas fa-flag me-1 text-purple"></i> Estado
+                </label>
+                <input asp-for="Estado" class="form-control border border-purple shadow-sm" />
+            </div>
+
+            <div class="col-md-3">
+                <label asp-for="Cep" class="form-label text-light">
+                    <i class="fas fa-mail-bulk me-1 text-purple"></i> CEP
+                </label>
+                <input asp-for="Cep" class="form-control border border-purple shadow-sm" />
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="Telefone" class="form-label text-light">
+                    <i class="fas fa-phone-alt me-1 text-purple"></i> Telefone
+                </label>
+                <input asp-for="Telefone" class="form-control border border-purple shadow-sm" />
+            </div>
+        </div>
+
+        <div class="mt-4 d-flex gap-3">
+            <button type="submit" class="btn btn-purple px-4 py-2 shadow">
+                <i class="fas fa-save me-1"></i> Atualizar Endereço
+            </button>
+            <a asp-action="Index" class="btn btn-outline-light px-4 py-2">
+                <i class="fas fa-times"></i> Cancelar
+            </a>
+        </div>
+    </form>
+</div>
+
+<style>
+    .btn-purple {
+        background-color: #6f00cc;
+        border: none;
+        color: white;
+        transition: background 0.3s ease;
+    }
+
+    .btn-purple:hover {
+        background-color: #500099;
+    }
+
+    .border-purple {
+        border-color: #a94bff !important;
+    }
+
+    .text-purple {
+        color: #a94bff !important;
+    }
+
+    input.form-control:focus {
+        box-shadow: 0 0 0 0.2rem rgba(169, 75, 255, 0.25);
+        border-color: #a94bff;
+    }
+</style>

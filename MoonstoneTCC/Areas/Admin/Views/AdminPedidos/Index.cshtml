@@ -1,148 +1,253 @@
 ﻿@model ReflectionIT.Mvc.Paging.PagingList<MoonstoneTCC.Models.Pedido>
-
-
 @{
-    ViewData["Title"] = "Pedidos";
+    ViewData["Title"] = "Gestão de Pedidos";
 }
 
-<h1>PEDIDOS</h1>
-
-<!-- Formulário de Pesquisa -->
-<form method="get" class="d-flex justify-content-between align-items-center mb-4 mx-auto" action="@Url.Action("Index", "AdminPedidos")" style="max-width: 800px;">
-    <div class="input-group w-100">
-        <input name="filter" class="form-control" placeholder="Pesquisar por Nome, Endereço, Cidade, CEP, Telefone, Email"
-               value="@Model.RouteValue["filter"]" aria-label="Pesquisar pedidos" />
-        <button type="submit" class="btn btn-info ms-2">
-            <i class="fas fa-search"></i> Procurar
-        </button>
-    </div>
-</form>
-
-
-<!-- Contador de Pedidos -->
-<div class="mb-3">
-    <span class="fw-bold">Total de Pedidos:</span> <span class="text-primary">@Model.TotalRecordCount</span>
-</div>
-
-<!-- Paginação -->
-<div class="mb-4">
-    <vc:pager paging-list="@Model"></vc:pager>
-</div>
-
-<!-- Link para Criar Novo Pedido -->
-<p>
-    <a asp-action="Create" class="btn btn-success btn-lg">
-        <i class="fas fa-plus-circle"></i> Criar Novo Pedido
-    </a>
-</p>
-
-<div class="container">
-    <div class="row">
-        @foreach (var item in Model.OrderBy(p => p.PedidoId)) // Ordenando pelo PedidoId
-        {
-            <div class="col-md-4 mb-4">
-                <div class="card shadow-sm">
-                    <div class="card-header bg-primary text-white">
-                        <h5 class="card-title">Pedido #@item.PedidoId</h5>
-                    </div>
-                    <div class="card-body">
-                        <p><strong>Nome:</strong> @item.Nome</p>
-                        <p><strong>Endereço:</strong> @item.Endereco1, @item.Endereco2</p>
-                        <p><strong>Cidade:</strong> @item.Cidade - @item.Estado</p>
-                        <p><strong>CEP:</strong> @item.Cep</p>
-                        <p><strong>Telefone:</strong> @item.Telefone</p>
-                        <p><strong>Email:</strong> <a href="mailto:@item.Email">@item.Email</a></p>
-                        <p><strong>Enviado em:</strong> </p>
-                        <p><strong>Entregue em:</strong> @item.PedidoEntregueEm?.ToString("dd/MM/yyyy")</p>
-                        <p><strong>Pedido feito:</strong>@Html.DisplayFor(modelItem => item.PedidoEnviado)</p>
-                    </div>
-                    <div class="card-footer">
-                        <div class="row">
-                            <!-- Primeira linha com 3 botões -->
-                            <div class="col-md-12 mb-3 d-flex justify-content-between">
-                                <a asp-action="Edit" asp-route-id="@item.PedidoId" class="btn btn-warning btn-sm">
-                                    <i class="fa fa-edit"></i> Editar
-                                </a>
-                                <a asp-action="Details" asp-route-id="@item.PedidoId" class="btn btn-info btn-sm">
-                                    <i class="fa fa-info-circle"></i> Detalhes
-                                </a>
-                                <a asp-action="Delete" asp-route-id="@item.PedidoId" class="btn btn-danger btn-sm">
-                                    <i class="fa fa-trash"></i> Excluir
-                                </a>
-                            </div>
-                            <!-- Segunda linha com 3 botões -->
-                            <div class="col-md-12 mb-3 d-flex justify-content-between">
-                                <a asp-action="PedidoJogos" asp-route-id="@item.PedidoId" class="btn btn-secondary btn-sm">
-                                    <i class="fa fa-gamepad"></i> Ver Itens
-                                </a>
-                                <a href="mailto:@item.Email" title="Enviar e-mail para o cliente" class="btn btn-primary btn-sm">
-                                    <i class="fa fa-envelope"></i> Enviar
-                                </a>
-                                <button class="btn btn-success btn-sm" onclick="copiarInformacoesPedido(@item.PedidoId)">
-                                    <i class="fa fa-copy"></i> Copiar
-                                </button>
-                            </div>
-                            <!-- Terceira linha com 1 botão -->
-                            <div class="col-md-12 d-flex justify-content-center">
-                                <button class="btn btn-dark btn-sm" onclick="exportarPedidoTexto(@item.PedidoId)">
-                                    <i class="fa fa-file-alt"></i> Exportar(TXT)
-                                </button>
-
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Contêiner oculto para armazenar as informações do pedido -->
-                    <div id="pedido-info-@item.PedidoId" style="display:none;">
-                        Pedido #: @item.PedidoId
-                        Nome: @item.Nome
-                        Endereço: @item.Endereco1, @item.Endereco2
-                        Cidade: @item.Cidade - @item.Estado
-                        CEP: @item.Cep
-                        Telefone: @item.Telefone
-                        Email: @item.Email
-                        Enviado em: @item.PedidoEnviado.ToString("dd/MM/yyyy")
-                        Entregue em: @item.PedidoEntregueEm?.ToString("dd/MM/yyyy")
-                    </div>
-
-                </div>
-            </div>
-        }
-    </div>
-</div>
-
-<script>
-    function copiarInformacoesPedido(pedidoId) {
-        // Seleciona o elemento oculto com as informações do pedido
-        const pedidoInfo = document.getElementById(`pedido-info-${pedidoId}`);
-        if (pedidoInfo) {
-            // Cria um elemento temporário para copiar o texto
-            const tempInput = document.createElement("textarea");
-            tempInput.value = pedidoInfo.innerText; // Define o valor como o texto das informações do pedido
-            document.body.appendChild(tempInput);
-            tempInput.select(); // Seleciona o conteúdo
-            document.execCommand("copy"); // Copia para a área de transferência
-            document.body.removeChild(tempInput); // Remove o elemento temporário
-
-            // Exibe uma mensagem de confirmação (opcional)
-            alert("Informações do pedido copiadas com sucesso!");
-        } else {
-            alert("Erro ao copiar as informações do pedido.");
-        }
-    }
-
-
-    function exportarPedidoTexto(pedidoId) {
-        window.location.href = `/Admin/AdminPedidos/ExportarPedidoTexto?id=${pedidoId}`;
-    }
-</script>
-
 <style>
-    h1 {
-        color: #333;
-        font-size: 2.5em;
-        margin-bottom: 20px;
-        font-weight: bold;
-        text-align:center;
+    /* Estilos Personalizados para a Tabela de Pedidos */
+    .dashboard-card {
+        border-left: 4px solid;
+        transition: transform 0.2s;
+    }
+
+        .dashboard-card:hover {
+            transform: translateY(-3px);
+        }
+
+    .card-novo {
+        border-color: #0dcaf0;
+        background-color: #f0faff;
+    }
+
+    .card-enviado {
+        border-color: #ffc107;
+        background-color: #fffdf0;
+    }
+
+    .card-entregue {
+        border-color: #198754;
+        background-color: #f0fff4;
+    }
+
+    .table-pedidos thead th {
+        background-color: #343a40;
+        color: white;
+        border: none;
+        vertical-align: middle;
+    }
+
+    .table-pedidos tbody td {
+        vertical-align: middle;
+        font-size: 0.95rem;
+    }
+
+    .badge-status {
+        font-size: 0.85em;
+        padding: 6px 10px;
+        border-radius: 20px;
+    }
+
+    .btn-quick {
+        padding: 4px 8px;
+        font-size: 0.8rem;
+        margin-right: 2px;
+    }
+
+    .info-secundaria {
+        font-size: 0.8rem;
+        color: #6c757d;
+        display: block;
     }
 </style>
+
+<div class="container-fluid py-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-dark fw-bold"><i class="fas fa-shipping-fast text-primary"></i> Gestão de Pedidos</h2>
+        <a asp-action="Create" class="btn btn-success shadow-sm">
+            <i class="fas fa-plus-circle"></i> Novo Pedido Manual
+        </a>
+    </div>
+
+    @if (TempData["MensagemSucesso"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle"></i> @TempData["MensagemSucesso"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    @if (TempData["MensagemErro"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle"></i> @TempData["MensagemErro"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card shadow-sm dashboard-card card-novo p-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-uppercase text-muted mb-0">Novos / Processando</h6>
+                        <span class="h2 fw-bold text-info">@ViewBag.Novos</span>
+                    </div>
+                    <i class="fas fa-box-open fa-2x text-info opacity-50"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm dashboard-card card-enviado p-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-uppercase text-muted mb-0">Enviados</h6>
+                        <span class="h2 fw-bold text-warning">@ViewBag.Enviados</span>
+                    </div>
+                    <i class="fas fa-truck fa-2x text-warning opacity-50"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm dashboard-card card-entregue p-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-uppercase text-muted mb-0">Entregues</h6>
+                        <span class="h2 fw-bold text-success">@ViewBag.Entregues</span>
+                    </div>
+                    <i class="fas fa-check-double fa-2x text-success opacity-50"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-body bg-light">
+            <form method="get" action="@Url.Action("Index", "AdminPedidos")" class="row g-3 align-items-center">
+                <div class="col-md-10">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white"><i class="fas fa-search text-muted"></i></span>
+                        <input name="filter" class="form-control" placeholder="Buscar por Nome, ID, Email, Cidade..." value="@Model.RouteValue["filter"]" />
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100 fw-bold">Filtrar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card shadow">
+        <div class="card-header bg-white py-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <span class="fw-bold text-secondary">Total de Registros: @Model.TotalRecordCount</span>
+                <nav aria-label="Page navigation">
+                    <vc:pager paging-list="@Model"></vc:pager>
+                </nav>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover table-pedidos mb-0">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Cliente / Contato</th>
+                        <th>Localização</th>
+                        <th>Status Atual</th>
+                        <th>Data Relevante</th>
+                        <th class="text-center">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="fw-bold">#@item.PedidoId</td>
+                            <td>
+                                <div class="fw-bold">@item.Nome @item.Sobrenome</div>
+                                <span class="info-secundaria"><i class="far fa-envelope"></i> @item.Email</span>
+                                <span class="info-secundaria"><i class="fas fa-phone-alt"></i> @item.Telefone</span>
+                            </td>
+                            <td>
+                                <div>@item.Cidade - @item.Estado</div>
+                                <span class="info-secundaria">CEP: @item.Cep</span>
+                            </td>
+                            <td>
+                                @if (item.PedidoEntregueEm != null)
+                                {
+                                    <span class="badge bg-success badge-status"><i class="fas fa-check"></i> Entregue</span>
+                                }
+                                else if (item.PedidoEnviado != null)
+                                {
+                                    <span class="badge bg-warning text-dark badge-status"><i class="fas fa-truck"></i> Enviado</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-info text-dark badge-status"><i class="fas fa-box"></i> Novo</span>
+                                }
+                            </td>
+                            <td>
+                                @if (item.PedidoEntregueEm != null)
+                                {
+                                    <small class="text-success fw-bold">Entregue em:</small>
+                            
+                                    <br />
+                                    @item.PedidoEntregueEm?.ToString("dd/MM/yyyy")
+                                }
+                                else if (item.PedidoEnviado != null)
+                                {
+                                    <small class="text-warning fw-bold">Enviado em:</small>
+                            
+                                    <br />
+                                    @item.PedidoEnviado.ToString("dd/MM/yyyy")
+                                }
+                                else
+                                {
+                                    <small class="text-muted">Aguardando Envio</small>
+                                }
+                            </td>
+                            <td class="text-center">
+                                <div class="d-flex justify-content-center gap-1">
+                                    @if (item.PedidoEntregueEm == null)
+                                    {
+                                        <form asp-action="AtualizarStatusRapido" method="post">
+                                            <input type="hidden" name="id" value="@item.PedidoId" />
+                                            @if (item.PedidoEnviado == null)
+                                            {
+                                                <input type="hidden" name="status" value="Enviar" />
+                                                <button type="submit" class="btn btn-sm btn-outline-warning" title="Marcar como Enviado">
+                                                    <i class="fas fa-shipping-fast"></i>
+                                                </button>
+                                            }
+                                            else
+                                            {
+                                                <input type="hidden" name="status" value="Entregar" />
+                                                <button type="submit" class="btn btn-sm btn-outline-success" title="Marcar como Entregue">
+                                                    <i class="fas fa-hand-holding-heart"></i>
+                                                </button>
+                                            }
+                                        </form>
+                                    }
+
+                                    <a asp-action="Details" asp-route-id="@item.PedidoId" class="btn btn-sm btn-outline-primary" title="Detalhes">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a asp-action="Edit" asp-route-id="@item.PedidoId" class="btn btn-sm btn-outline-secondary" title="Editar">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@item.PedidoId" class="btn btn-sm btn-outline-danger" title="Excluir">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer bg-white">
+            <nav aria-label="Page navigation">
+                <vc:pager paging-list="@Model"></vc:pager>
+            </nav>
+        </div>
+    </div>
+</div>

@@ -1,48 +1,334 @@
-﻿@model HomeViewModel
+﻿@model MoonstoneTCC.ViewModels.HomePersonalizadaViewModel
+@{
+    // ajuda na checagem de favoritos
+    var favIds = new HashSet<int>(Model.FavoritosDoUsuario.Select(x => x.JogoId));
+}
 
 <div class="container my-5">
-    <!-- Carrossel -->
+
+    <!-- Hero / Carrossel -->
     <partial name="_Carousel" />
 
-    <!-- Título da seção -->
-    <h2 class="my-5 text-center fw-bold text-uppercase" style="color: #F5FDFF;">Os Mais Vendidos da Semana</h2>
+    @if (Model.DiscoverRows?.Any() == true)
+    {
+        @await Html.PartialAsync("_DiscoveryRow", Model.DiscoverRows[0])
+    }
 
-    <!-- Grid de jogos -->
-    <div class="row row-cols-1 row-cols-md-3 g-4">
-        @foreach (var jogo in Model.JogosPreferidos)
+
+    <!-- Saudação -->
+    @if (Model.UsuarioLogado && !string.IsNullOrWhiteSpace(Model.NomeUsuario))
+    {
+        <h3 class="text-center text-uppercase fw-bold mt-4 mb-2 section-hello">
+@*             Olá, @Model.NomeUsuario 👋 *@
+        </h3>
+    }
+
+    <!-- CONTINUAR VENDO -->
+    @if (Model.UsuarioLogado && Model.ContinuarVendo.Any())
+    {
+        @await Html.PartialAsync(
+                "_SecaoCarousel",
+                new MoonstoneTCC.ViewModels.SecaoCarouselViewModel
+    {
+        SectionId = "sec-continuar",
+        Titulo = "Continuar vendo",
+        Subtitulo = "Retome de onde parou",
+        Jogos = Model.ContinuarVendo,
+        ItensPorPagina = 4,
+        Badge = "Continuar vendo",
+        Destaque = false,
+        UsuarioAutenticado = Model.UsuarioLogado,
+        FavoritosIds = favIds
+    })
+    }
+
+    <!-- VOCÊ VIU E AINDA NÃO COMPROU (DESTAQUE) -->
+    @if (Model.UsuarioLogado && Model.ViuMasNaoComprou.Any())
+    {
+        @await Html.PartialAsync(
+                "_SecaoCarousel",
+                new MoonstoneTCC.ViewModels.SecaoCarouselViewModel
+    {
+        SectionId = "sec-vnao",
+        Titulo = "Você viu e ainda não comprou",
+        Subtitulo = "Que tal concluir a compra?",
+        Jogos = Model.ViuMasNaoComprou,
+        ItensPorPagina = 4,
+        Badge = "Você viu e ainda não comprou",
+        Destaque = true,
+        UsuarioAutenticado = Model.UsuarioLogado,
+        FavoritosIds = favIds
+    })
+    }
+
+    <!-- SEUS FAVORITOS -->
+    @if (Model.UsuarioLogado && Model.FavoritosDoUsuario.Any())
+    {
+        @await Html.PartialAsync(
+                "_SecaoCarousel",
+                new MoonstoneTCC.ViewModels.SecaoCarouselViewModel
+    {
+        SectionId = "sec-favs",
+        Titulo = "Seus favoritos",
+        Subtitulo = "Seus queridinhos sempre à mão",
+        Jogos = Model.FavoritosDoUsuario,
+        ItensPorPagina = 4,
+        Badge = "Favorito",
+        Destaque = false,
+        UsuarioAutenticado = Model.UsuarioLogado,
+        FavoritosIds = favIds
+    })
+    }
+
+    <!-- RECOMENDADOS POR CATEGORIA (um carrossel por categoria) -->
+    @if (Model.UsuarioLogado && Model.RecomendadosPorCategoria.Any())
+    {
+        var grupos = Model.RecomendadosPorCategoria
+        .Where(j => j.Categoria != null)
+        .GroupBy(j => j.Categoria.CategoriaNome)
+        .OrderBy(g => g.Key);
+
+        foreach (var g in grupos)
         {
-            <div class="col">
-                <partial name="_JogosResumo" for="@jogo" />
-            </div>
+            @await Html.PartialAsync(
+                    "_SecaoCarousel",
+                    new MoonstoneTCC.ViewModels.SecaoCarouselViewModel
+    {
+        SectionId = "sec-rec-" + g.Key.Replace(" ", "-").ToLower(),
+        Titulo = $"Recomendados: {g.Key}",
+        Subtitulo = "Baseado no seu gosto",
+        Jogos = g.ToList(),
+        ItensPorPagina = 4,
+        Badge = "Recomendado",
+        Destaque = false,
+        UsuarioAutenticado = Model.UsuarioLogado,
+        FavoritosIds = favIds
+    })
         }
-    </div>
+    }
+
+    <!-- OS MAIS VENDIDOS DA SEMANA (com ranking) -->
+    @if (Model.MaisVendidosSemana.Any())
+    {
+        @await Html.PartialAsync(
+                "_SecaoCarousel",
+                new MoonstoneTCC.ViewModels.SecaoCarouselViewModel
+    {
+        SectionId = "sec-maisvendidos",
+        Titulo = "Os Mais Vendidos da Semana",
+        Jogos = Model.MaisVendidosSemana,
+        ItensPorPagina = 4,
+        Ranking = Model.RankingMaisVendidos,
+        Destaque = false,
+        UsuarioAutenticado = Model.UsuarioLogado,
+        FavoritosIds = favIds
+    })
+    }
+
+    <!-- EM PROMOÇÃO -->
+    @if (Model.EmPromocao.Any())
+    {
+        @await Html.PartialAsync(
+                "_SecaoCarousel",
+                new MoonstoneTCC.ViewModels.SecaoCarouselViewModel
+    {
+        SectionId = "sec-promos",
+        Titulo = "Em promoção",
+        Subtitulo = "Aproveite os descontos",
+        Jogos = Model.EmPromocao,
+        ItensPorPagina = 4,
+        Badge = "Promoção",
+        Destaque = false,
+        UsuarioAutenticado = Model.UsuarioLogado,
+        FavoritosIds = favIds
+    })
+    }
+
+    <!-- Fallbacks quando não há dados (usuário novo / não logado) -->
+    @if (!Model.UsuarioLogado && !Model.MaisVendidosSemana.Any() && !Model.EmPromocao.Any())
+    {
+        <div class="text-center text-white-50 py-5">Nada por aqui ainda. Explore os jogos e comece sua coleção!</div>
+    }
+
 </div>
 
+<style>
+    /* Polimento geral */
+    .section-hello {
+        color: #F5FDFF;
+        letter-spacing: .03em;
+        text-shadow: 0 2px 12px rgba(157,60,230,.25);
+    }
 
+    .container .sec-carousel + .sec-carousel {
+        margin-top: 2.25rem;
+    }
 
+    .container .sec-carousel:after {
+        content: "";
+        display: block;
+        margin: 1.25rem auto 0 auto;
+        width: 72%;
+        height: 1px;
+        background: linear-gradient(90deg, rgba(157,60,230,0), rgba(157,60,230,.35), rgba(157,60,230,0));
+        filter: blur(.2px);
+    }
 
+    .container .sec-carousel:last-of-type:after {
+        display: none;
+    }
 
+    .section-title {
+        color: #F5FDFF;
+        text-transform: uppercase;
+        font-weight: 800;
+        letter-spacing: .06em;
+        margin: 0;
+    }
 
+    .section-sub {
+        color: #cfc9d9;
+    }
 
+    /* --- Fallback importantíssimo --- */
+    /* Mostra os 4 primeiros cards de cada carrossel MESMO SEM JS */
+    .sec-grid .item {
+        display: none;
+    }
 
-
-@* 
-@model HomeViewModel
-
-<div class="container my-5">
-    <!-- Carrossel -->
-    <partial name="_Carousel" />
-
-    <!-- Título da seção -->
-    <h2 class="my-5 text-center fw-bold text-uppercase" style="color: #333;">Os Mais Vendidos da Semana</h2>
-
-    <!-- Grid de jogos -->
-    <div class="row row-cols-1 row-cols-md-3 g-4">
-        @foreach (var jogo in Model.JogosPreferidos)
-        {
-            <div class="col">
-                <partial name="_JogosResumo" for="@jogo" />
-            </div>
+        .sec-grid .item:nth-child(-n+4) {
+            display: block;
         }
-    </div>
-</div> *@
+
+    /* Fallback: sem JS, mostre os 4 primeiros de cada carrossel */
+    .sec-grid .item {
+        display: none;
+    }
+
+        .sec-grid .item:nth-child(-n+4) {
+            display: block;
+        }
+
+    .sec-carousel {
+        margin: 3rem 0 2.25rem;
+        position: relative;
+    }
+
+    .sec-carousel--highlight {
+        background: linear-gradient(145deg, rgba(28,12,43,.35), rgba(42,18,65,.45));
+        border: 1px solid rgba(157,60,230,.25);
+        border-radius: 16px;
+        padding: 1rem;
+        box-shadow: 0 0 25px rgba(157,60,230,.15);
+    }
+
+    .sec-header {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        margin-bottom: .75rem;
+    }
+
+    .section-title {
+        color: #F5FDFF;
+        text-transform: uppercase;
+        font-weight: 800;
+        letter-spacing: .06em;
+        margin: 0;
+    }
+
+    .section-sub {
+        color: #cfc9d9;
+    }
+
+    .nav-wrap {
+        display: flex;
+        gap: .5rem;
+    }
+
+    .nav-btn {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: #fff;
+        border: none;
+        box-shadow: 0 4px 12px rgba(0,0,0,.2);
+        cursor: pointer;
+        display: grid;
+        place-items: center;
+        transition: transform .15s ease, box-shadow .15s ease, opacity .15s ease;
+    }
+
+        .nav-btn span {
+            font-size: 22px;
+            line-height: 1;
+            color: #4a65ff;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 18px rgba(0,0,0,.25);
+        }
+</style>
+
+@section Scripts {
+    <script>
+        // Carrossel infinito: mostra 4 por vez; seta → avança 4; quando passa do fim, preenche com o começo (ex.: 9,10,1,2)
+        (function () {
+            function initSection(root) {
+                const size = parseInt(root.getAttribute('data-size') || '4', 10);
+                const grid = root.querySelector('.sec-grid');
+                if (!grid) return;
+
+                const items = Array.from(grid.querySelectorAll('.item'));
+                const prevBtn = root.querySelector('.nav-prev');
+                const nextBtn = root.querySelector('.nav-next');
+                const total = items.length;
+
+                let cursor = 0; // índice do primeiro item visível
+
+                // <=4: mostra todos e some com setas
+                if (total <= size) {
+                    items.forEach((el, i) => { el.style.display = ''; el.style.order = i; });
+                    if (prevBtn) prevBtn.style.display = 'none';
+                    if (nextBtn) nextBtn.style.display = 'none';
+                    return;
+                }
+
+                // garanta que nunca fiquem desabilitados (carrossel infinito)
+                if (prevBtn) prevBtn.disabled = false;
+                if (nextBtn) nextBtn.disabled = false;
+
+                function render() {
+                    // esconde todos
+                    for (const el of items) { el.style.display = 'none'; el.style.order = ''; }
+                    // mostra janela de 4 com wrap
+                    for (let k = 0; k < size; k++) {
+                        const idx = (cursor + k) % total;
+                        const el = items[idx];
+                        el.style.display = '';
+                        el.style.order = String(k); // mantém ordem 0..3 no layout flex
+                    }
+                }
+
+                function step(delta) {
+                    // avança/volta em blocos de 4 com wrap infinito
+                    cursor = (cursor + delta * size) % total;
+                    if (cursor < 0) cursor += total;
+                    render();
+                }
+
+                prevBtn && prevBtn.addEventListener('click', () => step(-1));
+                nextBtn && nextBtn.addEventListener('click', () => step(1));
+
+                // primeira renderização (sobrescreve o fallback CSS)
+                render();
+            }
+
+            // Inicializa todos os carrosséis renderizados
+            document.querySelectorAll('.sec-carousel').forEach(initSection);
+        })();
+    </script>
+}
+
+

@@ -1,0 +1,137 @@
+﻿@model ExcluirContaViewModel
+@{
+    ViewData["Title"] = "Excluir Conta";
+}
+
+<div class="container py-5 text-light">
+    <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold text-gradient">💔 Tem certeza que deseja sair?</h1>
+        <p class="lead text-white-50 fs-5">Você construiu uma história aqui. Veja o impacto da sua jornada antes de ir embora...</p>
+    </div>
+
+    <div class="row justify-content-center g-4 mb-5">
+        <div class="col-lg-3 col-md-6 text-center">
+            <div class="card bg-dark bg-opacity-50 shadow-lg p-5 rounded-5 h-100">
+                <i class="fa-solid fa-box-open fa-3x text-info mb-3"></i>
+                <h5 class="fw-bold text-white">Pedidos Realizados</h5>
+                <h1 id="pedidos" class="text-success display-4 fw-bold">0</h1>
+            </div>
+        </div>
+        <a asp-controller="Perfil" asp-action="ExperienciaCompras" class="btn btn-outline-info btn-sm mt-3">
+            <i class="fa-solid fa-vr-cardboard me-1"></i> Confira essa experiência
+        </a>
+
+
+
+        <div class="col-lg-3 col-md-6 text-center">
+            <div class="card bg-dark bg-opacity-50 shadow-lg p-5 rounded-5 h-100">
+                <i class="fa-solid fa-coins fa-3x text-warning mb-3"></i>
+                <h5 class="fw-bold text-white">Total Gasto</h5>
+                <h1 id="gasto" class="text-success display-6 fw-bold contador nowrap">R$ 0,00</h1>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6 text-center">
+            <div class="card bg-dark bg-opacity-50 shadow-lg p-5 rounded-5 h-100">
+                <i class="fa-solid fa-calendar-check fa-3x text-primary mb-3"></i>
+                <h5 class="fw-bold text-white">Data de Cadastro</h5>
+                <h4 class="text-white">@Model.DataCadastro.ToString("dd/MM/yyyy")</h4>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6 text-center">
+            <div class="card bg-dark bg-opacity-50 shadow-lg p-5 rounded-5 h-100">
+                <i class="fa-solid fa-clock fa-3x text-light mb-3"></i>
+                <h5 class="fw-bold text-white">Tempo na Plataforma</h5>
+                <h4 id="dias" class="text-light">@Model.TempoNaPlataforma.Days dias</h4>
+            </div>
+        </div>
+    </div>
+
+    <form asp-action="ConfirmarExclusaoConta" method="post" class="w-75 mx-auto bg-dark bg-opacity-50 p-4 rounded-4 shadow-lg">
+        <div class="mb-4">
+            <label class="form-label text-white fs-5">Por que deseja excluir a conta? (opcional)</label>
+            <textarea name="motivo" class="form-control bg-dark text-white border border-purple rounded-4" rows="5"></textarea>
+        </div>
+
+        <div class="form-check mb-4">
+            <input type="checkbox" class="form-check-input" id="confirmacao" required />
+            <label class="form-check-label text-white fs-6" for="confirmacao">
+                Confirmo que desejo excluir minha conta e entendo que essa ação é <strong class="text-danger">irreversível</strong>.
+            </label>
+        </div>
+
+        <div class="d-grid">
+            <button type="submit" class="btn btn-danger btn-lg rounded-3">
+                <i class="fa-solid fa-trash-can me-2"></i> Excluir minha conta
+            </button>
+        </div>
+    </form>
+</div>
+
+<style>
+    .text-gradient {
+        background: -webkit-linear-gradient(#ff4d4d, #ff0066);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .card h1, .card h4 {
+        transition: all 0.3s ease-in-out;
+    }
+
+    .card:hover h1, .card:hover h4 {
+        transform: scale(1.1);
+    }
+
+    .contador {
+        font-size: 2.2rem !important;
+        line-height: 1.2;
+        white-space: nowrap; /* não quebra a linha */
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+</style>
+
+@section Scripts {
+    <script>
+        window.onload = function () {
+            const pedidos = parseInt("@Model.TotalPedidos");
+            const gasto = parseFloat("@Model.TotalGasto");
+            const dias = parseInt("@Model.TempoNaPlataforma.Days");
+
+            let atualPedidos = 0;
+            let atualGasto = 0;
+            let atualDias = 0;
+
+            const incremento = 1;
+            const duracao = 100; // quanto mais alto, mais lento
+
+            const animar = setInterval(() => {
+                if (atualPedidos < pedidos) {
+                    atualPedidos += incremento;
+                    if (atualPedidos > pedidos) atualPedidos = pedidos;
+                    document.getElementById("pedidos").textContent = atualPedidos;
+                }
+
+                if (atualGasto < gasto) {
+                    atualGasto += gasto / 50;
+                    if (atualGasto > gasto) atualGasto = gasto;
+                    document.getElementById("gasto").textContent = atualGasto.toLocaleString('pt-BR', {
+                        style: 'currency',
+                        currency: 'BRL'
+                    });
+                }
+
+                if (atualDias < dias) {
+                    atualDias++;
+                    document.getElementById("dias").textContent = atualDias + " dias";
+                }
+
+                if (atualPedidos >= pedidos && atualGasto >= gasto && atualDias >= dias) {
+                    clearInterval(animar);
+                }
+            }, duracao);
+        };
+    </script>
+}

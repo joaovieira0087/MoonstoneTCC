@@ -1,0 +1,134 @@
+﻿@model MoonstoneTCC.Models.Acessorio
+
+@{
+    ViewData["Title"] = Model.Nome;
+}
+
+<div class="container my-5 text-white">
+    <div class="row">
+        <!-- Imagem Principal -->
+        <div class="col-md-6">
+            <div class="carousel-container">
+                <img src="@Model.ImagemUrl" alt="@Model.Nome" class="img-fluid rounded shadow" />
+            </div>
+        </div>
+
+        <!-- Informacoes -->
+        <div class="col-md-6">
+            <h1 class="fw-bold mb-3">@Model.Nome</h1>
+
+            @if (Model.PrecoPromocional.HasValue)
+            {
+                <p>
+                    <del class="text-muted">R$ @Model.Preco.ToString("F2")</del>
+                    <strong class="text-danger">R$ @Model.PrecoPromocional.Value.ToString("F2")</strong>
+                </p>
+            }
+            else
+            {
+                <p><strong>R$ @Model.Preco.ToString("F2")</strong></p>
+            }
+
+            <p class="fst-italic">@Model.DescricaoCurta</p>
+
+            <div class="descricao-detalhada mt-4">
+                <h3>Especificações Técnicas</h3>
+                <ul class="list-unstyled">
+                    <li><strong>Marca:</strong> @Model.Marca</li>
+                    <li><strong>Modelo:</strong> @Model.Modelo</li>
+                    <li><strong>Cor:</strong> @Model.Cor</li>
+                    <li><strong>Tipo:</strong> @Model.Tipo</li>
+                    <li><strong>Conectividade:</strong> @Model.Conectividade</li>
+                    <li><strong>Compatibilidade:</strong> @Model.Compatibilidade</li>
+                    <li><strong>Material:</strong> @Model.Material</li>
+                    <li><strong>Peso:</strong> @Model.Peso</li>
+                    <li><strong>Dimensões:</strong> @Model.Dimensoes</li>
+                    <li><strong>Bateria:</strong> @Model.Bateria</li>
+                    <li><strong>Garantia:</strong> @Model.Garantia</li>
+                    <li><strong>Itens Inclusos:</strong> @Model.ItensInclusos</li>
+                    <li><strong>Classificação de Uso:</strong> @Model.ClassificacaoUso</li>
+                    <li><strong>Estoque:</strong> @(Model.QuantidadeEstoque > 0 ? $"{Model.QuantidadeEstoque} unidade(s)" : "Esgotado")</li>
+                </ul>
+            </div>
+
+            <div class="descricao-detalhada mt-4">
+                <h3>Descrição Detalhada</h3>
+                <p>@Model.DescricaoDetalhada</p>
+            </div>
+
+            <div class="descricao-detalhada mt-4">
+                <h3>Informações Extras</h3>
+                @if (!string.IsNullOrEmpty(Model.InformacoesExtras))
+                {
+                    var infos = Model.InformacoesExtras.Split("##", StringSplitOptions.RemoveEmptyEntries);
+                    for (int i = 0; i < infos.Length; i++)
+                    {
+                        if (i % 2 == 0)
+                        {
+                            <h4>@infos[i].Trim()</h4>
+                        }
+                        else
+                        {
+                            <p>@infos[i].Trim()</p>
+                        }
+                    }
+                }
+                else
+                {
+                    <p>Não há informações adicionais disponíveis.</p>
+                }
+            </div>
+
+            <div class="descricao-detalhada mt-4">
+                <h3>Informações Técnicas</h3>
+                <p>@Model.InformacoesTecnicas</p>
+            </div>
+
+            <!-- Botões de Compra -->
+            <div class="mt-4">
+                @if (Model.QuantidadeEstoque > 0)
+                {
+                    <form asp-controller="CarrinhoCompra" asp-action="ComprarOuAdicionarAcessorio" method="post" class="row g-2">
+                        <input type="hidden" name="acessorioId" value="@Model.AcessorioId" />
+
+                        <div class="col-12">
+                            <label for="quantidade" class="form-label text-light fw-bold">
+                                <i class="fas fa-sort-numeric-up-alt me-2 text-purple"></i> Quantidade:
+                            </label>
+                            <select name="quantidade" id="quantidade" class="form-select styled-select text-white fw-semibold">
+                                @for (int i = 1; i <= 10; i++)
+                                {
+                                    <option value="@i">@i unidade@(i > 1 ? "s" : "")</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="col-6">
+                            <button name="acao" value="comprar" type="submit" class="btn btn-success w-100">
+                                <i class="fas fa-bolt me-2"></i> Comprar Agora
+                            </button>
+                        </div>
+
+                        <div class="col-6">
+                            <button name="acao" value="carrinho" type="submit" class="btn btn-outline-light w-100">
+                                <i class="fas fa-cart-plus me-2"></i> Carrinho
+                            </button>
+                        </div>
+                    </form>
+                }
+                else
+                {
+                    <div class="alert alert-danger mt-3">
+                        <i class="fas fa-times-circle me-2"></i> Este acessório está esgotado.
+                    </div>
+                    <form asp-controller="Estoque" asp-action="SolicitarAvisoAcessorio" method="post">
+                        <input type="hidden" name="acessorioId" value="@Model.AcessorioId" />
+                        <button type="submit" class="btn btn-outline-warning mt-2">
+                            <i class="fas fa-bell"></i> Me avise quando estiver disponível
+                        </button>
+                    </form>
+                }
+            </div>
+        </div>
+    </div>
+</div>

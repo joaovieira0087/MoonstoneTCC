@@ -1,0 +1,160 @@
+﻿html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #000;
+}
+
+#jogoDisplay {
+    width: 100vw;
+    height: 100vh;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    transition: background-image 1s ease-in-out;
+    position: relative;
+}
+
+.overlay-content {
+    position: relative;
+    z-index: 10;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+    color: white;
+    animation: fadeIn 1s ease forwards;
+    opacity: 0;
+    max-width: 80%;
+}
+
+    .overlay-content h1 {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        animation: fadeInText 1s ease forwards;
+    }
+
+    .overlay-content p {
+        font-size: 1.5rem;
+        margin-bottom: 2rem;
+        animation: fadeInText 1.5s ease forwards;
+    }
+
+    .overlay-content a {
+        font-size: 1.2rem;
+        padding: 10px 25px;
+        border: 2px solid white;
+        color: white;
+        text-decoration: none;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+        animation: fadeInText 2s ease forwards;
+    }
+
+        .overlay-content a:hover {
+            background-color: white;
+            color: #111;
+        }
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeInText {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.seta {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 2.5rem;
+    color: white;
+    background-color: rgba(0,0,0,0.4);
+    border: none;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    cursor: pointer;
+    z-index: 10;
+}
+
+#setaEsquerda {
+    left: 20px;
+}
+
+#setaDireita {
+    right: 20px;
+}
+
+#contador {
+    position: absolute;
+    bottom: 30px;
+    right: 30px;
+    font-size: 1.2rem;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 10px 15px;
+    border-radius: 10px;
+}
+
+#btnVoltar {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-size: 0.9rem;
+    padding: 8px 14px;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: 1px solid white;
+    border-radius: 8px;
+    text-decoration: none;
+    z-index: 10;
+}
+
+@media (max-width: 768px) {
+    .overlay-content h1 {
+        font-size: 2rem;
+    }
+
+    .overlay-content p {
+        font-size: 1.2rem;
+    }
+
+    .overlay-content a {
+        font-size: 1rem;
+        padding: 8px 20px;
+    }
+
+    .seta {
+        font-size: 2rem;
+        width: 45px;
+        height: 45px;
+    }
+
+    #contador {
+        font-size: 1rem;
+        padding: 6px 10px;
+    }
+
+    #btnVoltar {
+        font-size: 0.8rem;
+        padding: 6px 12px;
+    }
+}

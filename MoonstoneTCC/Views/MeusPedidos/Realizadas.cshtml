@@ -1,0 +1,194 @@
+﻿@model List<MoonstoneTCC.Models.ComentarioJogo>
+@{
+    var curtidasPorComentario = ViewBag.CurtidasPorComentario as Dictionary<int, int>;
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+<div class="container my-5">
+    <h2 class="text-white pb-2 mb-4">⭐ Avaliações Realizadas</h2>
+
+    <!-- Abas -->
+    <ul class="nav nav-tabs custom-tabs mb-4">
+    <li class="nav-item">
+        <a asp-controller="MeusPedidos" asp-action="Avaliar" class="nav-link">Pendentes</a>
+    </li>
+
+        <li class="nav-item">
+            <a asp-controller="Comentario" asp-action="Realizadas" class="nav-link">
+                <i class="fas fa-star me-1"></i> Minhas Avaliações
+            </a>
+        </li>
+    </ul>
+
+
+
+    <p class="text-muted mb-3">Agradecemos sua contribuição para a comunidade</p>
+
+    @if (!Model.Any())
+    {
+        <p class="text-light">Você ainda não realizou nenhuma avaliação.</p>
+    }
+    else
+    {
+        <p class="text-muted mb-4">1 - @Model.Count de @Model.Count opiniões dadas</p>
+
+        @foreach (var comentario in Model)
+        {
+            var jogo = comentario.Jogo;
+            var totalCurtidas = curtidasPorComentario != null && curtidasPorComentario.ContainsKey(comentario.Id)
+            ? curtidasPorComentario[comentario.Id]
+            : 0;
+
+            <div class="bg-purple-dark text-white rounded-3 shadow-sm mb-3 p-3 d-flex align-items-center justify-content-between flex-wrap">
+                <!-- Lado esquerdo: imagem e título -->
+                <div class="d-flex align-items-center mb-2 mb-md-0" style="min-width: 250px;">
+                    <img src="@jogo.ImagemUrl" alt="@jogo.Nome" class="me-3 rounded border border-purple" style="width: 65px; height: 65px; object-fit: cover;" />
+                    <div>
+                        <strong>@jogo.Nome</strong>
+                    </div>
+                </div>
+
+                <!-- Estrelas + data -->
+                <div class="d-flex flex-column align-items-center mb-2 mb-md-0">
+                    <div class="text-primary fs-5">
+                        @for (int i = 1; i <= 5; i++)
+                        {
+                            if (i <= comentario.Avaliacao)
+                            {
+                                <i class="fas fa-star"></i>
+                            }
+                            else
+                            {
+                                <i class="far fa-star text-secondary"></i>
+                            }
+                        }
+                    </div>
+                    <small class="text-muted mt-1">@comentario.Data.ToString("dd 'de' MMM")</small>
+                </div>
+
+                <!-- Curtidas + botão de editar -->
+                @{
+                    var modalId = $"modalComentario_{comentario.Id}";
+                    var modalExcluirId = $"modalExcluir_{comentario.Id}";
+                }
+
+                <div class="d-flex align-items-center gap-2 flex-wrap">
+                    <span class="text-muted">
+                        <i class="fas fa-thumbs-up me-1"></i> @totalCurtidas
+                    </span>
+
+                    <a asp-controller="Comentario" asp-action="Editar" asp-route-id="@comentario.Id" class="btn btn-sm btn-outline-primary">
+                        <i class="fas fa-edit"></i> Editar Opinião
+                    </a>
+
+                    <!-- Botão Visualizar -->
+                    <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#@modalId">
+                        <i class="fas fa-eye"></i> Visualizar
+                    </button>
+
+                    <!-- Botão Excluir -->
+                    <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#@modalExcluirId">
+                        <i class="fas fa-trash-alt"></i> Excluir
+                    </button>
+                </div>
+
+                <!-- Modal Visualizar Comentário -->
+                <div class="modal fade" id="@modalId" tabindex="-1" aria-labelledby="label@modalId" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content bg-dark text-white border border-purple">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="label@modalId">
+                                    <i class="fas fa-comment-dots text-purple"></i> Comentário Completo
+                                </h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p class="text-light">"@comentario.Texto"</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal Excluir Comentário -->
+                <div class="modal fade" id="@modalExcluirId" tabindex="-1" aria-labelledby="labelExcluir@modalExcluirId" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content bg-dark text-white border border-danger">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="labelExcluir@modalExcluirId">
+                                    <i class="fas fa-exclamation-triangle text-danger"></i> Confirmar Exclusão
+                                </h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                            </div>
+                            <div class="modal-body text-center">
+                                Tem certeza que deseja excluir este comentário?<br />
+                                <span class="text-warning fw-bold">"@comentario.Texto"</span>
+                            </div>
+                            <div class="modal-footer justify-content-center">
+                                <form asp-controller="Comentario" asp-action="Excluir" method="post">
+                                    <input type="hidden" name="id" value="@comentario.Id" />
+                                    <button type="submit" class="btn btn-danger px-4">Confirmar</button>
+                                    <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Cancelar</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        }
+    }
+
+</div>
+
+<style>
+    .bg-purple-dark {
+        background-color: #3B0056 !important;
+    }
+
+    .border-purple {
+        border: 2px solid #9b59b6;
+    }
+
+    .text-primary {
+        color: #3399ff !important;
+    }
+
+    .shadow-sm {
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+
+    /* Abas com estilo roxo moderno */
+    .custom-tabs {
+        background-color: #3B0056;
+        border-bottom: 2px solid #9b59b6;
+        border-radius: 12px 12px 0 0;
+        overflow: hidden;
+    }
+
+        .custom-tabs .nav-link {
+            color: #c7b6e1;
+            background-color: transparent;
+            border: none;
+            padding: 12px 20px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border-radius: 12px 12px 0 0;
+        }
+
+            .custom-tabs .nav-link:hover {
+                background-color: #5e2c82;
+                color: #fff;
+            }
+
+            .custom-tabs .nav-link.active {
+                background-color: #7c3aed;
+                color: #fff;
+                border: none;
+                box-shadow: inset 0 -4px 0 #9b59b6;
+            }
+
+
+
+</style>

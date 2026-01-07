@@ -1,0 +1,701 @@
+﻿@model MeusPedidosIndexViewModel
+
+@{
+    ViewData["Title"] = "Meus Pedidos";
+}
+
+@if (TempData["MensagemSucesso"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+        <i class="fas fa-check-circle me-2"></i> @TempData["MensagemSucesso"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+    </div>
+}
+@if (TempData["MensagemErro"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+        <i class="fas fa-exclamation-triangle me-2"></i> @TempData["MensagemErro"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+    </div>
+}
+
+
+
+
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 p-3 header-pedidos">
+        <div class="d-flex align-items-center flex-wrap gap-3">
+            <h2 class="text-light mb-0 d-flex align-items-center">
+                <i class="fas fa-box-open me-2 text-white"></i> Meus Pedidos
+            </h2>
+        </div>
+
+        <div class="d-flex gap-2">
+            <a asp-controller="Contato" asp-action="Index" class="circle-link">
+                <i class="fa-solid fa-envelope"></i>
+                <span class="circle-text">Contato</span>
+            </a>
+
+            <a asp-controller="Pergunta" asp-action="Criar" class="circle-link">
+                <i class="fa-solid fa-question-circle"></i>
+                <span class="circle-text">Pergunta</span>
+            </a>
+
+            <a asp-controller="MeusPedidos" asp-action="Avaliar" class="circle-link">
+                <i class="fa-solid fa-star-half-stroke"></i>
+                <span class="circle-text">Opinião</span>
+            </a>
+        </div>
+    </div>
+
+    @if (ViewBag.JogosPendentes > 0)
+    {
+        <div class="card mb-4 border-0 rounded-4 shadow-lg opiniao-card">
+            <div class="card-body d-flex justify-content-between align-items-center p-4">
+                <div class="d-flex align-items-center">
+                    <div class="icon-container-opiniao me-3">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div>
+                        <h5 class="mb-0 text-light">@ViewBag.JogosPendentes produto(s) esperam sua opinião</h5>
+                    </div>
+                </div>
+                <a href="@Url.Action("Avaliar", "MeusPedidos")" class="btn btn-opinar-branco btn-opinar-strong">
+                    <i class="fas fa-pen me-1"></i> Opinar
+                </a>
+            </div>
+        </div>
+    }
+
+        
+
+
+    @if (Model.TotalCount == 0)
+    {
+        <div class="alert alert-warning text-center">
+            <i class="fas fa-info-circle"></i> Você ainda não realizou nenhum pedido.
+        </div>
+    }
+    else
+    {
+        foreach (var pedido in Model.Pedidos)
+        {
+            <div class="order-card">
+                <div class="order-header">
+                    <div class="order-title">
+                        <i class="fas fa-hashtag"></i>
+                        <span>Pedido</span>
+                        <strong class="order-code">@pedido.CodigoPedido</strong>
+                    </div>
+
+                    <div class="order-date pill-light">
+                        <i class="far fa-calendar-alt"></i>
+                        @pedido.PedidoEnviado.ToString("dd/MM/yyyy")
+                    </div>
+                </div>
+
+                <div class="order-meta">
+                    <span class="chip">
+                        <i class="fas fa-gamepad"></i> @pedido.TotalItensPedido item(s)
+                    </span>
+                    <span class="chip">
+                        <i class="fas fa-money-bill-wave"></i> @pedido.PedidoTotal.ToString("C2")
+                    </span>
+
+                    <span class="chip status
+                          @(pedido.StatusPedido == "Pagamento Confirmado" ? "status-paid" :
+                            pedido.StatusPedido == "Preparando Pedido" ? "status-prep" :
+                            pedido.StatusPedido == "Pedido Enviado" ? "status-sent" :
+                            pedido.StatusPedido == "Pedido Entregue" ? "status-delivered" :
+                            pedido.StatusPedido == "Cancelado" ? "status-cancel" : "status-default")">
+                                            <i class="fas fa-info-circle"></i> @pedido.StatusPedido
+                    </span>
+
+                    @{
+                        string estimativa = pedido.StatusPedido switch
+                        {
+                            "Pedido Entregue" => pedido.PedidoEntregueEm?.ToString("dd/MM/yyyy ") ?? "Indeterminado",
+                            "Pedido Enviado" => pedido.PedidoEnviado.AddDays(1).ToString("dd/MM/yyyy "),
+                            "Preparando Pedido" => pedido.PedidoEnviado.AddDays(3).ToString("dd/MM/yyyy "),
+                            "Pagamento Confirmado" => pedido.PedidoEnviado.AddDays(5).ToString("dd/MM/yyyy "),
+                            _ => "Indeterminado"
+                        };
+                    }
+                    <span class="chip chip-eta" title="Previsão de entrega">
+                        <i class="fas fa-clock"></i>
+                        <span class="eta-label">Entrega:</span>
+                        <strong class="eta-date">@estimativa</strong>
+                    </span>
+
+                </div>
+
+                @if (pedido.PedidoItens != null && pedido.PedidoItens.Any())
+                {
+                    <div class="order-items">
+                        @foreach (var item in pedido.PedidoItens)
+                        {
+                            <div class="order-item">
+                                <img src="@(item.Jogo?.ImagemUrl ?? item.Acessorio?.ImagemUrl)" alt=""
+                                     class="order-thumb" />
+                                <div class="order-item-info">
+                                    <div class="order-item-name">
+                                        @(item.Jogo?.Nome ?? item.Acessorio?.Nome)
+                                    </div>
+                                    <div class="order-item-sub">
+                                        @item.Quantidade x @item.Preco.ToString("C2")
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+
+                <div class="order-actions">
+                    <a class="btn btn-ghost btn-ghost-strong" asp-action="Detalhes" asp-route-id="@pedido.PedidoId">
+                        <i class="fas fa-eye"></i> Ver Detalhes
+                    </a>
+                    <a class="btn btn-ghost btn-ghost-strong"
+                       asp-controller="Pedido"
+                       asp-action="CompreNovamente"
+                       asp-route-id="@pedido.PedidoId">
+                        <i class="fas fa-redo"></i> Compre Novamente
+                    </a>
+
+                    <div class="dropdown">
+                        <button class="btn btn-ghost icon-only" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-dark-roxo">
+                            @if (pedido.StatusPedido != "Cancelado")
+                            {
+                                <li>
+                                    <a class="dropdown-item d-flex align-items-center gap-2"
+                                       asp-controller="AjudaPedido" asp-action="Criar" asp-route-id="@pedido.PedidoId">
+                                        <i class="fas fa-life-ring text-light"></i>
+                                        <span>Ajuda com o Pedido</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <!-- ALTERADO: agora aponta para CancelamentoPedido/Criar (GET) -->
+                                    <a class="dropdown-item d-flex align-items-center gap-2 text-danger"
+                                       asp-controller="CancelamentoPedido" asp-action="Criar" asp-route-id="@pedido.PedidoId">
+                                        <i class="fas fa-ban"></i>
+                                        <span>Cancelar Pedido</span>
+                                    </a>
+                                </li>
+                            }
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center gap-2"
+                                   href="javascript:void(0)" onclick="copiarCodigo('@pedido.CodigoPedido')">
+                                    <i class="fas fa-copy text-light"></i>
+                                    <span>Copiar Código</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <!-- Pager -->
+        <nav class="pager mt-3">
+            <ul class="pagination pagination-sm mb-0 pagination-neo">
+                <li class="page-item @(Model.HasPrevious ? "" : "disabled")">
+                    <a class="page-link" asp-action="Index" asp-route-page="@(Model.Page - 1)" aria-label="Anterior">
+                        <i class="fas fa-chevron-left"></i><span class="d-none d-sm-inline ms-1">Anterior</span>
+                    </a>
+                </li>
+
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(i == Model.Page ? "active" : "")">
+                        <a class="page-link" asp-action="Index" asp-route-page="@i">@i</a>
+                    </li>
+                }
+
+                <li class="page-item @(Model.HasNext ? "" : "disabled")">
+                    <a class="page-link" asp-action="Index" asp-route-page="@(Model.Page + 1)" aria-label="Seguinte">
+                        <span class="d-none d-sm-inline me-1">Seguinte</span><i class="fas fa-chevron-right"></i>
+                    </a>
+                </li>
+            </ul>
+
+            <small class="pager-info">
+                Mostrando @(((Model.Page - 1) * Model.PageSize) + 1)
+                –
+                @(Math.Min(Model.Page * Model.PageSize, Model.TotalCount))
+                de @Model.TotalCount
+            </small>
+        </nav>
+
+    }
+</div>
+
+<style>
+    :root {
+        --bg1: #220034;
+        --bg2: #3e0470;
+        --card-border: rgba(255,255,255,.14);
+        --text: #ffffff;
+        --muted: #e3e3f3;
+        --chip-bg: rgba(255,255,255,.10);
+        --chip-br: rgba(255,255,255,.22);
+        --accent: #00d0ff;
+        --pill-bg: #ffffff;
+        --pill-text: #2f0a4a;
+        --ok-bg: #1e7f4d;
+        --ok-br: #55d69f;
+        --hover-bg: rgba(255,255,255,.14);
+        --hover-br: rgba(255,255,255,.32);
+    }
+
+    /* ======== LAYOUT BASE ======== */
+
+    .order-card {
+        background: linear-gradient(135deg,var(--bg1),var(--bg2));
+        color: var(--text);
+        border: 1px solid var(--card-border);
+        border-radius: 18px;
+        padding: 18px 20px;
+        box-shadow: 0 10px 26px rgba(0,0,0,.35);
+        @* transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease; *@
+        margin-bottom: 1.25rem;
+    }
+
+        .order-card:hover {
+            @* transform: translateY(-2px); *@
+            box-shadow: 0 14px 32px rgba(0,0,0,.45);
+            border-color: rgba(255,255,255,.20);
+        }
+
+    /* garante contexto e nada seja cortado */
+    .order-card {
+        position: relative;
+        overflow: visible;
+    }
+
+    /* o próprio dropdown */
+    .order-actions .dropdown {
+        position: relative;
+        z-index: 50;
+    }
+
+    /* menu do dropdown por cima de tudo */
+    .dropdown-menu-dark-roxo {
+        position: absolute; /* já é o padrão do Bootstrap, mas reforça */
+        z-index: 9999 !important;
+    }
+
+    /* se tiver algum pai com overflow escondido, libere (opcional) */
+    .order-meta {
+        overflow: visible;
+    }
+
+
+    .order-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 12px;
+    }
+
+    .order-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 700;
+    }
+
+        .order-title i {
+            opacity: .95;
+        }
+
+    .order-code {
+        color: #fff;
+        letter-spacing: .4px;
+        text-shadow: 0 0 1px rgba(255,255,255,.25);
+    }
+
+    /* Data como “pill” clara para alto contraste */
+    .pill-light {
+        background: var(--pill-bg);
+        color: var(--pill-text);
+        border: 1px solid rgba(0,0,0,.06);
+        padding: 6px 10px;
+        border-radius: 999px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    /* ======== METAS / CHIPS ======== */
+
+    .order-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin: 10px 0 14px;
+    }
+
+    .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--chip-bg);
+        color: #fff;
+        padding: 8px 12px;
+        font-size: .95rem;
+        border: 1px solid var(--chip-br);
+        border-radius: 999px;
+        font-weight: 600;
+    }
+
+        .chip i {
+            opacity: .95;
+        }
+
+        /* Estado com + contraste */
+        .chip.status {
+            box-shadow: inset 0 0 0 1px rgba(0,0,0,.12);
+        }
+
+    .status-paid {
+        background: rgba(40, 180, 99,.30);
+        color: #eafff3;
+        border-color: rgba(40,180,99,.55);
+    }
+
+    .status-prep {
+        background: rgba(241,196,15,.28);
+        color: #fff6c8;
+        border-color: rgba(241,196,15,.55);
+    }
+
+    .status-sent {
+        background: rgba(52,152,219,.28);
+        color: #e8f3ff;
+        border-color: rgba(52,152,219,.55);
+    }
+
+    .status-delivered {
+        background: rgba(0,210,140,.28);
+        color: #e6fff7;
+        border-color: rgba(0,210,140,.55);
+    }
+
+    .status-cancel {
+        background: rgba(231,76,60,.28);
+        color: #ffe3e0;
+        border-color: rgba(231,76,60,.55);
+    }
+
+    .status-default {
+        background: var(--chip-bg);
+    }
+
+    /* Entrega com data destacada */
+    .chip-eta {
+        background: #140323;
+        border-color: rgba(255,255,255,.22);
+    }
+
+    .eta-label {
+        opacity: .9;
+    }
+
+    .eta-date {
+        background: #fff;
+        color: #32004e;
+        border-radius: 8px;
+        padding: 2px 8px;
+        margin-left: 4px;
+    }
+
+    /* ======== ITENS ======== */
+
+    .order-items {
+        display: grid;
+        gap: 12px;
+        grid-template-columns: repeat(auto-fill, minmax(280px,1fr));
+        background: rgba(0,0,0,.16);
+        border: 1px solid var(--card-border);
+        border-radius: 14px;
+        padding: 12px;
+    }
+
+    .order-item {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        padding: 10px;
+        border-radius: 12px;
+        background: rgba(255,255,255,.04);
+        border: 1px solid var(--card-border);
+    }
+
+    .order-thumb {
+        width: 58px;
+        height: 58px;
+        object-fit: cover;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0,0,0,.35);
+        border: 2px solid rgba(255,255,255,.18);
+    }
+
+    .order-item-name {
+        font-weight: 800;
+        line-height: 1.08;
+        color: #fff;
+    }
+
+    .order-item-sub {
+        color: var(--muted);
+        font-size: .95rem;
+    }
+
+    /* ======== AÇÕES ======== */
+
+    .order-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 14px;
+        flex-wrap: wrap;
+    }
+
+    .btn-ghost {
+        background: transparent;
+        color: #fff;
+        border: 1px solid var(--card-border);
+        border-radius: 12px;
+        padding: 9px 13px;
+        font-size: .98rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        @* transition: background .2s ease, color .2s ease, border-color .2s ease, transform .06s ease; *@
+        text-decoration: none;
+    }
+
+        .btn-ghost:hover {
+            background: var(--hover-bg);
+            border-color: var(--hover-br);
+        }
+
+    .btn-ghost-strong {
+        border-color: #ffffff;
+        box-shadow: inset 0 0 0 1px rgba(255,255,255,.08);
+    }
+
+        .btn-ghost-strong:hover {
+            background: #ffffff;
+            color: #340154;
+        }
+
+    /* Ícone-only */
+    .btn-ghost.icon-only {
+        padding: 8px 10px;
+        width: 42px;
+        justify-content: center;
+    }
+
+    /* ======== DROPDOWN ======== */
+
+    .dropdown-menu-dark-roxo {
+        background-color: #3A0066;
+        border: none;
+        border-radius: 12px;
+        padding: 8px 0;
+        box-shadow: 0 4px 8px rgba(0,0,0,.4);
+        min-width: 220px;
+    }
+
+        .dropdown-menu-dark-roxo .dropdown-item {
+            color: #fff;
+            padding: 10px 16px;
+            font-size: .95rem;
+            transition: background .2s ease-in-out;
+            border-bottom: 1px solid rgba(255,255,255,.06);
+        }
+
+            .dropdown-menu-dark-roxo .dropdown-item:last-child {
+                border-bottom: 0;
+            }
+
+            .dropdown-menu-dark-roxo .dropdown-item:hover {
+                background: rgba(255,255,255,.10);
+            }
+
+    /* ======== CARD “OPINIÃO” ======== */
+
+    .opiniao-card {
+        background: linear-gradient(135deg,#330050,#4b0a8e);
+        color: #fff;
+        border: 1px solid rgba(255,255,255,.18);
+    }
+
+    .icon-container-opiniao {
+        width: 48px;
+        height: 48px;
+        background-color: #fff3cd;
+        border: 2px solid gold;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #b58900;
+        font-size: 1.05rem;
+    }
+
+    .btn-opinar-branco {
+        color: #fff !important;
+        border: 1px solid #fff !important;
+        background: transparent;
+        transition: all .2s ease;
+    }
+
+    .btn-opinar-strong {
+        border-width: 2px !important;
+        padding: .6rem 1rem;
+        font-weight: 800;
+    }
+
+    .btn-opinar-branco:hover {
+        background: #fff;
+        color: #3A0066 !important;
+    }
+
+    /* ======== PAGINAÇÃO (mantida e ajustada) ======== */
+
+    .pager {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .pager-info {
+        color: #d8d8ee;
+        margin-left: 6px;
+    }
+
+    .pagination-neo {
+        display: flex;
+        gap: 8px;
+        background: rgba(255,255,255,.06);
+        border: 1px solid rgba(255,255,255,.22);
+        border-radius: 12px;
+        padding: 6px;
+        overflow-x: auto;
+        scrollbar-width: none;
+    }
+
+        .pagination-neo::-webkit-scrollbar {
+            display: none;
+        }
+
+        .pagination-neo .page-link {
+            background: rgba(255,255,255,.10);
+            border: 1px solid rgba(255,255,255,.22);
+            color: #fff;
+            border-radius: 10px;
+            min-width: 34px;
+            height: 34px;
+            padding: 0 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            line-height: 1;
+            transition: all .2s ease;
+            text-decoration: none;
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,.04), 0 6px 14px rgba(0,0,0,.25);
+        }
+
+            .pagination-neo .page-link:hover {
+                background: rgba(255,255,255,.16);
+                border-color: rgba(255,255,255,.32);
+            }
+
+        .pagination-neo .page-item.active .page-link {
+            background: #fff;
+            color: #3A0066;
+            border-color: #fff;
+            box-shadow: 0 8px 18px rgba(0,0,0,.35);
+            font-weight: 800;
+        }
+
+        .pagination-neo .page-item.disabled .page-link {
+            opacity: .45;
+            pointer-events: none;
+            filter: grayscale(.2);
+        }
+
+        .pagination-neo .page-link i {
+            font-size: .9rem;
+            opacity: .95;
+        }
+
+    /* ======== AJUSTES DIVERSOS ======== */
+
+    .header-pedidos {
+        background: transparent;
+        border-radius: 10px;
+        row-gap: 10px;
+    }
+
+    .circle-link {
+        background-color: #2d004a;
+        border-radius: 14px;
+        width: 80px;
+        height: 80px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        transition: all .2s ease;
+        padding: 10px;
+        border: 1px solid rgba(255,255,255,.12);
+    }
+
+        .circle-link i {
+            font-size: 1.4rem;
+            color: #f3f3ff;
+            margin-bottom: 6px;
+        }
+
+        .circle-link span {
+            color: #f3f3ff;
+            font-size: .8rem;
+            opacity: .9;
+        }
+
+        .circle-link:hover {
+            background-color: #3a0066;
+            transform: translateY(-1px);
+        }
+
+            .circle-link:hover i {
+                color: var(--accent);
+            }
+
+</style>
+
+<script>
+    function copiarCodigo(codigo) {
+        navigator.clipboard.writeText(codigo).then(function () {
+            const toast = document.getElementById("toast-copiado");
+            const texto = document.getElementById("codigoTexto");
+
+            texto.textContent = codigo;
+            toast.style.display = "flex";
+
+            setTimeout(() => {
+                toast.style.display = "none";
+            }, 5000);
+        });
+    }
+</script>

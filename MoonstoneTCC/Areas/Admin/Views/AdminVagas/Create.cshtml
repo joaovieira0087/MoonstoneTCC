@@ -1,0 +1,155 @@
+﻿@model MoonstoneTCC.Models.VagaEmprego
+@{
+    ViewData["Title"] = "Criar Vaga";
+}
+
+<section class="container mt-5">
+    <h2 class="mb-4">Criar Nova Vaga</h2>
+
+    <form method="post">
+        <div class="mb-3">
+            <label class="form-label">Título da Vaga</label>
+            <input asp-for="Titulo" class="form-control" required />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Cargo</label>
+            <input asp-for="Cargo" class="form-control" required />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Descrição</label>
+            <textarea asp-for="Descricao" class="form-control" rows="4" required></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Requisitos</label>
+            <textarea asp-for="Requisitos" class="form-control" rows="3"></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Salário (R$)</label>
+            <input asp-for="Salario" class="form-control" type="number" step="0.01" required />
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="DataEncerramento" class="form-label">Data de Encerramento</label>
+            <input asp-for="DataEncerramento" type="date" class="form-control" />
+            <span asp-validation-for="DataEncerramento" class="text-danger"></span>
+        </div>
+
+
+        <div class="mb-4">
+            <label class="form-label">Perguntas para o Candidato</label>
+            <div id="perguntasContainer"></div>
+            <button type="button" class="btn btn-secondary mt-2" onclick="adicionarPergunta()">+ Adicionar Pergunta</button>
+        </div>
+
+        <button type="submit" class="btn btn-success">Salvar Vaga</button>
+        <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+    </form>
+</section>
+
+@section Scripts {
+    <script>
+        function adicionarPergunta() {
+            const container = document.getElementById('perguntasContainer');
+            const input = document.createElement('input');
+            input.name = 'perguntas';
+            input.className = 'form-control my-2';
+            input.placeholder = 'Digite a pergunta...';
+            input.required = true;
+            container.appendChild(input);
+        }
+    </script>
+}
+
+<style>
+    body {
+        color: #ffffff;
+    }
+
+    h2 {
+        color: #ffffff;
+        font-weight: bold;
+    }
+
+    .form-label {
+        color: #cccccc;
+        font-weight: 500;
+    }
+
+    .form-control {
+        background-color: #3a0055;
+        border: 1px solid #9b00ff;
+        color: #ffffff;
+        font-size: 0.95rem;
+        border-radius: 8px;
+        transition: 0.2s ease-in-out;
+    }
+
+        .form-control:focus {
+            background-color: #3a0055;
+            border-color: #b84dff;
+            box-shadow: 0 0 8px #b84dff99;
+            color: #ffffff;
+        }
+
+    .btn-success {
+        background-color: #9b00ff;
+        border: none;
+        color: #fff;
+        transition: 0.3s ease;
+        font-weight: 500;
+    }
+
+        .btn-success:hover {
+            background-color: #b84dff;
+            box-shadow: 0 0 10px #b84dff88;
+        }
+
+    .btn-outline-secondary {
+        border-color: #cccccc;
+        color: #cccccc;
+        font-weight: 500;
+    }
+
+        .btn-outline-secondary:hover {
+            background-color: #ffffff10;
+            border-color: #ffffff;
+            color: #ffffff;
+        }
+
+    .btn-secondary {
+        background-color: #444;
+        border: none;
+        color: #ffffff;
+        font-weight: 500;
+    }
+
+        .btn-secondary:hover {
+            background-color: #666;
+        }
+
+    #perguntasContainer input {
+        background-color: #3a0055;
+        border: 1px solid #9b00ff;
+        color: #ffffff;
+        font-size: 0.9rem;
+        border-radius: 8px;
+        padding: 8px 12px;
+    }
+
+        #perguntasContainer input::placeholder {
+            color: #bbbbbb;
+        }
+
+    .text-danger {
+        color: #ff4d6d !important;
+        font-weight: 500;
+    }
+
+    input[type="date"]::-webkit-calendar-picker-indicator {
+        filter: invert(1);
+    }
+</style>

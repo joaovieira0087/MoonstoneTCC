@@ -1,0 +1,366 @@
+﻿@model MoonstoneTCC.Models.CarteiraUsuario
+@using System.Globalization
+@{
+    ViewData["Title"] = "Minha Carteira";
+    ViewData["HideFooter"] = true;
+    var ptBr = CultureInfo.GetCultureInfo("pt-BR");
+}
+
+<style>
+    :root {
+        --roxo: #3b0056;
+        --roxo-escuro: #240038;
+        --azul: #0ea5e9;
+        --azul-escuro: #0284c7;
+        --verde: #10b981;
+        --vermelho: #ef4444;
+        --amarelo: #f59e0b;
+        --txt: #f8f9fa;
+        --txt-muted: #b8b8c2;
+        --borda: rgba(255,255,255,0.08);
+        --bg-glass: rgba(255, 255, 255, 0.03);
+    }
+
+    /* Estilo Geral Neo-Dark */
+    .carteira-container {
+        color: var(--txt);
+        font-family: 'Inter', system-ui, sans-serif;
+    }
+
+    .card-neo {
+        background: radial-gradient(120% 120% at 0% 0%, var(--roxo) 0%, var(--roxo-escuro) 60%), #12121a;
+        border: 1px solid var(--borda);
+        border-radius: 24px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        overflow: hidden;
+    }
+
+    /* Header e Títulos */
+    .page-title {
+        font-weight: 700;
+        letter-spacing: -0.5px;
+    }
+
+    .section-label {
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+        color: var(--azul);
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+
+    /* Cartão de Saldo em Destaque */
+    .saldo-card {
+        background: linear-gradient(135deg, rgba(59,0,86,0.8) 0%, rgba(14,165,233,0.1) 100%);
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .saldo-valor {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: #fff;
+        text-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    /* Botões */
+    .btn-action-primary {
+        background-color: var(--azul);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        padding: 12px 20px;
+        font-weight: 600;
+        transition: all 0.2s;
+        box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);
+    }
+
+        .btn-action-primary:hover {
+            background-color: var(--azul-escuro);
+            transform: translateY(-2px);
+            color: white;
+        }
+
+    .btn-action-outline {
+        background: transparent;
+        border: 1px solid var(--borda);
+        color: var(--txt);
+        border-radius: 12px;
+        padding: 12px 20px;
+        font-weight: 500;
+        transition: all 0.2s;
+    }
+
+        .btn-action-outline:hover {
+            background: var(--bg-glass);
+            border-color: var(--azul);
+            color: white;
+        }
+
+    /* Tabela */
+    .table-responsive {
+        border-radius: 16px;
+    }
+
+    .table-neo {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        color: var(--txt);
+    }
+
+        .table-neo th {
+            text-align: left;
+            padding: 1rem;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: var(--txt-muted);
+            border-bottom: 1px solid var(--borda);
+            font-weight: 600;
+        }
+
+        .table-neo td {
+            padding: 1.2rem 1rem;
+            border-bottom: 1px solid var(--borda);
+            vertical-align: middle;
+            font-size: 0.95rem;
+        }
+
+        .table-neo tr:last-child td {
+            border-bottom: none;
+        }
+
+        .table-neo tr:hover td {
+            background-color: var(--bg-glass);
+        }
+
+    /* Badges e Ícones */
+    .transacao-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 12px;
+        font-size: 1rem;
+    }
+
+    .icon-deposito {
+        background: rgba(16, 185, 129, 0.15);
+        color: var(--verde);
+    }
+
+    .icon-debito {
+        background: rgba(239, 68, 68, 0.15);
+        color: var(--vermelho);
+    }
+
+    .icon-estorno {
+        background: rgba(245, 158, 11, 0.15);
+        color: var(--amarelo);
+    }
+
+    .valor-positivo {
+        color: var(--verde);
+        font-weight: 700;
+    }
+
+    .valor-negativo {
+        color: var(--vermelho);
+        font-weight: 700;
+    }
+
+    /* Alerta Flutuante */
+    .alert-custom {
+        border: 1px solid var(--azul);
+        background: rgba(14, 165, 233, 0.1);
+        color: #fff;
+        border-radius: 12px;
+        backdrop-filter: blur(5px);
+    }
+
+    /* Link discreto */
+    .link-pedido {
+        color: var(--azul);
+        text-decoration: none;
+        font-weight: 500;
+        background: rgba(14, 165, 233, 0.1);
+        padding: 2px 8px;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        transition: 0.2s;
+    }
+
+        .link-pedido:hover {
+            background: var(--azul);
+            color: white;
+        }
+</style>
+
+<div class="container carteira-container mt-4 mb-5">
+
+    @if (TempData["MensagemSucesso"] != null)
+    {
+        <div class="alert alert-custom alert-dismissible fade show mb-4 shadow-lg" role="alert">
+            <div class="d-flex align-items-center">
+                <i class="fa fa-check-circle fa-lg me-3 text-info"></i>
+                <div>
+                    <strong>Sucesso!</strong> @TempData["MensagemSucesso"]
+                </div>
+            </div>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="d-flex align-items-end justify-content-between mb-4">
+        <div>
+            <h2 class="page-title mb-1"><i class="fa fa-wallet me-2"></i>Minha Carteira</h2>
+            <div class="text-white-50 small">Gerencie seu saldo e visualize suas movimentações</div>
+        </div>
+        <div class="d-none d-md-block text-white-50 small">
+            <i class="fa fa-clock me-1"></i> Atualizado: @DateTime.Now.ToString("HH:mm")
+        </div>
+    </div>
+
+    <div class="row g-4">
+
+        <div class="col-lg-4">
+            <div class="card-neo p-4 saldo-card h-100">
+                <div>
+                    <span class="section-label">Saldo Disponível</span>
+                    <div class="saldo-valor mb-3">
+                        @Model.Saldo.ToString("C", ptBr)
+                    </div>
+                    <p class="text-white-50 small mb-4" style="line-height: 1.6;">
+                        Este saldo pode ser utilizado imediatamente para pagamentos na plataforma.
+                    </p>
+                </div>
+
+                <div class="d-grid gap-3">
+                    <a asp-controller="Carteira" asp-action="AdicionarSaldo" class="btn btn-action-primary btn-lg">
+                        <i class="fa fa-plus-circle me-2"></i> Adicionar Saldo
+                    </a>
+                    <a asp-controller="CarrinhoCompra" asp-action="Index" class="btn btn-action-outline">
+                        <i class="fa fa-shopping-cart me-2"></i> Ir para o Carrinho
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+            <div class="card-neo h-100">
+                <div class="p-4 border-bottom border-secondary border-opacity-10 d-flex justify-content-between align-items-center">
+                    <h5 class="m-0 fw-bold"><i class="fa fa-history me-2 text-info"></i>Histórico Recente</h5>
+                    @if (Model.Transacoes.Any())
+                    {
+                        <span class="badge bg-dark border border-secondary text-white-50">@Model.Transacoes.Count() itens</span>
+                    }
+                </div>
+
+                @if (Model.Transacoes != null && Model.Transacoes.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table-neo">
+                            <thead>
+                                <tr>
+                                    <th style="padding-left: 1.5rem;">Transação</th>
+                                    <th>Data</th>
+                                    <th>Ref.</th>
+                                    <th class="text-end" style="padding-right: 1.5rem;">Valor</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var t in Model.Transacoes.OrderByDescending(x => x.Data))
+                                {
+                                    var positivo = t.Valor >= 0;
+                                    <tr>
+                                        <td style="padding-left: 1.5rem;">
+                                            <div class="d-flex align-items-center">
+                                                @switch (t.Tipo)
+                                                {
+                                                    case MoonstoneTCC.Models.TipoTransacaoCarteira.Deposito:
+                                                        <div class="transacao-icon icon-deposito"><i class="fa fa-arrow-down"></i></div>
+                                                        <div>
+                                                            <div class="fw-bold text-white">Depósito</div>
+                                                            <div class="small text-white-50">Crédito em conta</div>
+                                                        </div>
+                                                        break;
+                                                    case MoonstoneTCC.Models.TipoTransacaoCarteira.DebitoPagamentoPedido:
+                                                        <div class="transacao-icon icon-debito"><i class="fa fa-shopping-bag"></i></div>
+                                                        <div>
+                                                            <div class="fw-bold text-white">Pagamento</div>
+                                                            <div class="small text-white-50">Compra realizada</div>
+                                                        </div>
+                                                        break;
+                                                    case MoonstoneTCC.Models.TipoTransacaoCarteira.EstornoCancelamento:
+                                                        <div class="transacao-icon icon-estorno"><i class="fa fa-undo"></i></div>
+                                                        <div>
+                                                            <div class="fw-bold text-white">Estorno</div>
+                                                            <div class="small text-white-50">Devolução de valor</div>
+                                                        </div>
+                                                        break;
+                                                    default:
+                                                        <div class="transacao-icon icon-estorno"><i class="fa fa-cog"></i></div>
+                                                        <div>
+                                                            <div class="fw-bold text-white">Ajuste</div>
+                                                            <div class="small text-white-50">Sistema</div>
+                                                        </div>
+                                                        break;
+                                                }
+                                            </div>
+                                        </td>
+
+                                        <td class="text-white-50">
+                                            @t.Data.ToString("dd/MM/yy") <br />
+                                            <small>@t.Data.ToString("HH:mm")</small>
+                                        </td>
+
+                                        <td>
+                                            @if (t.PedidoId.HasValue)
+                                            {
+                                                <a asp-controller="Pedido" asp-action="Detalhes" asp-route-id="@t.PedidoId" class="link-pedido">
+                                                    <i class="fa fa-box-open me-1"></i> #@t.PedidoId
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-white-50 small">—</span>
+                                            }
+                                        </td>
+
+                                        <td class="text-end" style="padding-right: 1.5rem;">
+                                            <div class="@(positivo ? "valor-positivo" : "valor-negativo") fs-6">
+                                                @(positivo ? "+ " : "")@t.Valor.ToString("C", ptBr)
+                                            </div>
+                                            <small class="text-white-50" style="font-size: 0.75rem;">
+                                                Saldo: @t.SaldoApos.ToString("C", ptBr)
+                                            </small>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="d-flex flex-column align-items-center justify-content-center py-5 text-center">
+                        <div class="mb-3 p-3 rounded-circle" style="background: rgba(255,255,255,0.05);">
+                            <i class="fa fa-receipt fa-2x text-white-50"></i>
+                        </div>
+                        <h6 class="text-white fw-bold">Nenhuma transação encontrada</h6>
+                        <p class="text-white-50 small mb-3">Seu histórico aparecerá aqui.</p>
+                        <a asp-controller="Carteira" asp-action="AdicionarSaldo" class="btn btn-sm btn-action-outline">
+                            Fazer primeiro depósito
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

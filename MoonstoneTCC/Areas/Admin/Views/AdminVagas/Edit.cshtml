@@ -1,0 +1,119 @@
+﻿@model MoonstoneTCC.Models.VagaEmprego
+@{
+    ViewData["Title"] = "Editar Vaga";
+}
+
+<section class="container mt-5">
+    <h2 class="mb-4">Editar Vaga: @Model.Titulo</h2>
+
+    <form asp-action="Edit" method="post">
+        <input type="hidden" asp-for="Id" />
+
+        <div class="mb-3">
+            <label asp-for="Titulo" class="form-label"></label>
+            <input asp-for="Titulo" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Cargo" class="form-label"></label>
+            <input asp-for="Cargo" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Descricao" class="form-label"></label>
+            <textarea asp-for="Descricao" class="form-control" rows="4"></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Requisitos" class="form-label"></label>
+            <textarea asp-for="Requisitos" class="form-control" rows="3"></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Salario" class="form-label"></label>
+            <input asp-for="Salario" class="form-control" type="number" step="0.01" />
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="DataEncerramento" class="form-label">Data de Encerramento</label>
+            <input asp-for="DataEncerramento" type="date" class="form-control" />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+        <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+    </form>
+</section>
+<style>
+    body {
+        color: #ffffff;
+    }
+
+    h2 {
+        color: #ffffff;
+        font-weight: bold;
+    }
+
+    .container {
+        background-color: #2b0048;
+        padding: 40px;
+        border-radius: 16px;
+        box-shadow: 0 0 18px #7c00ff44;
+        max-width: 800px;
+    }
+
+    .form-label {
+        color: #cccccc;
+        font-weight: 500;
+    }
+
+    .form-control {
+        background-color: #3a0055;
+        border: 1px solid #9b00ff;
+        color: #ffffff;
+        font-size: 0.95rem;
+        border-radius: 8px;
+        transition: 0.2s ease-in-out;
+    }
+
+    .form-control:focus {
+        background-color: #3a0055;
+        border-color: #b84dff;
+        box-shadow: 0 0 8px #b84dff88;
+        color: #ffffff;
+    }
+
+    .btn-primary {
+        background-color: #9b00ff;
+        border: none;
+        color: #fff;
+        font-weight: 500;
+        padding: 10px 24px;
+        transition: 0.3s ease-in-out;
+        border-radius: 8px;
+        box-shadow: 0 0 10px #9b00ff55;
+    }
+
+    .btn-primary:hover {
+        background-color: #b84dff;
+        box-shadow: 0 0 15px #b84dffaa;
+    }
+
+    .btn-outline-secondary {
+        color: #cccccc;
+        border-color: #cccccc;
+        font-weight: 500;
+        padding: 10px 24px;
+        margin-left: 10px;
+        border-radius: 8px;
+    }
+
+    .btn-outline-secondary:hover {
+        background-color: #ffffff10;
+        border-color: #ffffff;
+        color: #ffffff;
+    }
+
+    input[type="date"]::-webkit-calendar-picker-indicator {
+        filter: invert(1);
+    }
+</style>

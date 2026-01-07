@@ -1,140 +1,299 @@
-﻿@* Controller: adicionar em Controllers/HomeController.cs *@
-
-@* View: Views/Home/PrivacyPolicy.cshtml *@
-@{
+﻿@{
     ViewData["Title"] = "Política de Privacidade";
     Layout = "_Layout";
 }
-
 <style>
-    .privacy-container {
-        max-width: 900px;
-        width: 90%;
-        margin: 60px auto;
-        background: #3b2f63;
-        color: #f0eafa;
-        padding: 40px 50px;
-        border-radius: 10px;
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
-        line-height: 1.7;
-        font-size: 16px;
+    body {
+        color: #eee;
+        font-family: 'Segoe UI', sans-serif;
     }
-    .privacy-container h1 {
-        color: #d1b3ff;
-        font-size: 32px;
-        margin-bottom: 25px;
-        border-bottom: 2px solid #d1b3ff;
-        padding-bottom: 10px;
+
+    .privacidade-wrapper {
+        display: flex;
+        margin: 40px auto;
+        max-width: 1300px;
     }
-    .privacy-container h2 {
-        color: #e3cfff;
-        font-size: 22px;
-        margin-top: 30px;
-        margin-bottom: 15px;
+
+    .menu-lateral {
+        width: 280px;
+        padding: 20px;
+        background-color: #2b1b4f;
+        border-radius: 15px;
+        margin-right: 30px;
+        height: fit-content;
+        position: sticky;
+        top: 30px;
     }
-    .privacy-container p, .privacy-container li {
-        margin-bottom: 18px;
+
+    .menu-lateral ul {
+        list-style: none;
+        padding-left: 0;
     }
-    .privacy-container ol, .privacy-container ul {
-        padding-left: 25px;
+
+    .menu-lateral li {
+        margin-bottom: 14px;
     }
-    .privacy-container a {
-        color: #bb94e0;
+
+    .menu-lateral a {
+        color: #d3b6ff;
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+    .menu-lateral a:hover {
+        color: #fff;
         text-decoration: underline;
     }
-    .privacy-container a:hover {
-        color: #d1b3ff;
+
+    .conteudo-politica {
+        flex: 1;
+        background-color: #3b2f63;
+        padding: 40px;
+        border-radius: 15px;
+        box-shadow: 0 0 25px rgba(0, 0, 0, 0.3);
     }
-    .privacy-container em {
-        display: block;
-        margin-top: 40px;
-        text-align: right;
-        font-size: 14px;
-        color: #c4aad4;
+
+    .conteudo-politica h2 {
+        color: #d7c4ff;
+        margin-top: 30px;
+        border-bottom: 1px solid #7d60b4;
+        padding-bottom: 6px;
+    }
+
+    .conteudo-politica p, .conteudo-politica li {
+        line-height: 1.7;
+        margin-bottom: 15px;
+    }
+
+    .rodape-links {
+        margin-top: 60px;
+        background-color: #1e112f;
+        padding: 20px;
+        border-radius: 10px;
+        text-align: center;
+    }
+
+    .rodape-links a {
+        color: #a17ff5;
+        margin: 0 15px;
+        text-decoration: none;
+        font-size: 15px;
+    }
+
+    .rodape-links a:hover {
+        color: #fff;
     }
 </style>
 
-<div class="privacy-container">
-    <h1>Política de Privacidade</h1>
-    <p>Seu consentimento é importante para nós. Esta Política de Privacidade descreve como coletamos, usamos, protegemos e compartilhamos suas informações pessoais ao utilizar nosso site de ecommerce.</p>
+<div class="privacidade-wrapper">
+    <nav class="menu-lateral">
+        <ul>
+            <li><a href="#definicoes">1. Definições</a></li>
+            <li><a href="#dados">2. Quais Dados Coletamos</a></li>
+            <li><a href="#finalidades">3. Finalidades</a></li>
+            <li><a href="#baselegal">4. Base Legal</a></li>
+            <li><a href="#compartilhamento">5. Compartilhamento</a></li>
+            <li><a href="#cookies">6. Cookies</a></li>
+            <li><a href="#retencao">7. Retenção de Dados</a></li>
+            <li><a href="#direitos">8. Direitos</a></li>
+            <li><a href="#seguranca">9. Segurança</a></li>
+            <li><a href="#transferencia">10. Transferência</a></li>
+            <li><a href="#alteracoes">11. Alterações</a></li>
+            <li><a href="#contato">12. Contato</a></li>
+        </ul>
+    </nav>
 
-    <h2>1. Definições</h2>
-    <ul>
-        <li><strong>Controlador</strong>: a empresa responsável pelas decisões relativas ao tratamento dos dados pessoais.</li>
-        <li><strong>Dados Pessoais</strong>: qualquer informação relacionada a pessoa natural identificada ou identificável.</li>
-        <li><strong>Usuário</strong>: pessoa que acessa, navega ou faz cadastro em nosso site.</li>
-        <li><strong>Tratamento</strong>: operações realizadas com dados pessoais (coleta, uso, armazenamento, compartilhamento etc.).</li>
-    </ul>
+    <div class="conteudo-politica">
+        <h1>Política de Privacidade</h1>
+        <p>Seu consentimento é essencial para garantir uma experiência transparente, segura e personalizada em nosso site. Esta Política de Privacidade descreve, de forma clara e acessível, como tratamos os dados pessoais dos nossos usuários e clientes ao utilizar nossos serviços.</p>
 
-    <h2>2. Quais Dados Coletamos</h2>
-    <ul>
-        <li><strong>Informações de Conta:</strong> nome, email, telefone e endereço fornecidos no cadastro.</li>
-        <li><strong>Credenciais:</strong> senha criptografada.</li>
-        <li><strong>Dados de Pagamento:</strong> token de pagamento gerado por gateway, sem armazenamento de dados completos de cartão.</li>
-        <li><strong>Dados de Navegação:</strong> cookies, endereço IP, páginas visitadas, tempo de permanência.</li>
-        <li><strong>Dados de Suporte:</strong> histórico de atendimento e comunicações.</li>
-    </ul>
+        <h2 id="definicoes">1. Definições</h2>
+        <ul>
+            <li><strong>Controlador:</strong> a pessoa jurídica responsável pelas decisões referentes ao tratamento de dados pessoais. Em nosso caso, somos os responsáveis por decidir como e por que os seus dados serão utilizados.</li>
+            <li><strong>Dados Pessoais:</strong> qualquer informação que, direta ou indiretamente, identifique ou possa identificar uma pessoa física, como nome, e-mail, CPF, endereço IP, entre outros.</li>
+            <li><strong>Usuário:</strong> qualquer indivíduo que acesse, navegue, interaja ou realize cadastro em nosso site, independentemente da realização de uma compra.</li>
+            <li><strong>Tratamento:</strong> toda operação realizada com dados pessoais, como coleta, uso, acesso, reprodução, armazenamento, processamento, compartilhamento, arquivamento, eliminação ou qualquer outro uso.</li>
+        </ul>
 
-    <h2>3. Finalidades do Tratamento</h2>
-    <ol>
-        <li>Processamento de pedidos e gerenciamento de conta.</li>
-        <li>Envio de confirmações, notificações e marketing (com consentimento prévio).</li>
-        <li>Melhoria contínua do site e experiência do usuário.</li>
-        <li>Prevenção a fraudes e análise de segurança.</li>
-        <li>Atendimento a obrigações legais e regulatórias.</li>
-    </ol>
+        <h2 id="dados">2. Quais Dados Coletamos</h2>
+        <p>Coletamos os dados essenciais para a execução de nossos serviços e para proporcionar uma experiência personalizada ao usuário. Entre os principais dados coletados, destacamos:</p>
+        <ul>
+            <li><strong>Informações de Conta:</strong> nome completo, endereço de e-mail, número de telefone, CPF e endereço físico, fornecidos pelo usuário no momento do cadastro ou durante uma compra.</li>
+            <li><strong>Credenciais:</strong> senha de acesso criada pelo usuário, armazenada de forma criptografada para garantir sua segurança.</li>
+            <li><strong>Dados de Pagamento:</strong> informações protegidas e tokenizadas, geradas por sistemas de pagamento seguros. Não armazenamos dados sensíveis do cartão de crédito.</li>
+            <li><strong>Dados de Navegação:</strong> como endereço IP, dispositivo utilizado, localização aproximada, páginas acessadas, tempo de permanência e cliques, por meio de cookies e tecnologias similares.</li>
+            <li><strong>Dados de Suporte:</strong> interações realizadas com nosso time de atendimento, como e-mails, formulários de contato e histórico de suporte.</li>
+        </ul>
 
-    <h2>4. Base Legal</h2>
-    <p>Tratamos seus dados com fundamento nas seguintes bases legais:</p>
-    <ul>
-        <li><strong>Contrato:</strong> para execução de compras solicitadas.</li>
-        <li><strong>Consentimento:</strong> para envio de newsletters e ofertas.</li>
-        <li><strong>Legítimo Interesse:</strong> para segurança, prevenção a fraudes e análise estatística.</li>
-        <li><strong>Obrigação Legal:</strong> para cumprimento de obrigações fiscais e tributárias.</li>
-    </ul>
+        <h2 id="finalidades">3. Finalidades do Tratamento</h2>
+        <p>Os dados são tratados com finalidades legítimas e específicas, respeitando os princípios da Lei Geral de Proteção de Dados (LGPD). Dentre as principais finalidades, destacamos:</p>
+        <ol>
+            <li>Executar a entrega de produtos, processar pagamentos, emitir notas fiscais e manter o usuário informado sobre o status do pedido.</li>
+            <li>Enviar comunicações transacionais, como confirmações de cadastro e atualizações de pedidos, bem como comunicações promocionais, mediante o consentimento do usuário.</li>
+            <li>Personalizar a experiência do usuário, oferecer produtos mais relevantes, otimizar a navegação e recomendar itens com base nos interesses identificados.</li>
+            <li>Detectar e prevenir fraudes, monitorar atividades suspeitas e proteger a integridade dos sistemas e dados da plataforma.</li>
+            <li>Atender obrigações legais, regulatórias e fiscais, como prestação de contas junto às autoridades competentes.</li>
+        </ol>
 
-    <h2>5. Compartilhamento de Dados</h2>
-    <p>Podemos compartilhar seus dados com:</p>
-    <ul>
-        <li><strong>Fornecedores de Pagamento:</strong> para cobrança e verificação.</li>
-        <li><strong>Transportadoras:</strong> para entrega de produtos.</li>
-        <li><strong>Prestadores de Serviço:</strong> hospedagem, marketing, análise de dados.</li>
-        <li><strong>Autoridades Legais:</strong> quando exigido por lei ou ordem judicial.</li>
-    </ul>
+        <h2 id="baselegal">4. Base Legal</h2>
+        <p>Realizamos o tratamento dos dados pessoais com base nas seguintes hipóteses legais previstas na LGPD:</p>
+        <ul>
+            <li><strong>Execução de Contrato:</strong> para viabilizar a compra de produtos, entrega e emissão de documentos fiscais.</li>
+            <li><strong>Consentimento:</strong> quando o usuário autoriza o recebimento de newsletters, promoções e comunicações de marketing.</li>
+            <li><strong>Legítimo Interesse:</strong> para garantir a segurança da plataforma, prevenção a fraudes e melhoria contínua dos serviços oferecidos.</li>
+            <li><strong>Obrigação Legal:</strong> para cumprimento de exigências legais e fiscais, como armazenamento de dados para auditorias e declarações tributárias.</li>
+        </ul>
 
-    <h2>6. Cookies e Tecnologias Semelhantes</h2>
-    <p>Utilizamos cookies para:</p>
-    <ul>
-        <li>Manter sessão autenticada.</li>
-        <li>Personalizar conteúdo e ofertas.</li>
-        <li>Coletar métricas de uso e desempenho.</li>
-    </ul>
-    <p>Você pode gerenciar suas preferências de cookies nas configurações do navegador.</p>
+        <h2 id="compartilhamento">5. Compartilhamento de Dados</h2>
+        <p>Seus dados podem ser compartilhados com terceiros em situações específicas e sempre com o compromisso de confidencialidade e segurança. Esses terceiros incluem:</p>
+        <ul>
+            <li><strong>Meios de Pagamento:</strong> para processar cobranças e validar transações de forma segura.</li>
+            <li><strong>Transportadoras e Correios:</strong> para viabilizar a entrega dos produtos adquiridos.</li>
+            <li><strong>Fornecedores de Tecnologia e Marketing:</strong> que prestam serviços de hospedagem, armazenamento em nuvem, envio de e-mails e análise de dados.</li>
+            <li><strong>Autoridades Públicas:</strong> quando houver obrigação legal, como em investigações judiciais ou requisições formais.</li>
+        </ul>
 
-    <h2>7. Retenção de Dados</h2>
-    <p>Retemos seus dados pessoais enquanto sua conta estiver ativa e, após o cancelamento, pelo período exigido por lei (ex.: obrigatoriedade fiscal de 5 anos).</p>
+        <h2 id="cookies">6. Cookies</h2>
+        <p>Utilizamos cookies e tecnologias semelhantes para aprimorar sua experiência no site, permitindo:</p>
+        <ul>
+            <li>Manter sua sessão ativa após o login.</li>
+            <li>Armazenar suas preferências e personalizações.</li>
+            <li>Coletar informações sobre o desempenho do site e hábitos de navegação.</li>
+        </ul>
+        <p>Você pode desativar ou gerenciar os cookies diretamente no seu navegador, mas isso pode afetar algumas funcionalidades do site.</p>
 
-    <h2>8. Direitos dos Usuários</h2>
-    <p>Você tem direito de:</p>
-    <ul>
-        <li>Acessar, corrigir ou atualizar seus dados.</li>
-        <li>Solicitar portabilidade ou exclusão de dados.</li>
-        <li>Revogar consentimento a qualquer momento.</li>
-        <li>Opor-se ao tratamento ou solicitar limitação.</li>
-    </ul>
-    <p>Para exercer seus direitos, contate nosso Encarregado de Proteção de Dados (DPO) em <a href="mailto:dpo@seusite.com">dpo@seusite.com</a>.</p>
+        <h2 id="retencao">7. Retenção de Dados</h2>
 
-    <h2>9. Segurança</h2>
-    <p>Adotamos medidas técnicas e organizacionais, como criptografia SSL, para proteger seus dados contra acesso não autorizado, vazamento e perda.</p>
+        <p>
+            A retenção de dados pessoais é conduzida com extremo rigor e responsabilidade, observando os princípios da finalidade, necessidade, minimização e proporcionalidade, conforme estabelecido pela LGPD (Lei 13.709/18), GDPR (Regulamento Europeu) e boas práticas internacionais de governança de dados. Estabelecemos critérios técnicos e jurídicos para determinar o prazo de retenção mais adequado a cada categoria de dado, visando à proteção dos titulares, o cumprimento de obrigações legais e a eficiência operacional.
+        </p>
 
-    <h2>10. Transferência Internacional</h2>
-    <p>Seus dados podem ser transferidos a servidores ou prestadores localizados fora do Brasil, observando garantias adequadas de privacidade.</p>
+        <h3>7.1 Política de Retenção por Categoria</h3>
+        <p>Adotamos uma política de retenção segmentada, com prazos definidos conforme o tipo de dado e sua finalidade:</p>
+        <ul>
+            <li><strong>Dados de Identificação (nome, CPF, e-mail, telefone, endereço):</strong> retidos enquanto houver vínculo contratual ou obrigação fiscal/legal, e por até 5 anos após o encerramento da relação, conforme exigido pelo Código Civil e legislação tributária.</li>
+            <li><strong>Dados de Transações Comerciais (pedidos, faturas, entregas):</strong> armazenados por, no mínimo, 5 anos, conforme o art. 173 do Código Tributário Nacional.</li>
+            <li><strong>Dados de Navegação (cookies, logs, IPs):</strong> mantidos por até 12 meses, conforme o Marco Civil da Internet (Lei 12.965/14), para finalidades de segurança e rastreabilidade.</li>
+            <li><strong>Dados de Suporte e Atendimento:</strong> retidos por até 3 anos após a última interação, para fins de auditoria, compliance e prevenção de litígios.</li>
+            <li><strong>Dados de Consentimento:</strong> registros de aceite, logs de opt-in/out e versões da política de privacidade são armazenados por no mínimo 5 anos para fins probatórios.</li>
+        </ul>
 
-    <h2>11. Alterações nesta Política</h2>
-    <p>Atualizaremos esta Política periodicamente. A versão vigente estará sempre disponível em nosso site com data de última revisão.</p>
+        <h3>7.2 Finalização do Prazo de Retenção</h3>
+        <p>Após a expiração do prazo legal ou contratual, os dados pessoais passam por uma das seguintes medidas:</p>
+        <ul>
+            <li><strong>Anonimização:</strong> técnica que torna os dados não identificáveis, permitindo sua utilização para fins estatísticos e analíticos sem afetar os direitos dos titulares.</li>
+            <li><strong>Eliminação Segura:</strong> exclusão definitiva dos dados por meio de processos criptograficamente seguros e irrecuperáveis, como overwriting e sanitização de discos.</li>
+        </ul>
 
-    <h2>12. Contato</h2>
-    <p>Em caso de dúvidas ou solicitações relativas a dados pessoais, fale conosco em <a href="mailto:privacidade@seusite.com">privacidade@seusite.com</a> ou pelo telefone (11) 1234-5678.</p>
+        <h3>7.3 Armazenamento Seguro e Ambientes Controlados</h3>
+        <ul>
+            <li><strong>Data Centers Certificados:</strong> utilizamos provedores que operam em conformidade com ISO 27001, ISO 27701 e SOC 2, com redundância geográfica e alta disponibilidade.</li>
+            <li><strong>Controle de Acesso:</strong> apenas profissionais autorizados e com necessidade operacional têm acesso aos dados retidos, mediante autenticação forte e registro de logs.</li>
+            <li><strong>Monitoramento e Revisão:</strong> todos os dados armazenados são revisados periodicamente para avaliar a necessidade de retenção ou descarte, de acordo com ciclos definidos por departamento e base legal.</li>
+        </ul>
 
-    <em>Última atualização: 5 de maio de 2025</em>
+        <h3>7.4 Direitos do Titular e Retenção</h3>
+        <p>
+            Mesmo durante o período de retenção, os titulares dos dados mantêm seus direitos garantidos por lei. É possível solicitar:
+        </p>
+        <ul>
+            <li>Acesso aos dados armazenados durante o período vigente de retenção;</li>
+            <li>Correção ou atualização de dados desatualizados;</li>
+            <li>Oposição ao tratamento quando não houver base legal predominante;</li>
+            <li>Eliminação antecipada de dados, exceto quando houver impedimento legal.</li>
+        </ul>
+
+        <h3>7.5 Retenção em Caso de Litígio, Fraude ou Investigação</h3>
+        <p>
+            Em situações excepcionais, como processos judiciais, investigações internas, fraudes comprovadas ou determinações de órgãos competentes (ex: Autoridade Nacional de Proteção de Dados, Receita Federal, Ministério Público ou órgãos internacionais), os dados poderão ser retidos por prazo superior ao inicialmente previsto, até o encerramento da demanda, respeitando os princípios de proporcionalidade, necessidade e finalidade.
+        </p>
+
+        <h3>7.6 Retenção Fora do Território Nacional</h3>
+        <p>
+            Quando os dados forem armazenados em servidores localizados fora do Brasil, as mesmas regras de retenção serão aplicadas. Garantimos, por meio de cláusulas contratuais específicas, que os prazos e políticas de retenção dos parceiros internacionais respeitem a legislação brasileira.
+        </p>
+
+        <h3>7.7 Documentação e Transparência</h3>
+        <p>
+            Mantemos um inventário detalhado dos prazos de retenção aplicáveis a cada tipo de dado, incluindo a respectiva base legal, responsável pelo tratamento, política de descarte e data prevista para revisão. Esse documento está disponível para consulta da Autoridade Nacional de Proteção de Dados (ANPD), auditorias e inspeções regulatórias.
+        </p>
+
+        <p>
+            A retenção de dados é continuamente auditada, revisada e ajustada com base em avaliações de risco, mudanças legislativas e boas práticas internacionais. Nosso compromisso é garantir que nenhum dado seja mantido além do necessário, promovendo um ambiente digital ético, transparente e seguro.
+        </p>
+
+        <h2 id="direitos">8. Direitos dos Usuários</h2>
+        <p>De acordo com a LGPD, você possui diversos direitos em relação aos seus dados pessoais, tais como:</p>
+        <ul>
+            <li>Acessar os dados que possuímos sobre você.</li>
+            <li>Solicitar a correção de informações incorretas ou desatualizadas.</li>
+            <li>Pedir a exclusão definitiva dos dados (exceto quando houver obrigação legal de retenção).</li>
+            <li>Revogar seu consentimento para comunicações de marketing.</li>
+            <li>Solicitar a portabilidade dos dados para outro fornecedor de serviços.</li>
+        </ul>
+        <p>Para exercer qualquer um desses direitos, basta entrar em contato conosco pelos canais disponibilizados na seção de contato.</p>
+        <h2 id="seguranca">9. Segurança</h2>
+        <p>
+            A proteção dos seus dados é uma prioridade absoluta para nossa organização. Adotamos uma abordagem abrangente e proativa em relação à segurança da informação, seguindo os princípios da confidencialidade, integridade, disponibilidade e resiliência dos sistemas e dados pessoais. Nossas práticas estão alinhadas com os padrões internacionais de segurança, incluindo, mas não se limitando, à ISO/IEC 27001 e à LGPD (Lei Geral de Proteção de Dados).
+        </p>
+
+        <h3>9.1 Medidas Técnicas</h3>
+        <ul>
+            <li><strong>Criptografia:</strong> Utilizamos criptografia em trânsito (TLS 1.2+) e, quando aplicável, criptografia em repouso para proteger os dados sensíveis contra interceptações não autorizadas.</li>
+            <li><strong>Firewall e IDS/IPS:</strong> Firewalls de próxima geração (NGFW) e sistemas de detecção e prevenção de intrusos monitoram continuamente o tráfego de rede para bloquear tentativas de ataques cibernéticos.</li>
+            <li><strong>Autenticação Multifator (MFA):</strong> Todas as áreas administrativas e contas críticas exigem autenticação em duas etapas para acesso seguro.</li>
+            <li><strong>Controle de Acesso Baseado em Papéis (RBAC):</strong> O acesso aos sistemas é concedido com base em permissões mínimas necessárias, evitando acessos indevidos.</li>
+            <li><strong>Backup e Recuperação:</strong> Realizamos backups automáticos e criptografados regularmente com planos de recuperação de desastres (DRP) e continuidade de negócios (BCP).</li>
+            <li><strong>Ambiente Isolado:</strong> Utilizamos ambientes segregados para desenvolvimento, testes e produção, evitando interferências e vazamentos.</li>
+        </ul>
+
+        <h3>9.2 Medidas Organizacionais</h3>
+        <ul>
+            <li><strong>Treinamento Contínuo:</strong> Todos os colaboradores recebem treinamentos periódicos sobre segurança da informação, prevenção de vazamentos e práticas de proteção de dados.</li>
+            <li><strong>Auditorias e Avaliações de Risco:</strong> Realizamos auditorias internas e externas com frequência para identificar vulnerabilidades, riscos operacionais e conformidade com requisitos legais e normativos.</li>
+            <li><strong>Políticas de Segurança:</strong> Mantemos políticas formalizadas de Segurança da Informação, Gestão de Acessos, Uso Aceitável de Tecnologia e Gestão de Incidentes.</li>
+            <li><strong>Resposta a Incidentes:</strong> Contamos com um plano estruturado de resposta a incidentes, com SLA para investigação, comunicação e mitigação de violações ou tentativas de intrusão.</li>
+        </ul>
+
+        <h3>9.3 Monitoramento e Prevenção Contínuos</h3>
+        <p>
+            Nossos sistemas são monitorados 24 horas por dia, 7 dias por semana, por meio de ferramentas de SIEM (Security Information and Event Management), que permitem detectar padrões anômalos, tentativas de acesso não autorizado e falhas sistêmicas. Utilizamos tecnologias de machine learning para antecipar ameaças e reforçar nossa defesa.
+        </p>
+
+        <h3>9.4 Conformidade e Normas Técnicas</h3>
+        <ul>
+            <li><strong>ISO/IEC 27001:</strong> Nossos processos de segurança seguem os princípios da norma internacional para gestão de segurança da informação.</li>
+            <li><strong>LGPD:</strong> Garantimos que todas as medidas estejam em conformidade com a legislação brasileira de proteção de dados, especialmente no que diz respeito à segurança técnica e administrativa dos dados pessoais.</li>
+            <li><strong>Princípio do "Privacy by Design":</strong> A privacidade e a segurança são incorporadas desde a concepção de qualquer novo produto ou funcionalidade.</li>
+            <li><strong>Revisão Periódica:</strong> A política de segurança é revisada e atualizada constantemente conforme evolução tecnológica e cenários de ameaça.</li>
+        </ul>
+
+        <h3>9.5 Responsabilidade e Transparência</h3>
+        <p>
+            Assumimos total responsabilidade pela segurança dos dados tratados sob nossa guarda. Em caso de qualquer incidente de segurança que possa acarretar risco ou dano relevante aos titulares, nos comprometemos a notificar prontamente a Autoridade Nacional de Proteção de Dados (ANPD) e os usuários afetados, conforme previsto em lei.
+        </p>
+
+        <p>
+            Continuamente, buscamos a excelência em segurança digital para proteger nossos usuários, clientes e parceiros, promovendo um ecossistema confiável, ético e resiliente.
+        </p>
+        <h2 id="transferencia">10. Transferência Internacional</h2>
+        <p>Alguns de nossos fornecedores e parceiros podem estar localizados fora do Brasil. Nesses casos, garantimos que a transferência dos dados ocorra apenas para países que ofereçam grau de proteção adequado ou mediante cláusulas contratuais que assegurem a proteção dos dados conforme exigido pela LGPD.</p>
+
+        <h2 id="alteracoes">11. Alterações</h2>
+        <p>Esta Política de Privacidade poderá ser alterada a qualquer momento, visando atualizações legais ou aprimoramentos no tratamento dos dados. Toda alteração relevante será comunicada de forma clara. Recomendamos que consulte esta política periodicamente para estar ciente de eventuais modificações.</p>
+
+        <h2 id="contato">12. Contato</h2>
+        <p>Caso tenha dúvidas, sugestões ou deseje exercer seus direitos, entre em contato com nosso Encarregado de Proteção de Dados (DPO) pelo e-mail <a href="mailto:privacidade@seusite.com">privacidade@seusite.com</a> ou pelo telefone (11) 1234-5678. Estamos à disposição para atendê-lo com transparência e agilidade.</p>
+
+        <em>Última atualização: 5 de maio de 2025</em>
+    </div>
+</div>
+
+<div class="rodape-links">
+    <a href="/Home/QuemSomos">Quem Somos</a>
+    <a href="/Home/PoliticaEnvio">Política de Envio</a>
+    <a href="/Home/PoliticaDevolucao">Política de Devolução</a>
+    <a href="/Home/TermosUso">Termos de Uso</a>
+    <a href="/Home/Faq">FAQ</a>
+    <a href="/Home/Contato">Contato</a>
 </div>

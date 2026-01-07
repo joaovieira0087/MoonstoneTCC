@@ -90,6 +90,35 @@ namespace MoonstoneTCC.Models
         public int CategoriaId { get; set; }
         public virtual Categoria Categoria { get; set; }
 
+        [Display(Name = "Preço Promocional")]
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal? PrecoPromocional { get; set; }
 
+        [Display(Name = "Porcentagem de Desconto")]
+        public int? PorcentagemDesconto { get; set; }
+
+        [Display(Name = "Quantidade em Estoque")]
+        public int QuantidadeEstoque { get; set; }
+
+        [Display(Name = "Estoque mínimo de alerta")]
+        public int EstoqueMinimoAlerta { get; set; }
+
+
+
+
+        // DESENVOVEDORA JOGO 
+
+        public int? DesenvolvedoraId { get; set; }
+
+        [ForeignKey("DesenvolvedoraId")]
+        public Desenvolvedora Desenvolvedora { get; set; }
+
+        public virtual ICollection<ComentarioJogo> Comentarios { get; set; } = new List<ComentarioJogo>();
+
+        [NotMapped]
+        public double AvaliacaoMedia => Comentarios?.Any() == true
+        ? Comentarios.Average(c => c.Avaliacao)
+        : 0;
     }
 }
+

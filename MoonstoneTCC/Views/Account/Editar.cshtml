@@ -1,0 +1,137 @@
+﻿@model MoonstoneTCC.ViewModels.UserEditViewModel
+@{
+    ViewData["Title"] = "Editar Perfil";
+}
+
+@if (TempData["MensagemSucesso"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["MensagemSucesso"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+    </div>
+}
+
+@if (TempData["MensagemErro"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["MensagemErro"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+    </div>
+}
+
+
+
+
+<style>
+    .linha-dado {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        padding: 15px 20px;
+        margin-bottom: 15px;
+    }
+
+    .linha-dado strong {
+        display: block;
+        font-size: 1.1rem;
+        color: #000;
+    }
+
+    .linha-dado small {
+        color: #6c757d;
+    }
+
+    .linha-dado input {
+        margin-top: 5px;
+    }
+
+    .btn-editar {
+        background-color: #6f42c1;
+        color: white;
+        border: none;
+        padding: 6px 16px;
+        border-radius: 5px;
+    }
+
+    .btn-editar:hover {
+        background-color: #5a32a3;
+    }
+</style>
+
+<h2 class="text-white">Login e Segurança</h2>
+<hr class="bg-light" />
+
+<form asp-action="Editar" method="post">
+    <input type="hidden" asp-for="Id" />
+
+    <div class="linha-dado">
+        <div>
+            <strong>Nome</strong>
+            <input asp-for="Nome" class="form-control" />
+        </div>
+    </div>
+
+    <div class="linha-dado">
+        <div>
+            <strong>Sobrenome</strong>
+            <input asp-for="Sobrenome" class="form-control" />
+        </div>
+    </div>
+
+    <div class="linha-dado">
+        <div>
+            <strong>Telefone</strong>
+            <input asp-for="Telefone" class="form-control" />
+        </div>
+    </div>
+
+    <div class="linha-dado">
+        <div>
+            <strong>CPF</strong>
+            <input asp-for="CPF" class="form-control" />
+        </div>
+    </div>
+
+    <div class="linha-dado">
+        <div>
+            <strong>Email</strong>
+            <input asp-for="Email" class="form-control" />
+        </div>
+    </div>
+
+    <div class="linha-dado">
+        <div>
+            <strong>Nome de Usuário</strong>
+            <input asp-for="UserName" class="form-control" />
+        </div>
+    </div>
+
+    <div class="linha-dado">
+        <div>
+            <strong>Senha Atual</strong>
+            <input asp-for="SenhaAtual" class="form-control" />
+            <small>Necessária para alterar a senha.</small>
+        </div>
+    </div>
+
+    <div class="linha-dado">
+        <div>
+            <strong>Nova Senha</strong>
+            <input asp-for="NovaSenha" class="form-control" />
+        </div>
+    </div>
+
+    <div class="linha-dado">
+        <div>
+            <strong>Confirmar Nova Senha</strong>
+            <input asp-for="ConfirmarSenha" class="form-control" />
+        </div>
+    </div>
+
+    <div class="text-end mt-4">
+        <button type="submit" class="btn btn-editar">Salvar Alterações</button>
+        <a asp-action="Perfil" class="btn btn-outline-light ms-2">Cancelar</a>
+    </div>
+</form>

@@ -1,5 +1,9 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@RenderSection("Styles", required: false)
+<!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,302 +13,526 @@
     
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
     <style>
-        body {
-            background-color: #3A0066; /* Cinza escuro */
-            
+        /* =========================
+           Moonstone — Top Navbar UI
+           Paleta + componentes base
+           ========================= */
+
+        /* Fundo global do site (como era antes) */
+        html, body {
+            background-color: #3A0066 !important;
+            background-image: none !important;
+        }
+
+        /* opcional: se algum wrapper estiver pintando o fundo, deixe transparente */
+        main, .page-wrapper, .site-content, .container, .container-fluid {
+            background: transparent !important;
         }
 
 
-        /* Estilização para o fundo roxo com bola */
-        .btn-icon {
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background-color: rgba(128, 0, 128, 0.8); /* Cor roxa com transparência */
-            color: white;
-            margin: 0 5px;
-            transition: transform 0.3s, background-color 0.3s;
+        /* Paleta do topo usada só dentro do <header>  */
+        header {
+            --nav-bg-1: #2a0044;
+            --nav-bg-2: #4a007f;
+            --surface-1: #3b0056;
+            --surface-2: #2b0048;
+            --border: rgba(255,255,255,.16);
+            --text: #ffffff;
+            --text-muted: #cfcfe6;
+            --placeholder: #b8a9c9;
+            --accent: #b84dff;
+            --accent-2: #00d0ff;
+            --shadow-1: 0 10px 26px rgba(0,0,0,.35);
+            --shadow-2: 0 8px 18px rgba(0,0,0,.30); */
         }
 
-            .btn-icon:hover {
-                background-color: rgba(128, 0, 128, 1); /* Fundo roxo mais escuro no hover */
-                transform: scale(1.1); /* Efeito de crescimento */
-            }
 
+        /* ============= NAVBAR ============ */
+        
         .navbar {
-            background: #3B0056;
+        background: linear-gradient(180deg, var(--nav-bg-1), var(--nav-bg-2)); 
+            border-bottom: 1px solid var(--border);
+            box-shadow: var(--shadow-1);
         }
 
         .navbar-brand img {
-            height: 55px; /* Ajuste o tamanho da logo */
+            height: 52px;
+        }
+
+        .navbar-collapse {
+            gap: 10px;
         }
 
         .navbar-nav .nav-link {
-            font-size: 1.0rem; /* Aumenta o tamanho do texto */
-            font-weight: bold;
-            margin-right: 3px;
+            color: var(--text) !important;
+            font-weight: 700;
+            letter-spacing: .2px;
         }
 
-        .navbar-nav .nav-item:last-child {
-            margin-right: 3px; /* Remove o espaçamento extra do último item */
+        /* Toggler (mobile) */
+        .navbar-toggler {
+            border: 1px solid rgba(255,255,255,.35);
+            border-radius: 10px;
         }
 
-        #hamburgerMenu {
-            margin-left: 3px; /* Espaçamento entre o menu hambúrguer e o restante */
-        }
-        /*menu ha*/
-        .dropdown-menu {
-            position: absolute;
-            top: 100%;
-            right: 0;
-            z-index: 1050;
-            min-width: 10rem;
-            padding: 0.5rem 0;
-            background-color: #ffffff;
-            border: 1px solid rgba(0, 0, 0, 0.15);
-            border-radius: 0.25rem;
-            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.175);
-        }
-        /*Campo de pesquisa */
+            .navbar-toggler:focus {
+                box-shadow: 0 0 0 2px var(--accent);
+            }
 
+        /* ============= BOTÕES REDONDOS (ícones) ============= */
+
+        .btn-icon {
+            width: 48px;
+            height: 48px;
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+            background: radial-gradient(120% 120% at 30% 20%, var(--surface-1), var(--surface-2));
+            color: var(--text) !important;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-2);
+            transition: transform .12s ease, background .2s ease, border-color .2s ease;
+        }
+
+            .btn-icon:hover {
+                transform: translateY(-1px);
+                background: radial-gradient(120% 120% at 30% 20%, #4b0a8e, var(--surface-1));
+                border-color: rgba(255,255,255,.28);
+            }
+
+        /* ============= CATEGORIA (pílula) ============= */
+        /* No Razor vou colocar a classe .btn-category no botão “Jogos” */
+        .btn-category {
+            height: 48px;
+            padding: 0 18px;
+            border-radius: 999px;
+            color: var(--text);
+            font-weight: 800;
+            background: linear-gradient(135deg, #5b10a6, #8a3ad6);
+            border: 1px solid rgba(255,255,255,.18);
+            box-shadow: var(--shadow-2);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+            .btn-category:hover {
+                background: linear-gradient(135deg, #6a20b8, #9b4ff0);
+                color: #fff;
+            }
+
+            .btn-category:focus-visible {
+                outline: 2px solid var(--accent);
+                outline-offset: 2px;
+            }
+
+        /* ============= BARRA DE PESQUISA (glass roxo) ============= */
+
+        .search-form {
+            flex: 1 1 auto;
+        }
 
         .search-bar {
-            width: 600px;
-            max-width: 1200px; /* Aumenta a largura máxima */
+            width: clamp(360px, 48vw, 820px);
             display: flex;
             align-items: center;
-            border: 2px solid #ccc;
-            border-radius: 30px; /* Ajusta o arredondamento para um campo maior */
-            padding: 10px 20px; /* Aumenta o espaçamento interno */
-            background-color: #f9f9f9;
-            transition: box-shadow 0.3s ease;
-            margin-left:20px;
+            gap: 10px;
+            padding: 10px 14px 10px 16px;
+            border-radius: 999px;
+            background: rgba(255,255,255,.08);
+            border: 1px solid rgba(255,255,255,.22);
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,.04), var(--shadow-2);
+            transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
         }
 
             .search-bar:hover,
             .search-bar:focus-within {
-                
+                background: rgba(255,255,255,.12);
+                border-color: rgba(255,255,255,.32);
+                box-shadow: inset 0 0 0 1px rgba(255,255,255,.06), 0 14px 26px rgba(0,0,0,.38);
             }
 
         .search-input {
-            flex: 1;
-            border: none;
-            outline: none;
+            flex: 1 1 auto;
+            background: transparent;
+            border: 0;
+            outline: 0;
+            color: var(--text);
             font-size: 16px;
+            padding: 8px 6px;
+            min-width: 120px;
+            caret-color: var(--accent);
         }
 
             .search-input::placeholder {
-                color: #999;
+                color: var(--placeholder);
             }
 
+        /* Botão de enviar (lupa) */
         .search-btn {
-            background: none;
-            border: none;
-            padding: 5px; /* Espaçamento interno */
-            cursor: pointer;
-            font-size: 24px; /* Aumenta o tamanho do ícone */
-            color: #007bff; /* Cor do ícone */
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border: 0;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            color: #fff;
+            background: linear-gradient(135deg, #6a20b8, #9b4ff0);
+            box-shadow: var(--shadow-2);
+            transition: transform .12s ease, filter .2s ease;
         }
 
+            .search-btn:hover {
+                transform: translateY(-1px);
+                filter: brightness(1.05);
+            }
 
+            .search-btn:focus-visible {
+                outline: 2px solid var(--accent-2);
+                outline-offset: 2px;
+            }
+
+            /* Ícone herda o tamanho do botão */
             .search-btn i {
-                font-size: inherit; /* Garante que o ícone use o mesmo tamanho do botão */
-                pointer-events: none;
+                font-size: 18px;
             }
 
-            .search-btn:focus {
-                outline: none;
-            }
-        /* Sugestões de pesquisa */
+        /* ============= AUTO-SUGESTÕES ============= */
+
         .search-suggestions {
-
+            position: absolute;
+            left: 0;
+            top: calc(100% + 8px);
+            width: 100%;
+            background: linear-gradient(180deg, var(--surface-1), var(--surface-2));
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            box-shadow: var(--shadow-1);
+            display: none;
+            z-index: 1000;
+            overflow: hidden;
         }
 
-        .search-bar:focus-within #suggestionsList {
+        .search-bar:focus-within .search-suggestions {
             display: block;
         }
 
-
-
-        /* Estilos do menu hambúrguer */
-        .btn-icon {
-            background-color: #6a1b9a;
-            border: none;
-            border-radius: 50%;
-            padding: 10px;
-            transition: transform 0.3s ease, background-color 0.3s ease;
+        .suggestion-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            color: var(--text);
+            background: transparent;
+            border-bottom: 1px solid rgba(255,255,255,.06);
+            transition: background .2s ease;
+            cursor: pointer;
         }
 
-            .btn-icon:hover {
-                background-color: #4a0072;
-                transform: rotate(5deg);
+            .suggestion-item:last-child {
+                border-bottom: 0;
             }
 
-        /* Estilos do menu dropdown */
-        .dropdown-menu {
-            display: none;
+            .suggestion-item:hover {
+                background: rgba(255,255,255,.06);
+            }
+
+        .suggestion-img {
+            width: 42px;
+            height: 42px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .suggestion-text {
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .suggestion-extra {
+            font-size: .78rem;
+            color: var(--text-muted);
+        }
+
+        .highlight {
+            background: var(--accent);
+            color: #fff;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+
+        .suggestion-ver-todos {
+            text-align: center;
+            padding: 10px 12px;
+            background: rgba(255,255,255,.04);
+            color: var(--text-muted);
+        }
+
+            .suggestion-ver-todos:hover {
+                background: rgba(255,255,255,.08);
+                color: #fff;
+            }
+
+        /* ============= DROPDOWN “AMAZON STYLE” ============= */
+
+        .dropdown-amazon-style {
+            width: 360px;
+            max-height: 90vh;
             position: absolute;
-            top: 100%;
-            right: 0;
+            top: 65px;
+            right: 15px;
+            background: linear-gradient(180deg, var(--surface-1), var(--surface-2));
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            box-shadow: var(--shadow-1);
+            padding: 18px 14px;
+            overflow-y: auto;
             z-index: 1050;
-            min-width: 12rem;
-            background-color: #F5FDFF;
-            border: 1px solid #ce93d8;
-            border-radius: 0.5rem;
-            box-shadow: 0 0.5rem 1.5rem rgba(106, 27, 154, 0.3);
-            overflow: hidden;
             opacity: 0;
             transform: translateY(-10px);
-            transition: opacity 0.3s ease, transform 0.3s ease;
+            transition: opacity .3s ease, transform .25s ease;
         }
 
-            .dropdown-menu.show {
-                display: block;
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .dropdown-menu.show {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
 
-        /* Itens do menu */
+        .dropdown-section {
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255,255,255,.08);
+            padding-bottom: 12px;
+        }
+
+        .dropdown-title {
+            font-size: .95rem;
+            font-weight: 900;
+            color: #e9d7ff;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            letter-spacing: .5px;
+        }
+
         .dropdown-item {
             display: flex;
             align-items: center;
-            padding: 0.75rem 1rem;
-            color:black;
-            font-weight: bold;
-            text-decoration: none;
-            transition: background-color 0.3s ease, color 0.3s ease;
+            gap: 12px;
+            padding: 10px 12px;
+            margin-bottom: 6px;
+            font-size: .98rem;
+            font-weight: 600;
+            color: var(--text);
+            border-radius: 10px;
+            background: transparent;
+            transition: background .2s, transform .15s;
         }
 
             .dropdown-item i {
-                margin-right: 0.75rem;
-                color:black;
-                font-size: 1.2rem;
+                color: var(--accent);
+                min-width: 22px;
+                text-align: center;
+                font-size: 1.1rem;
             }
-
-            .dropdown-item:hover i {
-                color: #fff; /* Altera a cor do ícone para branco no hover */
-                transition: color 0.3s ease; /* Transição suave da cor */
-            }
-
 
             .dropdown-item:hover {
-                background: linear-gradient(90deg, #6a1b9a, #2196f3); /* Degradê da cor roxa para azul */
-                color: #fff; /* Deixa o texto branco no hover */
-                transition: background 0.3s ease, color 0.3s ease; /* Transição suave */
+                background: linear-gradient(90deg, #6a20b8 0%, #9b4ff0 100%);
+                transform: translateX(3px);
             }
 
+                .dropdown-item:hover i {
+                    color: #fff;
+                }
 
+        /* ============= BADGE DE NOTIFICAÇÃO (se existir) ============= */
+        .badge-pill {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: #ff4d4f;
+            color: #fff;
+            border-radius: 999px;
+            padding: 2px 6px;
+            font-size: .72rem;
+            font-weight: 800;
+            box-shadow: 0 2px 6px rgba(0,0,0,.35);
+        }
+        .btn-category {
+            display: none;
+        }
 
+        /* Busca: não ficar branca ao focar */
+        header .search-input,
+        header .search-input:focus,
+        header .search-input:active {
+            background: transparent !important; /* tira o branco */
+            color: #fff !important;
+            border-color: transparent !important; /* remove borda azul/branca do BS */
+            box-shadow: none !important; /* remove glow padrão */
+            outline: 0 !important;
+        }
 
+            /* Placeholder sempre com a mesma cor */
+            header .search-input::placeholder {
+                color: var(--placeholder, #b8a9c9) !important;
+            }
+
+        /* Acessibilidade: foco no contêiner, não no input */
+        header .search-bar:focus-within {
+            outline: 2px solid var(--accent, #b84dff);
+            outline-offset: 2px;
+        }
+
+        /* (Opcional) Chrome/Edge: remove amarelo do autofill */
+        header .search-input:-webkit-autofill,
+        header .search-input:-webkit-autofill:hover,
+        header .search-input:-webkit-autofill:focus,
+        header .search-input:-webkit-autofill:active {
+            -webkit-box-shadow: 0 0 0px 1000px transparent inset !important;
+            -webkit-text-fill-color: #fff !important;
+            transition: background-color 9999s ease-out 0s; /* truque para manter transparente */
+        }
     </style>
 </head>
    <body>
     @if (ViewData["HideHeader"] == null || !(bool)ViewData["HideHeader"])
     {
         <header>
-            <nav class="navbar navbar-expand-sm navbar-toggleable-sm border-bottom box-shadow mb-3">
-                <div class="container-fluid">
-                    <!-- Substituir pelo caminho da sua imagem -->
+            <nav class="navbar navbar-expand-sm navbar-toggleable-sm mb-3">
+                <div class="container-fluid align-items-center">
+
+                    <!-- Logo -->
                     <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
-                        <img src="~/img/userlmn_190a820892874567a91071d0542da791.png" alt="MoonstoneTCC">
+                        <img src="~/img/userlmn_190a820892874567a91071d0542da791.png" alt="Moonstone">
                     </a>
-                    <button class="navbar-toggler text-white" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
-                            aria-controls="navbarSuppoon">
+
+                    <!-- Toggler (mobile) -->
+                    <button class="navbar-toggler text-white" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#mainNav"
+                            aria-controls="mainNav" aria-expanded="false" aria-label="Alternar navegação">
                         <span class="navbar-toggler-icon"></span>
                     </button>
-                    
-                    <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                        
+
+                    <div id="mainNav" class="navbar-collapse collapse d-sm-inline-flex align-items-center">
+
+                        <!-- Pílula de categoria (Jogos) -->
+                        <div class="d-none d-md-block me-2">
+                            <a asp-controller="Jogo" asp-action="List" class="btn-category" title="Ver jogos">
+                                <i class="fa-solid fa-gamepad"></i>
+                                <span>Jogos</span>
+                                <i class="fa-solid fa-chevron-down ms-1"></i>
+                            </a>
+                        </div>
+
+                        @* Mantém seu componente de categorias (se ele renderizar um dropdown próprio) *@
                         @await Component.InvokeAsync("CategoriaMenu")
-                        <form class="search-form d-flex justify-content-end" asp-controller="Jogo" asp-action="Search" method="get" role="search">
+
+                        <!-- Busca (glass roxo) -->
+                        <form class="search-form d-flex justify-content-center mx-2"
+                              asp-controller="Jogo" asp-action="Search" method="get" role="search">
                             <div class="search-bar position-relative">
                                 <input class="form-control search-input"
                                        type="text"
                                        placeholder="Pesquise por nome do jogo, categoria, plataformas, descrição, gênero ou preço."
-                                       name="searchString"
-                                       id="searchInput"
-                                       aria-label="Pesquisar Jogos"
-                                       autocomplete="off">
-                                <div id="suggestionsList" class="search-suggestions"></div>
-                                <button class="btn search-btn" type="submit">
+                                       name="searchString" id="searchInput"
+                                       aria-label="Pesquisar jogos" autocomplete="off">
+                                <div id="suggestionsList" class="search-suggestions" role="listbox" aria-label="Sugestões de busca"></div>
+                                <button class="btn search-btn" type="submit" aria-label="Buscar">
                                     <i class="fas fa-search"></i>
                                 </button>
                             </div>
                         </form>
+
+                        <!-- Carrinho -->
                         @await Component.InvokeAsync("CarrinhoCompraResumo")
-                        <ul class="navbar-nav flex-grow-1 justify-content-end">
-                            <li class="nav-item">
-                                <a class="nav-link text-white btn btn-icon" asp-area="" asp-controller="Home" asp-action="Index" title="Home">
+
+                        <!-- Ações à direita -->
+                        <ul class="navbar-nav flex-grow-1 justify-content-end align-items-center">
+
+                            <li class="nav-item me-1 d-none d-md-block">
+                                <a class="nav-link btn-icon" asp-area="" asp-controller="Home" asp-action="Index" title="Home" aria-label="Home">
                                     <i class="fa-solid fa-house"></i>
                                 </a>
                             </li>
-                        </ul>
-                        @await Html.PartialAsync("_LoginPartial")
-                        @if (User.IsInRole("Admin"))
 
+                            <li class="nav-item me-1 d-none d-md-block">
+                                @await Html.PartialAsync("_LoginPartial")
+                            </li>
 
-
-                        {
-                            <a class="nav-link text-light" asp-area="Admin" asp-controller="Admin" asp-action="Index" title="Admin">
-                                <i class="fa-solid fa-user-gear"></i>
-                            </a>
-                        }
-                        <!-- Ícone do menu hambúrguer -->
-                        <button id="hamburgerMenu" class="btn btn-icon text-white" title="Menu">
-                            <i class="fa-solid fa-bars"></i>
-                        </button>
-
-                        <!-- Menu Dropdown -->
-                        <div id="dropdownMenu" class="dropdown-menu dropdown-menu-end">
-                            <a class="dropdown-item" asp-area="" asp-controller="Início" asp-action="Index">
-                                <i class="fa-solid fa-house"></i> Home
-                            </a>
-                            <a class="dropdown-item" asp-area="" asp-controller="Jogo" asp-action="List">
-                                <i class="fa-solid fa-gamepad"></i> Jogos
-                            </a>
-                            <a class="dropdown-item" asp-area="" asp-controller="Tendências" asp-action="List">
-                                <i class="fa-solid fa-chart-line"></i> Tendências
-                            </a>
-                            <a class="dropdown-item" asp-area="" asp-controller="sobre_nos" asp-action="Index">
-                                <i class="fa-solid fa-info-circle"></i> Sobre Nós
-                            </a>
-                            <a class="dropdown-item" asp-area="" asp-controller="Contato" asp-action="Index">
-                                <i class="fa-solid fa-envelope"></i> Contato
-                            </a>
-                            <a class="dropdown-item" asp-area="" asp-controller="Pergunta" asp-action="Criar">
-                                <i class="fa-solid fa-question-circle"></i> Enviar Pergunta
-                            </a>
-
-
-                            <div class="dropdown-divider"></div>
+                            <li class="nav-item me-1">
+                                @await Component.InvokeAsync("NotificacaoResumo")
+                            </li>
 
                             @if (User.IsInRole("Admin"))
-
                             {
-                                <a class="dropdown-item" asp-area="Admin" asp-controller="Admin" asp-action="Index">
-                                    <i class="fa-solid fa-user-gear"></i> Admin
-                                </a>
+                                <li class="nav-item me-1 d-none d-md-block">
+                                    <a class="nav-link btn-icon" asp-area="Admin" asp-controller="Admin" asp-action="Index" title="Admin" aria-label="Admin">
+                                        <i class="fa-solid fa-user-gear"></i>
+                                    </a>
+                                </li>
                             }
 
-                            <a class="dropdown-item" asp-area="" asp-controller="Account" asp-action="Register">
-                                <i class="fa-solid fa-user-plus"></i> Cadastrar
-                            </a>
+                            <!-- Menu hambúrguer -->
+                            <li class="nav-item">
+                                <button id="hamburgerMenu" class="btn btn-icon" type="button"
+                                        aria-controls="dropdownMenu" aria-expanded="false" aria-haspopup="true" title="Menu">
+                                    <i class="fa-solid fa-bars"></i>
+                                </button>
+                            </li>
+                        </ul>
+
+                        <!-- Dropdown estilo Amazon -->
+                        <div id="dropdownMenu" class="dropdown-menu dropdown-amazon-style shadow" aria-labelledby="hamburgerMenu">
+                            <div class="dropdown-scroll">
+                                <div class="dropdown-section">
+                                    <h6 class="dropdown-title">Destaques</h6>
+                                    <a class="dropdown-item" asp-controller="Jogo" asp-action="List"><i class="fa-solid fa-fire"></i> Jogos em Alta</a>
+                                    <a class="dropdown-item" asp-controller="Tendencias" asp-action="List"><i class="fa-solid fa-chart-line"></i> Tendências</a>
+                                    <a class="dropdown-item" asp-controller="MeusPedidos" asp-action="Avaliar"><i class="fa-solid fa-star"></i> Opinião de Jogos</a>
+                                </div>
+
+                                <div class="dropdown-section">
+                                    <h6 class="dropdown-title">Minha Conta</h6>
+                                    <a class="dropdown-item" asp-controller="Perfil" asp-action="Index"><i class="fa-solid fa-user"></i> Perfil</a>
+                                    <a class="dropdown-item" asp-controller="Favorito" asp-action="Index"><i class="fa-solid fa-heart"></i> Favoritos</a>
+                                    <a class="dropdown-item" asp-controller="ListaJogo" asp-action="Index"><i class="fa-solid fa-folder"></i> Minhas Listas</a>
+                                    <a class="dropdown-item" asp-controller="Historico" asp-action="Index"><i class="fa-solid fa-clock-rotate-left"></i> Histórico</a>
+                                    <a class="dropdown-item" asp-controller="Account" asp-action="Editar"><i class="fa-solid fa-user-gear"></i> Editar Conta</a>
+                                </div>
+
+                                <div class="dropdown-section">
+                                    <h6 class="dropdown-title">Compras</h6>
+                                    <a class="dropdown-item" asp-controller="MeusPedidos" asp-action="Index"><i class="fa-solid fa-box"></i> Meus Pedidos</a>
+                                    <a class="dropdown-item" asp-controller="Jogo" asp-action="List"><i class="fa-solid fa-gamepad"></i> Todos os Jogos</a>
+                                </div>
+
+                                <div class="dropdown-section">
+                                    <h6 class="dropdown-title">Ajuda</h6>
+                                    <a class="dropdown-item" asp-controller="sobre_nos" asp-action="Index"><i class="fa-solid fa-info-circle"></i> Sobre Nós</a>
+                                    <a class="dropdown-item" asp-controller="Contato" asp-action="Index"><i class="fa-solid fa-envelope"></i> Contato</a>
+                                    <a class="dropdown-item" asp-controller="Pergunta" asp-action="Criar"><i class="fa-solid fa-question-circle"></i> Enviar Pergunta</a>
+                                    <a class="dropdown-item" href="/ComunicadoUsuario/Comunicados"><i class="fa-solid fa-bullhorn"></i> Comunicados</a>
+                                    <a class="dropdown-item" asp-controller="NotificacoesEstoque" asp-action="Index"><i class="fa-solid fa-bell"></i> Notificações de Estoque</a>
+                                </div>
+
+                                @if (SignInManager.IsSignedIn(User))
+                                {
+                                    <form asp-area="" asp-controller="Account" asp-action="Logout" method="post" class="m-0 p-0">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="dropdown-item w-100 text-start bg-transparent border-0 text-danger">
+                                            <i class="fa-solid fa-sign-out-alt"></i> Sair
+                                        </button>
+                                    </form>
+                                }
+                            </div>
                         </div>
-
-
 
                     </div>
                 </div>
             </nav>
         </header>
     }
+
 
     <div class="container">
         <main role="main" class="pb-3">
@@ -313,25 +541,198 @@
     </div>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const hamburgerMenu = document.getElementById("hamburgerMenu");
-            const dropdownMenu = document.getElementById("dropdownMenu");
+       document.addEventListener("DOMContentLoaded", function () {
+    const hamburgerMenu = document.getElementById("hamburgerMenu");
+    const dropdownMenu = document.getElementById("dropdownMenu");
+    const menuAviso = document.getElementById("menuAviso");
+    let menuAvisoJaMostrado = false;
+    const mostrarMais = document.getElementById("mostrarMais");
+    const fecharExtras = document.getElementById("fecharExtras");
+    const opcoesExtras = document.getElementById("opcoesExtras");
 
-            // Alterna a visibilidade com animação
-            hamburgerMenu.addEventListener("click", function () {
-                dropdownMenu.classList.toggle("show");
-            });
+    // Alterna a visibilidade com classe .show (pode estilizar via CSS se quiser)
+    hamburgerMenu.addEventListener("click", function () {
+        dropdownMenu.classList.toggle("show");
 
-            // Fecha o menu ao clicar fora dele
-            document.addEventListener("click", function (event) {
-                if (!dropdownMenu.contains(event.target) && !hamburgerMenu.contains(event.target)) {
-                    dropdownMenu.classList.remove("show");
-                }
-            });
+        // Mostra o aviso se ainda não foi mostrado
+        if (!menuAvisoJaMostrado) {
+            menuAviso.style.display = "block";
+            setTimeout(() => {
+                menuAviso.style.display = "none";
+            }, 4000); // oculta após 4 segundos
+            menuAvisoJaMostrado = true;
+        }
+
+    });
+
+    // Fecha o menu ao clicar fora
+    document.addEventListener("click", function (event) {
+        if (!dropdownMenu.contains(event.target) && !hamburgerMenu.contains(event.target)) {
+            dropdownMenu.classList.remove("show");
+            // também esconde opções extras e mostra botão "Mais"
+            opcoesExtras.style.display = "none";
+            mostrarMais.style.display = "block";
+        }
+    });
+
+    // Mostrar opções extras
+    mostrarMais.addEventListener("click", function (e) {
+        e.preventDefault();
+        opcoesExtras.style.display = "block";
+        this.style.display = "none";
+    });
+
+    // Esconder opções extras
+    fecharExtras.addEventListener("click", function (e) {
+        e.preventDefault();
+        opcoesExtras.style.display = "none";
+        mostrarMais.style.display = "block";
+    });
+});
+
+
+
+
+    // SPRIPT DE RECOMENDAÇÕES DE BUSCA
+        // Debounce para evitar muitas requisições
+        let debounceTimer;
+
+        // Evento: ao digitar no campo
+        searchInput.addEventListener('input', function () {
+            clearTimeout(debounceTimer);
+            const termo = this.value;
+
+            debounceTimer = setTimeout(() => {
+                carregarSugestoes(termo);
+            }, 300);
         });
 
-    </script>
+        // Evento: ao clicar no campo (foco)
+        searchInput.addEventListener('focus', function () {
+            if (!this.value.trim()) {
+                suggestionsList.innerHTML = ""; // limpa antes
+                carregarMaisBuscadosInstantaneo(); // nova função sem delay
+            }
+        });
 
+        // Esconder sugestões ao clicar fora
+        document.addEventListener('click', function (event) {
+            const isClickInside = searchInput.contains(event.target) || suggestionsList.contains(event.target);
+            if (!isClickInside) suggestionsList.style.display = "none";
+        });
+
+        // Função para carregar sugestões
+        function carregarSugestoes(termo) {
+            suggestionsList.innerHTML = "";
+            if (!termo.trim()) {
+                carregarMaisBuscadosInstantaneo();
+                return;
+            }
+
+            fetch(`/Jogo/BuscarSugestoes?termo=${encodeURIComponent(termo)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.length === 0) {
+                        suggestionsList.style.display = "none";
+                        return;
+                    }
+
+                    // Ordenação inteligente: prioriza quem começa com o termo
+                    const termoLower = termo.toLowerCase();
+                    data.sort((a, b) => {
+                        const aIndex = a.nome.toLowerCase().indexOf(termoLower);
+                        const bIndex = b.nome.toLowerCase().indexOf(termoLower);
+                        return aIndex - bIndex;
+                    });
+
+                    suggestionsList.style.display = "block";
+
+                    data.forEach(item => {
+                        const div = document.createElement("div");
+                        div.classList.add("suggestion-item");
+
+                        const nomeLower = item.nome.toLowerCase();
+                        const index = nomeLower.indexOf(termoLower);
+
+                        let nomeFormatado = item.nome;
+                        if (index >= 0) {
+                            const before = item.nome.substring(0, index);
+                            const match = item.nome.substring(index, index + termo.length);
+                            const after = item.nome.substring(index + termo.length);
+                            nomeFormatado = `${before}<span class="highlight">${match}</span>${after}`;
+                        }
+
+                        // Rota e subtítulo
+                        let rota = "#";
+                        if (item.tipo === "Jogo") rota = `/Jogo/Details?jogoId=${item.id}`;
+                        else if (item.tipo === "Desenvolvedora") rota = `/Desenvolvedora/Perfil/${item.id}`;
+                        else if (item.tipo === "Usuario") rota = `/Usuario/Perfil/${item.id}`;
+
+                        const subtitulo = item.sub || "";
+
+                        div.innerHTML = `
+                            <img src="${item.imagem}" class="suggestion-img ${item.tipo === 'Usuario' ? 'rounded-circle border border-purple' : ''}" style="width: 40px; height: 40px;" alt="${item.nome}">
+                            <div class="d-flex flex-column justify-content-center">
+                                <strong class="suggestion-text">${nomeFormatado}</strong>
+                                <small class="suggestion-extra">${subtitulo}</small>
+                            </div>
+                        `;
+
+                        div.addEventListener("click", () => window.location.href = rota);
+                        suggestionsList.appendChild(div);
+                    });
+
+                    // Botão para ver todos os resultados
+                    const verTodos = document.createElement("div");
+                    verTodos.classList.add("suggestion-ver-todos");
+                    verTodos.innerHTML = `🔍 Ver todos os resultados para <strong>"${termo}"</strong>`;
+                    verTodos.addEventListener("click", () => searchInput.form.submit());
+                    suggestionsList.appendChild(verTodos);
+                })
+                .catch(err => {
+                    console.error("Erro ao buscar sugestões:", err);
+                    suggestionsList.style.display = "none";
+                });
+        }
+
+        // Função para mais buscados ao clicar no campo
+        function carregarMaisBuscadosInstantaneo() {
+            fetch('/Tendencias/MaisBuscados')
+                .then(res => res.json())
+                .then(data => {
+                    if (data.length === 0) {
+                        suggestionsList.style.display = "none";
+                        return;
+                    }
+
+                    suggestionsList.style.display = "block";
+
+                    const verMais = document.createElement("div");
+                    verMais.classList.add("suggestion-ver-todos");
+                    verMais.innerHTML = `Ver todos os mais buscados`;
+                    verMais.addEventListener("click", () => window.location.href = `/Tendencias/List`);
+                    suggestionsList.appendChild(verMais);
+
+                    data.forEach(jogo => {
+                        const item = document.createElement("div");
+                        item.classList.add("suggestion-item");
+                        item.innerHTML = `
+                            <img src="${jogo.imagemUrl}" class="suggestion-img" alt="${jogo.nome}">
+                            <div>
+                                <span class="suggestion-text">${jogo.nome}</span><br>
+                                <small class="suggestion-extra">${jogo.genero || ""}</small>
+                            </div>
+                        `;
+                        item.addEventListener("click", () => window.location.href = `/Jogo/Details?jogoId=${jogo.id}`);
+                        suggestionsList.appendChild(item);
+                    });
+                });
+        }
+
+ 
+
+
+    </script>
 
     <partial name="_Footer">
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
@@ -339,4 +740,41 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
+@if (TempData["MensagemSucesso"] is string sucesso)
+
+{
+    <div id="alertSucesso" class="alert alert-success alert-dismissible fade show position-fixed top-0 end-0 mt-3 me-3 z-3 shadow" role="alert" style="min-width: 300px;">
+        <i class="fas fa-check-circle me-2"></i>@sucesso
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+@if (TempData["Mensagem"] is string alerta)
+
+{
+    <div id="alertMensagem" class="alert alert-warning alert-dismissible fade show position-fixed top-0 end-0 mt-3 me-3 z-3 shadow" role="alert" style="min-width: 300px;">
+        <i class="fas fa-exclamation-triangle me-2"></i>@alerta
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<script>
+    setTimeout(function () {
+        const alertSucesso = document.getElementById("alertSucesso");
+        const alertMensagem = document.getElementById("alertMensagem");
+
+        if (alertSucesso) {
+            alertSucesso.classList.remove("show");
+            alertSucesso.classList.add("fade");
+            setTimeout(() => alertSucesso.remove(), 500); // remove do DOM após fade
+        }
+
+        if (alertMensagem) {
+            alertMensagem.classList.remove("show");
+            alertMensagem.classList.add("fade");
+            setTimeout(() => alertMensagem.remove(), 500); // remove do DOM após fade
+        }
+    }, 5000); // 5 segundos
+</script>
+
+
 </html>

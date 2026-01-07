@@ -1,0 +1,14 @@
+﻿@model IEnumerable<MoonstoneTCC.Models.Jogo>
+
+<div class="mais-comprados">
+    <h4 class="text-white"><i class="fas fa-fire"></i> Mais Comprados</h4>
+    <ul class="list-group bg-dark">
+        @foreach (var jogo in Model)
+        {
+            <li class="list-group-item bg-dark text-light d-flex justify-content-between align-items-center">
+                <span>@jogo.Nome</span>
+                <span class="badge bg-success">@jogo.Preco.ToString("C")</span>
+            </li>
+        }
+    </ul>
+</div>

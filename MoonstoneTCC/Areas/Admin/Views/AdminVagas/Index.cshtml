@@ -1,0 +1,170 @@
+﻿@model List<MoonstoneTCC.Models.VagaEmprego>
+@{
+    ViewData["Title"] = "Vagas de Emprego";
+}
+
+<section class="container mt-5">
+    <h2 class="mb-4">Vagas Criadas</h2>
+    <a href="@Url.Action("Create")" class="btn btn-primary mb-3">
+        <i class="fa fa-plus"></i> Criar Nova Vaga
+    </a>
+    <h3 class="mt-4">Entrevistas Agendadas</h3>
+    @await Html.PartialAsync("Partials/_EntrevistasAgendadas", (List<MoonstoneTCC.Models.EntrevistaAgendada>)ViewBag.Entrevistas)
+
+
+
+    <table class="table table-bordered table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>Título</th>
+                <th>Cargo</th>
+                <th>Salário</th>
+                <th>Data</th>
+                <th>Qtd. Perguntas</th>
+                <th>Ações</th>
+                <th>Qtd. Candidatos</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var vaga in Model)
+            {
+                <tr>
+                    <td>@vaga.Titulo</td>
+                    <td>@vaga.Cargo</td>
+                    <td>R$ @vaga.Salario.ToString("N2")</td>
+                    <td>@vaga.DataCriacao.ToString("dd/MM/yyyy")</td>
+                    <td>@vaga.Perguntas?.Count() ?? 0</td>
+                    <td>
+                        <a href="@Url.Action("Candidatos", new { id = vaga.Id })" class="btn btn-info btn-sm">
+                            Ver Candidatos
+                        </a>
+                    </td>
+                    <td>@vaga.Candidaturas?.Count() ?? 0</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@vaga.Id" class="btn btn-warning btn-sm">
+                            <i class="fa fa-edit"></i> Editar
+                        </a>
+
+                        <a asp-action="Delete" asp-route-id="@vaga.Id" class="btn btn-danger btn-sm ms-1">
+                            <i class="fa fa-trash"></i> Excluir
+                        </a>
+
+                        <a asp-action="Candidatos" asp-route-id="@vaga.Id" class="btn btn-info btn-sm ms-1">
+                            Ver Candidatos
+                        </a>
+                    </td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+</section>
+<style>
+    body {
+
+        color: #ffffff;
+    }
+
+    h2, h3 {
+        color: #ffffff;
+        font-weight: bold;
+    }
+
+    .container {
+        background-color: #2b0048;
+        padding: 40px;
+        border-radius: 16px;
+        box-shadow: 0 0 20px #7c00ff33;
+    }
+
+    .btn-primary {
+        background-color: #9b00ff;
+        border: none;
+        font-weight: 500;
+        transition: 0.3s ease;
+        border-radius: 8px;
+        box-shadow: 0 0 10px #9b00ff66;
+    }
+
+    .btn-primary:hover {
+        background-color: #b84dff;
+        box-shadow: 0 0 12px #b84dffaa;
+    }
+
+    .btn-sm {
+        padding: 6px 12px;
+        font-size: 0.85rem;
+        border-radius: 6px;
+    }
+
+    .btn-info {
+        background-color: #00c0f3;
+        border: none;
+        color: #000;
+    }
+
+    .btn-info:hover {
+        background-color: #5fdfff;
+        color: #000;
+    }
+
+    .btn-warning {
+        background-color: #ffb300;
+        border: none;
+        color: #1a002d;
+    }
+
+    .btn-warning:hover {
+        background-color: #ffc94d;
+        color: #1a002d;
+    }
+
+    .btn-danger {
+        background-color: #ff3b3b;
+        border: none;
+        color: white;
+    }
+
+    .btn-danger:hover {
+        background-color: #ff1a1a;
+    }
+
+    .table {
+        background-color: #3a0055;
+        color: #ffffff;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .table-bordered {
+        border: 1px solid #ffffff22;
+    }
+
+    .table thead {
+        background-color: #4a0072;
+    }
+
+    .table thead th {
+        color: #ffffff;
+        font-weight: 600;
+        border-color: #ffffff22;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: #5a007a;
+    }
+
+    .table td, .table th {
+        vertical-align: middle;
+        border-color: #ffffff22;
+    }
+
+    .ms-1 {
+        margin-left: 6px;
+    }
+
+    .fa {
+        margin-right: 4px;
+    }
+</style>
+

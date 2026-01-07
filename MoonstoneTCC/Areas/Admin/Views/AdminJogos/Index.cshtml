@@ -56,7 +56,32 @@
                 <tr>
                     <td class="text-truncate" style="max-width: 150px;">@Html.DisplayFor(modelItem => item.Nome)</td>
                     <td class="text-truncate" style="max-width: 200px;">@Html.DisplayFor(modelItem => item.DescricaoCurta)</td>
-                    <td class="text-center">@Html.DisplayFor(modelItem => item.Preco)</td>
+                    <td class="text-center">
+                        @if (item.PrecoPromocional.HasValue)
+                        {
+                            <div>
+                                <span class="text-muted" style="text-decoration: line-through;">
+                                    @item.Preco.ToString("C2")
+                                </span>
+                            </div>
+                            <div class="fw-bold text-success">
+                                @item.PrecoPromocional.Value.ToString("C2")
+                            </div>
+                            <div>
+                                <span class="badge bg-success">-@item.PorcentagemDesconto%</span>
+                            </div>
+                            <div class="text-info small">
+                                <i class="fas fa-fire text-danger"></i> Em <span class="text-primary">Promoção</span>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="fw-bold text-dark">
+                                @item.Preco.ToString("C2")
+                            </div>
+                        }
+                    </td>
+
                     <td class="text-truncate" style="max-width: 150px;">@Html.DisplayFor(modelItem => item.Plataformas)</td>
                     <td class="text-truncate" style="max-width: 150px;">@Html.DisplayFor(modelItem => item.Categoria.CategoriaNome)</td>
                     <td>

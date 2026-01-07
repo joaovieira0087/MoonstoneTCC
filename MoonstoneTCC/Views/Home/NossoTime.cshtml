@@ -1,0 +1,213 @@
+﻿@{
+    ViewData["Title"] = "Nosso Time";
+}
+
+<style>
+    .tech-section {
+        padding: 50px 20px;
+        background: #1b1b2f;
+        color: #ffffff;
+        border-radius: 20px;
+        margin-bottom: 60px;
+    }
+
+    .tech-section h2 {
+        font-size: 32px;
+        font-weight: 800;
+        margin-bottom: 20px;
+        color: #a37cff;
+    }
+
+    .tech-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        justify-content: center;
+    }
+
+    .tech-card {
+        background: #2e2e42;
+        border-radius: 12px;
+        padding: 20px;
+        width: 280px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.3);
+        text-align: left;
+    }
+
+    .tech-card h4 {
+        font-size: 20px;
+        margin-bottom: 8px;
+        color: #ffffff;
+    }
+
+    .tech-card p {
+        font-size: 14px;
+        color: #dcdcdc;
+        margin: 0;
+    }
+
+    .dev-card {
+        background-color: #1f1f2e;
+        border-radius: 10px;
+        overflow: hidden;
+        color: #fff;
+        text-align: center;
+        box-shadow: 0 0 12px rgba(0, 0, 0, 0.4);
+    }
+
+    .dev-card img {
+        width: 100%;
+        height: 250px;
+        object-fit: cover;
+    }
+
+    .dev-card .info {
+        padding: 16px;
+    }
+
+    .dev-card .info h5 {
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .dev-card .info p {
+        font-size: 14px;
+        margin-top: 6px;
+    }
+</style>
+
+<section class="container mt-5 text-center">
+    <h1 class="display-5 fw-bold mb-4 text-white">Nosso Time & Tecnologias</h1>
+    <p class="lead text-light mb-5">
+        Na Moonstone, construímos muito mais que uma loja: criamos uma verdadeira plataforma interativa para gamers. Aqui você confere as tecnologias que usamos e quem faz isso acontecer.
+    </p>
+</section>
+
+<section class="tech-section text-center">
+    <h2>⚙️ Tecnologias e Funcionalidades</h2>
+    <div class="tech-grid">
+        <div class="tech-card">
+            <h4>ASP.NET MVC + Razor</h4>
+            <p>Estrutura sólida com roteamento seguro, views organizadas e lógica separada em camadas bem definidas.</p>
+        </div>
+        <div class="tech-card">
+            <h4>Entity Framework Core</h4>
+            <p>Mapeamento objeto-relacional fluido com suporte a migrations e consultas otimizadas com LINQ.</p>
+        </div>
+        <div class="tech-card">
+            <h4>SQL Server</h4>
+            <p>Banco de dados relacional robusto com estrutura clara para jogos, usuários, pedidos, comentários e mais.</p>
+        </div>
+        <div class="tech-card">
+            <h4>ASP.NET Identity</h4>
+            <p>Controle de acesso completo com níveis de permissão, autenticação segura e perfis customizados.</p>
+        </div>
+        <div class="tech-card">
+            <h4>Funcionalidades do Usuário</h4>
+            <p>Favoritos, avaliações com estrelas, histórico visual, comentários, listas personalizadas e perfil público.</p>
+        </div>
+        <div class="tech-card">
+            <h4>Administração Avançada</h4>
+            <p>Painel administrativo com relatórios, gerenciamento de jogos, usuários, promoções e comunicados.</p>
+        </div>
+        <div class="tech-card">
+            <h4>FastReport e Exportações</h4>
+            <p>Geração de relatórios em PDF e Excel com dados de vendas, tendências, usuários e movimentações.</p>
+        </div>
+        <div class="tech-card">
+            <h4>Recomendações Inteligentes</h4>
+            <p>Sugestões de jogos baseadas em interesses, comportamento de navegação e categoria preferida.</p>
+        </div>
+        <div class="tech-card">
+            <h4>Modo Discreto e Protegido</h4>
+            <p>Interface limpa e personalizável, ideal para navegação com descrição, sem excesso de destaques.</p>
+        </div>
+        <div class="tech-card">
+            <h4>Listas Inteligentes</h4>
+            <p>Criação de até 20 listas por usuário, com sistema de favoritos avançado e filtros personalizados.</p>
+        </div>
+        <div class="tech-card">
+            <h4>Feedback do Usuário</h4>
+            <p>Seção dedicada para perguntas, sugestões e respostas do administrador com visibilidade controlada.</p>
+        </div>
+        <div class="tech-card">
+            <h4>Enquetes e Interação</h4>
+            <p>Ferramenta leve para pesquisa de opinião com resultados visíveis e integração com notificações.</p>
+        </div>
+        <div class="tech-card">
+            <h4>Sistema de Curtidas</h4>
+            <p>Interações por like/dislike em jogos e comentários, com ordenação automática dos mais votados.</p>
+        </div>
+        <div class="tech-card">
+            <h4>Notificações Inteligentes</h4>
+            <p>Alertas personalizados no painel do usuário com barra de tempo e ações rápidas integradas.</p>
+        </div>
+        <div class="tech-card">
+            <h4>Segurança com Logs de Ação</h4>
+            <p>Monitoramento de atividades sensíveis com registro de ações e sistema antifraude discreto.</p>
+        </div>
+        <div class="tech-card">
+            <h4>Suporte a Temas e Estilos</h4>
+            <p>Alteração de tema, cor e layout do site pelo usuário, com visual limpo ou visual futurista dinâmico.</p>
+        </div>
+    </div>
+</section>
+
+
+<section class="container mt-5 text-center">
+
+    <section class="container text-center mt-5">
+        <h2 class="text-white fw-bold mb-4">👩‍💻 Equipe Técnica da Moonstone</h2>
+        <p class="text-light mb-5">
+            Conheça os profissionais que constroem e mantêm a Moonstone funcionando todos os dias. Nosso time é formado por especialistas em tecnologia, design, infraestrutura e segurança.
+        </p>
+
+        <div class="row justify-content-center text-start">
+            <div class="col-md-10">
+                <ul class="list-group list-group-flush bg-transparent">
+                    <li class="list-group-item bg-transparent text-light"><strong>João Vieira</strong> — Fundador & Arquiteto Full Stack</li>
+                    <li class="list-group-item bg-transparent text-light"><strong>Ana Costa</strong> — UX/UI Designer Sênior</li>
+                    <li class="list-group-item bg-transparent text-light"><strong>Lucas Martins</strong> — Engenheiro de Back-End (APIs / SQL Server)</li>
+                    <li class="list-group-item bg-transparent text-light"><strong>Camila Alves</strong> — Front-End Developer (Razor + Bootstrap)</li>
+                    <li class="list-group-item bg-transparent text-light"><strong>Rafael Lemos</strong> — DevOps Engineer (CI/CD + Azure)</li>
+                    <li class="list-group-item bg-transparent text-light"><strong>Sandra Ribeiro</strong> — Product Owner</li>
+                    <li class="list-group-item bg-transparent text-light"><strong>Vinícius Tavares</strong> — Engenheiro de Dados</li>
+                    <li class="list-group-item bg-transparent text-light"><strong>Marina Duarte</strong> — Especialista em IA / Recomendação</li>
+                    <li class="list-group-item bg-transparent text-light"><strong>Bruno Silva</strong> — Analista de Qualidade (QA Automation)</li>
+                    <li class="list-group-item bg-transparent text-light"><strong>Lívia Andrade</strong> — Engenheira de Software Pleno</li>
+                    <li class="list-group-item bg-transparent text-light"><strong>Felipe Moraes</strong> — Especialista em Segurança Cibernética</li>
+                    <li class="list-group-item bg-transparent text-light"><strong>Jéssica Nunes</strong> — Desenvolvedora .NET Core</li>
+                    <li class="list-group-item bg-transparent text-light"><strong>Leandro Cardoso</strong> — DBA (Administrador de Banco de Dados)</li>
+                    <li class="list-group-item bg-transparent text-light"><strong>Bruna Santana</strong> — Engenheira de Infraestrutura Cloud</li>
+                    <li class="list-group-item bg-transparent text-light"><strong>Ricardo Pires</strong> — Especialista em Performance Web</li>
+                    <li class="list-group-item bg-transparent text-light"><strong>Fernanda Lima</strong> — Líder de Suporte Técnico</li>
+                    <li class="list-group-item bg-transparent text-light"><strong>Gustavo Rocha</strong> — Engenheiro de Testes (QA)</li>
+                    <li class="list-group-item bg-transparent text-light"><strong>Thaís Barros</strong> — Scrum Master</li>
+                    <li class="list-group-item bg-transparent text-light"><strong>Eduardo Neves</strong> — Desenvolvedor de APIs RESTful</li>
+                    <li class="list-group-item bg-transparent text-light"><strong>Suelen Torres</strong> — Analista de Documentação Técnica</li>
+                    <li class="list-group-item bg-transparent text-light"><strong>Isabela Moreira</strong> — Desenvolvedora Front-End React para dashboards internos</li>
+                    <li class="list-group-item bg-transparent text-light"><strong>Thiago Ramos</strong> — Engenheiro de Software Especialista em Otimização</li>
+                    <li class="list-group-item bg-transparent text-light"><strong>Paula Freitas</strong> — Especialista em Testes de Integração e Regressão</li>
+                    <li class="list-group-item bg-transparent text-light"><strong>Rodrigo Caires</strong> — Analista de Segurança com foco em validações automáticas</li>
+                    <li class="list-group-item bg-transparent text-light"><strong>Vera Lúcia</strong> — Arquiteta de Soluções Microsoft</li>
+                    <li class="list-group-item bg-transparent text-light"><strong>Caio Bernardes</strong> — Desenvolvedor Blazor & WebAssembly</li>
+                    <li class="list-group-item bg-transparent text-light"><strong>Eduarda Mendes</strong> — Dev Mobile (Xamarin & MAUI)</li>
+                    <li class="list-group-item bg-transparent text-light"><strong>Renato Farias</strong> — Desenvolvedor Backend Java + C# Híbrido</li>
+                    <li class="list-group-item bg-transparent text-light"><strong>Talita Pinheiro</strong> — UX Research | Pesquisa com Usuários e Testes A/B</li>
+                    <li class="list-group-item bg-transparent text-light"><strong>Marcelo Lima</strong> — Gerente de Engenharia Técnica</li>
+                    <li class="list-group-item bg-transparent text-light"><strong>Helena Monteiro</strong> — Especialista em Cloud Security AWS & Azure</li>
+                    <li class="list-group-item bg-transparent text-light"><strong>Danilo Souza</strong> — Programador C# com foco em Integrações com APIs externas</li>
+                    <li class="list-group-item bg-transparent text-light"><strong>Larissa Guedes</strong> — Coordenadora de Desenvolvimento</li>
+                    <li class="list-group-item bg-transparent text-light"><strong>Bruno Nascimento</strong> — Arquiteto de Dados e Big Data</li>
+                    <li class="list-group-item bg-transparent text-light"><strong>Juliana Pacheco</strong> — Técnica de suporte com foco em DevTools e Deploy</li>
+                    <li class="list-group-item bg-transparent text-light"><strong>Márcio Andrade</strong> — Engenheiro de Build e Pipelines (Azure DevOps)</li>
+                    <li class="list-group-item bg-transparent text-light"><strong>Natália Silva</strong> — Especialista em Acessibilidade Digital (a11y)</li>
+                    <li class="list-group-item bg-transparent text-light"><strong>Fabrício Teixeira</strong> — Desenvolvedor de Interfaces Responsivas com Tailwind</li>
+                    <li class="list-group-item bg-transparent text-light"><strong>Rafaela Lima</strong> — Engenheira de Testes com foco em TDD/BDD</li>
+                    <li class="list-group-item bg-transparent text-light"><strong>Guilherme Ottoni</strong> — SysAdmin & Monitoramento de Infraestrutura 24/7</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+</section>

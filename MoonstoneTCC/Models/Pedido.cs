@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MoonstoneTCC.Models
@@ -6,6 +7,13 @@ namespace MoonstoneTCC.Models
     public class Pedido
     {
         public int PedidoId { get; set; }
+
+        public string UserId { get; set; } 
+
+        [ForeignKey("UserId")]
+        public IdentityUser Usuario { get; set; }
+
+        public string CodigoPedido { get; set; }
 
         [Required(ErrorMessage = "Informe o nome")]
         [StringLength(50)]
@@ -42,10 +50,8 @@ namespace MoonstoneTCC.Models
 
         [Required(ErrorMessage = "Informe o email.")]
         [StringLength(50)]
-        [DataType(DataType.EmailAddress)]
-        [RegularExpression(@"(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|""(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*"")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])",
-          ErrorMessage = "O email não possui um formato correto")]
         public string Email { get; set; }
+
 
         [ScaffoldColumn(false)]
         [Column(TypeName = "decimal(18,2)")]
@@ -67,6 +73,27 @@ namespace MoonstoneTCC.Models
         public DateTime? PedidoEntregueEm { get; set; }
 
         public List<PedidoDetalhe> PedidoItens { get; set; }
+
+
+        // pos pedido 
+
+        [Display(Name = "Status do Pedido")]
+        public string StatusPedido { get; set; }
+
+        [Display(Name = "Motivo do Cancelamento")]
+        public string MotivoCancelamento { get; set; }
+
+        [Display(Name = "Data de Cancelamento")]
+        public DateTime? DataCancelamento { get; set; }
+
+        public CancelamentoPedido? Cancelamento { get; set; }
+
+        public FormaPagamentoPedido? FormaPagamento { get; set; }
+        [Column(TypeName = "decimal(18,2)")] public decimal? ValorPagoCarteira { get; set; }
+
+        // frete 
+        public decimal ValorFrete { get; set; }      
+        public int PrazoEntregaDias { get; set; }
 
 
 

@@ -1,0 +1,118 @@
+﻿@model MoonstoneTCC.ViewModels.UserInteressesViewModel
+@{
+    ViewData["Title"] = "Selecionar Interesses";
+}
+
+<h2 class="mb-4 text-purple"><i class="fa-solid fa-gamepad"></i> Selecione até 7 interesses</h2>
+
+<div id="limiteAviso" class="alert alert-warning d-none" role="alert">
+    <i class="fa-solid fa-triangle-exclamation me-2"></i>
+    Máximo de 7 interesses permitidos.
+</div>
+
+<form asp-action="Salvar" method="post">
+    <div class="interesses-grid">
+        @foreach (var interesse in Model.TodosOsInteresses)
+        {
+            var isChecked = Model.InteressesSelecionados.Contains(interesse);
+            <label class="interesse-item @(isChecked ? "selected" : "")">
+                <input type="checkbox" name="InteressesSelecionados" value="@interesse" @(isChecked ? "checked" : "") />
+                <span>@interesse</span>
+            </label>
+        }
+    </div>
+
+    <div class="text-end mt-4">
+        <button type="submit" class="btn btn-success">
+            <i class="fa-solid fa-floppy-disk"></i> Salvar Interesses
+        </button>
+    </div>
+</form>
+
+@section Styles {
+    <style>
+        .interesses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 15px;
+        }
+
+        .interesse-item {
+            border: 2px solid #6f42c1;
+            border-radius: 8px;
+            padding: 10px 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            user-select: none;
+            background-color: #fff;
+            font-weight: 500;
+            color: #6f42c1;
+        }
+
+        .interesse-item:hover {
+            background-color: #f2e7ff;
+        }
+
+        .interesse-item.selected {
+            background-color: #6f42c1;
+            color: #fff;
+        }
+
+        .interesse-item input[type="checkbox"] {
+            display: none;
+        }
+
+        .btn-purple {
+            background-color: #6f42c1;
+            color: white;
+            border: none;
+        }
+
+        .btn-purple:hover {
+            background-color: #5a349e;
+        }
+
+        #limiteAviso {
+            transition: all 0.4s ease;
+        }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        document.querySelectorAll('.interesse-item').forEach(item => {
+            item.addEventListener('click', function (e) {
+                const checkbox = this.querySelector('input[type="checkbox"]');
+                const isAlreadyChecked = checkbox.checked;
+
+                // Se já estiver checado, desmarca normalmente
+                if (isAlreadyChecked) {
+                    checkbox.checked = false;
+                    this.classList.remove("selected");
+                    return;
+                }
+
+                // Verifica se já tem 7 selecionados
+                const selecionados = document.querySelectorAll('.interesse-item input:checked');
+                if (selecionados.length >= 7) {
+                    showAvisoLimite();
+                    return;
+                }
+
+                // Marca o checkbox e aplica classe
+                checkbox.checked = true;
+                this.classList.add("selected");
+            });
+        });
+
+        function showAvisoLimite() {
+            const aviso = document.getElementById("limiteAviso");
+            aviso.classList.remove("d-none");
+
+            setTimeout(() => {
+                aviso.classList.add("d-none");
+            }, 3000);
+        }
+    </script>
+}

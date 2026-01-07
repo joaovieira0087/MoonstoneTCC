@@ -1,0 +1,484 @@
+﻿@{
+    ViewData["Title"] = "Perfil";
+
+    // Tenta obter nome e e-mail dos claims; cai para User.Identity.Name se necessário
+    var claimName = User?.Claims?.FirstOrDefault(c =>
+                      c.Type == "name" ||
+                      c.Type == System.Security.Claims.ClaimTypes.Name)?.Value;
+
+    var claimEmail = User?.Claims?.FirstOrDefault(c =>
+                      c.Type == "email" ||
+                      c.Type == System.Security.Claims.ClaimTypes.Email ||
+                      c.Type == "emails")?.Value;
+
+    string displayName = !string.IsNullOrWhiteSpace(claimName) ? claimName
+                         : (!string.IsNullOrWhiteSpace(User?.Identity?.Name) ? User.Identity.Name : "Usuário");
+
+    string email = !string.IsNullOrWhiteSpace(claimEmail) ? claimEmail : "";
+
+    string initials = "";
+    if (!string.IsNullOrWhiteSpace(displayName))
+    {
+        var parts = displayName.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        if (parts.Length == 1) initials = parts[0].Substring(0, 1).ToUpper();
+        else initials = (parts[0].Substring(0, 1) + parts[^1].Substring(0, 1)).ToUpper();
+    }
+    else if (!string.IsNullOrWhiteSpace(email))
+    {
+        initials = email.Substring(0, 1).ToUpper();
+    }
+    else
+    {
+        initials = "U";
+    }
+}
+
+<style>
+    :root {
+        --roxo-1: #220034;
+        --roxo-2: #3e0470;
+        --roxo-3: #2b0048;
+        --roxo-4: #35005f;
+        --borda: rgba(255,255,255,.14);
+        --txt: #fff;
+        --txt-m: #cfcfe6;
+        --ac: #00d0ff;
+        --offcanvas-bg: #2b0048;
+        --offcanvas-bd: rgba(255,255,255,.18);
+        /* estados sem azul */
+        --hover-roxo-1: #3a0066;
+        --hover-roxo-2: #6b1db8;
+        --focus-roxo: #b84dff;
+    }
+
+    body {
+        color: var(--txt);
+    }
+
+    /* ========= HEADER DA CONTA ========= */
+    .account-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 18px 20px;
+        margin-bottom: 14px;
+        background: linear-gradient(135deg,var(--roxo-1),var(--roxo-2));
+        border: 1px solid var(--borda);
+        border-radius: 16px;
+        box-shadow: 0 10px 26px rgba(0,0,0,.35);
+    }
+
+    .acc-left {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        min-width: 0;
+    }
+
+    .acc-avatar {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        font-weight: 800;
+        font-size: 1.2rem;
+        color: #2f0a4a;
+        background: #fff;
+        border: 3px solid rgba(255,255,255,.35);
+        box-shadow: 0 6px 16px rgba(0,0,0,.35);
+    }
+
+    .acc-info {
+        min-width: 0;
+    }
+
+    .acc-name {
+        margin: 0;
+        font-weight: 900;
+        letter-spacing: .3px;
+        text-shadow: 0 0 1px rgba(255,255,255,.25);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* e-mail sem azul */
+    .acc-email,
+    .acc-email:link,
+    .acc-email:visited {
+        color: var(--txt-m);
+        text-decoration: none;
+        font-weight: 600;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: inline-block;
+        max-width: 60vw;
+    }
+
+        .acc-email:hover {
+            color: #ffffff;
+            text-decoration: underline;
+        }
+
+    .acc-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-hamburger {
+        background: #ffffff;
+        color: #3a0066;
+        border: none;
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        display: grid;
+        place-items: center;
+        font-size: 1.2rem;
+        box-shadow: 0 8px 18px rgba(0,0,0,.35);
+        transition: transform .06s ease, box-shadow .2s ease;
+    }
+
+        .btn-hamburger:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn-hamburger:active {
+            transform: translateY(0);
+        }
+
+    /* ========= OFFCANVAS (MENU) ========= */
+    .offcanvas-roxo.offcanvas-end {
+        background: var(--offcanvas-bg);
+        color: #fff;
+        border-left: 1px solid var(--offcanvas-bd);
+        width: 320px;
+    }
+
+    .offcanvas-roxo .offcanvas-header {
+        border-bottom: 1px solid rgba(255,255,255,.10);
+    }
+
+    .offcanvas-roxo .btn-close {
+        filter: invert(1) grayscale(1) brightness(2);
+        opacity: .9;
+    }
+
+    .menu-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-top: 6px;
+    }
+
+    /* links do menu SEM azul (link/visited/active) */
+    .offcanvas-roxo a,
+    .offcanvas-roxo a:link,
+    .offcanvas-roxo a:visited,
+    .offcanvas-roxo .menu-link {
+        color: #f7f7ff !important;
+        text-decoration: none;
+    }
+
+    .menu-link {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 12px;
+        border-radius: 10px;
+        border: 1px solid rgba(255,255,255,.10);
+        background: rgba(255,255,255,.04);
+        transition: background .2s ease, border-color .2s ease, transform .06s ease;
+    }
+
+        .menu-link i {
+            width: 22px;
+            text-align: center;
+            color: inherit !important;
+        }
+
+    /* hover/focus/active/active-class roxo (sem azul) */
+    .offcanvas-roxo .menu-link:hover,
+    .offcanvas-roxo .menu-link:focus,
+    .offcanvas-roxo .menu-link:active,
+    .offcanvas-roxo .menu-link.active {
+        background: linear-gradient(135deg,var(--hover-roxo-1),var(--hover-roxo-2));
+        border-color: rgba(255,255,255,.28);
+        color: #ffffff !important;
+        transform: translateX(2px);
+    }
+
+    .offcanvas-roxo .menu-link:focus-visible {
+        outline: 2px solid var(--focus-roxo);
+        outline-offset: 2px;
+    }
+
+    /* ========= TÍTULO E CARDS EXISTENTES ========= */
+    h2 {
+        color: #fff;
+        font-weight: 900;
+        margin: 10px 0 14px;
+    }
+
+    .perfil-grid {
+        margin-top: 6px;
+    }
+
+    .perfil-card {
+        display: block;
+        background-color: var(--roxo-3);
+        color: #fff;
+        border-radius: 16px;
+        padding: 24px;
+        height: 100%;
+        text-decoration: none;
+        border: 1px solid transparent;
+        transition: .3s ease-in-out;
+        box-shadow: 0 0 10px #7c00ff22;
+    }
+
+        .perfil-card:hover {
+            background-color: var(--roxo-4);
+            box-shadow: 0 0 20px #9b00ff66;
+            border: 1px solid #9b00ff55;
+            transform: translateY(-2px);
+            color: #fff;
+        }
+
+        .perfil-card h5 {
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .perfil-card p {
+            color: #cccccc;
+            font-size: .92rem;
+            margin-bottom: 0;
+        }
+
+        .perfil-card i {
+            font-size: 1.2rem;
+            transition: .3s;
+        }
+
+        .perfil-card:hover i {
+            color: #b84dff;
+        }
+
+    .perfil-grid .col-md-4 {
+        margin-bottom: 24px;
+    }
+
+    hr.bg-light {
+        opacity: .1;
+    }
+</style>
+
+
+<!-- HEADER da conta -->
+<div class="account-header">
+    <div class="acc-left">
+        <div class="acc-avatar">@initials</div>
+        <div class="acc-info">
+            <h3 class="acc-name">@displayName</h3>
+            @if (!string.IsNullOrWhiteSpace(email))
+            {
+                <a class="acc-email" href="mailto:@email">@email</a>
+            }
+        </div>
+    </div>
+
+    <div class="acc-actions">
+        <button class="btn-hamburger" type="button" data-bs-toggle="offcanvas" data-bs-target="#menuConta" aria-controls="menuConta" title="Menu">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+    </div>
+</div>
+
+<!-- OFFCANVAS: menu hamburguer -->
+<div class="offcanvas offcanvas-end offcanvas-roxo" tabindex="-1" id="menuConta" aria-labelledby="menuContaLabel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="menuContaLabel">Menu da Conta</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Fechar"></button>
+    </div>
+    <div class="offcanvas-body">
+        <nav class="menu-list">
+            <a asp-controller="MeusPedidos" asp-action="Index" class="menu-link"><i class="fa-solid fa-box"></i> Meus Pedidos</a>
+            <a asp-controller="Endereco" asp-action="Index" class="menu-link"><i class="fa-solid fa-map-marker-alt"></i> Meus Endereços</a>
+            <a asp-controller="Favorito" asp-action="Index" class="menu-link"><i class="fa-solid fa-heart"></i> Favoritos</a>
+            <a asp-controller="ListaJogo" asp-action="Index" class="menu-link"><i class="fa-solid fa-folder"></i> Minhas Listas</a>
+            <a asp-controller="Perfil" asp-action="Visualizar" class="menu-link"><i class="fa-solid fa-address-card"></i> Visualizar Perfil</a>
+            <a asp-controller="Historico" asp-action="Index" class="menu-link"><i class="fa-solid fa-clock-rotate-left"></i> Histórico</a>
+            <a asp-controller="Tendencias" asp-action="List" class="menu-link"><i class="fa-solid fa-chart-line"></i> Tendências</a>
+            <a asp-controller="Home" asp-action="Sobre" class="menu-link"><i class="fa-solid fa-info-circle"></i> Sobre Nós</a>
+            <a asp-controller="Contato" asp-action="Index" class="menu-link"><i class="fa-solid fa-envelope"></i> Contato</a>
+            <a asp-controller="Pergunta" asp-action="Criar" class="menu-link"><i class="fa-solid fa-question-circle"></i> Enviar Pergunta</a>
+            <a href="/ComunicadoUsuario/Comunicados" class="menu-link"><i class="fa-solid fa-bullhorn"></i> Comunicados</a>
+            <a asp-controller="Account" asp-action="Editar" class="menu-link"><i class="fa-solid fa-user-gear"></i> Editar Perfil</a>
+            <a asp-controller="MeusPedidos" asp-action="Avaliar" class="menu-link"><i class="fa-solid fa-star-half-stroke"></i> Opinião</a>
+            <a asp-controller="Interesses" asp-action="Selecionar" class="menu-link"><i class="fa-solid fa-gamepad"></i> Meus Interesses</a>
+            <a asp-controller="Jogo" asp-action="Promocoes" class="menu-link"><i class="fa-solid fa-tags"></i> Promoções</a>
+            <a asp-controller="Cartao" asp-action="Index" class="menu-link"><i class="fa fa-credit-card"></i> Meus Cartões</a>
+            <a asp-controller="AvaliacaoJogo" asp-action="Avaliacoes" class="menu-link"><i class="fa-solid fa-thumbs-up"></i> Likes & Dislikes</a>
+            <a asp-controller="Notificacoes" asp-action="Index" class="menu-link"><i class="fa-solid fa-bell"></i> Notificações</a>
+            <a asp-controller="Carteira" asp-action="Index" class="menu-link"><i class="fa-solid fa-wallet"></i> Minha Carteira</a>
+            <a asp-controller="Carteira" asp-action="AdicionarSaldo" class="menu-link"><i class="fa-solid fa-circle-plus"></i> Adicionar Saldo</a>
+        </nav>
+    </div>
+</div>
+
+<h2 class="text-white">Sua Conta</h2>
+<hr class="bg-light" />
+
+<!-- ======== GRADE ORIGINAL ======== -->
+<div class="row perfil-grid">
+
+    <div class="col-md-4">
+        <a asp-controller="MeusPedidos" asp-action="Index" class="perfil-card">
+            <h5><i class="fa-solid fa-box"></i> Meus Pedidos</h5>
+            <p>Acompanhe, devolva ou compre novamente.</p>
+        </a>
+    </div>
+
+    <div class="col-md-4">
+        <a asp-controller="Notificacoes" asp-action="Index" class="perfil-card">
+            <h5><i class="fa-solid fa-bell"></i> Notificações</h5>
+            <p>Veja atualizações de pedidos e itens que voltaram ao estoque.</p>
+        </a>
+    </div>
+
+    <div class="col-md-4">
+        <a asp-controller="Endereco" asp-action="Index" class="perfil-card">
+            <h5><i class="fa-solid fa-map-marker-alt"></i> Meus Endereços</h5>
+            <p>Gerencie os endereços de entrega.</p>
+        </a>
+    </div>
+
+    <div class="col-md-4">
+        <a asp-controller="Cartao" asp-action="Index" class="perfil-card">
+            <h5><i class="fa fa-credit-card"></i> Meus Cartões</h5>
+            <p>Gerencie seus cartões salvos para facilitar suas próximas compras.</p>
+        </a>
+    </div>
+
+    <div class="col-md-4">
+        <a asp-controller="Carteira" asp-action="Index" class="perfil-card">
+            <h5><i class="fa-solid fa-wallet"></i> Minha Carteira</h5>
+            <p>Veja seu saldo, histórico de transações e gerencie a carteira.</p>
+        </a>
+    </div>
+
+    <div class="col-md-4">
+        <a asp-controller="Carteira" asp-action="AdicionarSaldo" class="perfil-card">
+            <h5><i class="fa-solid fa-circle-plus"></i> Adicionar Saldo</h5>
+            <p>Faça um depósito para usar como forma de pagamento.</p>
+        </a>
+    </div>
+
+    <div class="col-md-4">
+        <a asp-controller="Favorito" asp-action="Index" class="perfil-card">
+            <h5><i class="fa-solid fa-heart"></i> Favoritos</h5>
+            <p>Jogos que você salvou como favoritos.</p>
+        </a>
+    </div>
+
+    <div class="col-md-4">
+        <a asp-controller="ListaJogo" asp-action="Index" class="perfil-card">
+            <h5><i class="fa-solid fa-folder"></i> Minhas Listas</h5>
+            <p>Listas de jogos criadas por você.</p>
+        </a>
+    </div>
+
+    <div class="col-md-4">
+        <a asp-controller="Interesses" asp-action="Selecionar" class="perfil-card">
+            <h5><i class="fa-solid fa-gamepad"></i> Meus Interesses</h5>
+            <p>Escolha até 7 gêneros de jogos que você mais curte!</p>
+        </a>
+    </div>
+
+    <div class="col-md-4">
+        <a asp-controller="AvaliacaoJogo" asp-action="Avaliacoes" class="perfil-card">
+            <h5><i class="fa-solid fa-thumbs-up"></i> Meus Likes & Dislikes</h5>
+            <p>Veja os jogos que você curtiu ou não curtiu.</p>
+        </a>
+    </div>
+
+    <div class="col-md-4">
+        <a asp-controller="MeusPedidos" asp-action="Avaliar" class="perfil-card">
+            <h5><i class="fa-solid fa-star-half-stroke"></i> Opinião</h5>
+            <p>Avalie os jogos que você comprou com estrelas e comentários.</p>
+        </a>
+    </div>
+
+    <div class="col-md-4">
+        <a asp-controller="Jogo" asp-action="Promocoes" class="perfil-card">
+            <h5><i class="fa-solid fa-tags"></i> Promoções</h5>
+            <p>Veja os jogos com descontos incríveis ativos no momento.</p>
+        </a>
+    </div>
+
+    <div class="col-md-4">
+        <a asp-controller="Tendencias" asp-action="List" class="perfil-card">
+            <h5><i class="fa-solid fa-chart-line"></i> Tendências</h5>
+            <p>Veja os jogos mais comprados.</p>
+        </a>
+    </div>
+
+    <div class="col-md-4">
+        <a asp-controller="Historico" asp-action="Index" class="perfil-card">
+            <h5><i class="fa-solid fa-clock-rotate-left"></i> Histórico</h5>
+            <p>Jogos que você visualizou.</p>
+        </a>
+    </div>
+
+    <div class="col-md-4">
+        <a asp-controller="Account" asp-action="Editar" class="perfil-card">
+            <h5><i class="fa-solid fa-user-gear"></i> Editar Perfil</h5>
+            <p>Gerenciar senha, e-mail, CPF e número de celular</p>
+        </a>
+    </div>
+
+    <div class="col-md-4">
+        <a asp-controller="Perfil" asp-action="Visualizar" class="perfil-card">
+            <h5><i class="fa-solid fa-address-card"></i> Visualizar Perfil</h5>
+            <p>Veja seus dados, últimos pedidos e interesses.</p>
+        </a>
+    </div>
+
+    <div class="col-md-4">
+        <a href="/ComunicadoUsuario/Comunicados" class="perfil-card">
+            <h5><i class="fa-solid fa-bullhorn"></i> Comunicados</h5>
+            <p>Veja mensagens, perguntas e enquetes enviadas pelo MoonstoneGames.</p>
+        </a>
+    </div>
+
+    <div class="col-md-4">
+        <a asp-controller="Contato" asp-action="Index" class="perfil-card">
+            <h5><i class="fa-solid fa-envelope"></i> Contato</h5>
+            <p>Fale conosco.</p>
+        </a>
+    </div>
+
+    <div class="col-md-4">
+        <a asp-controller="Pergunta" asp-action="Criar" class="perfil-card">
+            <h5><i class="fa-solid fa-question-circle"></i> Enviar Pergunta</h5>
+            <p>Envie dúvidas ou sugestões.</p>
+        </a>
+    </div>
+
+    <div class="col-md-4">
+        <a asp-controller="Home" asp-action="Sobre" class="perfil-card">
+            <h5><i class="fa-solid fa-info-circle"></i> Sobre Nós</h5>
+            <p>Informações sobre o projeto Moonstone.</p>
+        </a>
+    </div>
+</div>

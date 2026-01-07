@@ -1,15 +1,15 @@
 ﻿@model IEnumerable<MoonstoneTCC.Models.PerguntaUsuario>
 
-<h2>Perguntas dos Usuários</h2>
+<h1 class="text-center text-dark mb-4">PERGUNTAS DOS USUÁRIOS</h1>
 
 <table class="table table-bordered table-hover">
-    <thead class="table-dark">
+    <thead>
         <tr>
             <th>Título</th>
             <th>Usuário</th>
             <th>Data</th>
             <th>Status</th>
-            <th>Ação</th>
+            <th>Ações</th>
         </tr>
     </thead>
     <tbody>
@@ -30,12 +30,67 @@
                     }
                 </td>
                 <td>
-                    <a class="btn btn-primary btn-sm" asp-action="Responder" asp-route-id="@pergunta.Id">
-                        <i class="fas fa-reply"></i> Responder
-                    </a>
+                    <div class="btn-group">
+                        <a class="btn btn-sm btn-outline-primary" asp-action="Responder" asp-route-id="@pergunta.Id">
+                            <i class="fas fa-reply"></i> Responder
+                        </a>
+                        <a class="btn btn-sm btn-outline-info" asp-action="Details" asp-route-id="@pergunta.Id">
+                            <i class="fas fa-info-circle"></i> Detalhes
+                        </a>
+                        <a class="btn btn-sm btn-outline-danger" asp-action="Delete" asp-route-id="@pergunta.Id">
+                            <i class="fas fa-trash"></i> Excluir
+                        </a>
+                    </div>
                 </td>
             </tr>
         }
     </tbody>
 </table>
 
+<style>
+    table.table {
+        margin-top: 20px;
+        border-collapse: collapse;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        overflow: hidden;
+        background: white;
+    }
+
+    table.table th {
+        background: linear-gradient(90deg, #6a0dad 0%, #3c006e 50%, #2b003f 100%);
+        color: white;
+        text-align: center;
+        padding: 12px;
+    }
+
+    table.table td {
+        text-align: center;
+        padding: 10px;
+        border-bottom: 1px solid #ddd;
+    }
+
+    table.table tbody tr:nth-child(even) {
+        background: #f8f9fc;
+    }
+
+    table.table tbody tr:hover {
+        background: rgba(78, 115, 223, 0.1);
+    }
+
+    .btn-group {
+        display: flex;
+        justify-content: center;
+        gap: 5px;
+    }
+
+    .btn-group .btn {
+        padding: 4px 8px;
+        font-size: 14px;
+        min-width: 90px;
+    }
+
+    h1 {
+        color: black;
+    }
+</style>

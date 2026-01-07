@@ -1,0 +1,179 @@
+﻿@* Areas/Admin/Views/AdminAcessorios/Create.cshtml *@
+@model MoonstoneTCC.Models.Acessorio
+
+
+@{
+    ViewData["Title"] = "Novo Acessório";
+}
+
+<h2>Novo Acessório</h2>
+
+@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+<form asp-area="Admin" asp-controller="AdminAcessorios" asp-action="Create" method="post">
+    @Html.AntiForgeryToken()
+
+    <div class="row">
+        <div class="col-md-6">
+            @* COLUNA ESQUERDA *@
+            <div class="form-group">
+                <label asp-for="Nome"></label>
+                <input asp-for="Nome" class="form-control" />
+                <span asp-validation-for="Nome" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DescricaoCurta"></label>
+                <input asp-for="DescricaoCurta" class="form-control" />
+                <span asp-validation-for="DescricaoCurta" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DescricaoDetalhada"></label>
+                <textarea asp-for="DescricaoDetalhada" class="form-control"></textarea>
+                <span asp-validation-for="DescricaoDetalhada" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Preco"></label>
+                <input asp-for="Preco" class="form-control" />
+                <span asp-validation-for="Preco" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PrecoPromocional"></label>
+                <input asp-for="PrecoPromocional" class="form-control" />
+                <span asp-validation-for="PrecoPromocional" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ImagemUrl"></label>
+                <input asp-for="ImagemUrl" class="form-control" />
+                <span asp-validation-for="ImagemUrl" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ImagemThumbnailUrl"></label>
+                <input asp-for="ImagemThumbnailUrl" class="form-control" />
+                <span asp-validation-for="ImagemThumbnailUrl" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ImagensAdicionais"></label>
+                <input asp-for="ImagensAdicionais" class="form-control" />
+                <span asp-validation-for="ImagensAdicionais" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ImagensAdicionais2"></label>
+                <input asp-for="ImagensAdicionais2" class="form-control" />
+                <span asp-validation-for="ImagensAdicionais2" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ImagensAdicionais3"></label>
+                <input asp-for="ImagensAdicionais3" class="form-control" />
+                <span asp-validation-for="ImagensAdicionais3" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            @* COLUNA DIREITA *@
+            <div class="form-group">
+                <label asp-for="Marca"></label>
+                <input asp-for="Marca" class="form-control" />
+                <span asp-validation-for="Marca" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Modelo"></label>
+                <input asp-for="Modelo" class="form-control" />
+                <span asp-validation-for="Modelo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Cor"></label>
+                <input asp-for="Cor" class="form-control" />
+                <span asp-validation-for="Cor" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Tipo"></label>
+                <input asp-for="Tipo" class="form-control" />
+                <span asp-validation-for="Tipo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Conectividade"></label>
+                <input asp-for="Conectividade" class="form-control" />
+                <span asp-validation-for="Conectividade" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Compatibilidade"></label>
+                <input asp-for="Compatibilidade" class="form-control" />
+                <span asp-validation-for="Compatibilidade" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Material"></label>
+                <input asp-for="Material" class="form-control" />
+                <span asp-validation-for="Material" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Peso"></label>
+                <input asp-for="Peso" class="form-control" />
+                <span asp-validation-for="Peso" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Dimensoes"></label>
+                <input asp-for="Dimensoes" class="form-control" />
+                <span asp-validation-for="Dimensoes" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Bateria"></label>
+                <input asp-for="Bateria" class="form-control" />
+                <span asp-validation-for="Bateria" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Garantia"></label>
+                <input asp-for="Garantia" class="form-control" />
+                <span asp-validation-for="Garantia" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ItensInclusos"></label>
+                <input asp-for="ItensInclusos" class="form-control" />
+                <span asp-validation-for="ItensInclusos" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ClassificacaoUso"></label>
+                <input asp-for="ClassificacaoUso" class="form-control" />
+                <span asp-validation-for="ClassificacaoUso" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="QuantidadeEstoque"></label>
+                <input asp-for="QuantidadeEstoque" class="form-control" />
+                <span asp-validation-for="QuantidadeEstoque" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EstoqueMinimoAlerta"></label>
+                <input asp-for="EstoqueMinimoAlerta" class="form-control" />
+                <span asp-validation-for="EstoqueMinimoAlerta" class="text-danger"></span>
+            </div>
+
+            <div class="form-check mt-2">
+                <input asp-for="IsAcessorioDestaque" class="form-check-input" />
+                <label asp-for="IsAcessorioDestaque" class="form-check-label"></label>
+            </div>
+
+            <div class="form-group mt-2">
+                <label asp-for="CategoriaId"></label>
+                <select asp-for="CategoriaId" asp-items="ViewBag.Categorias" class="form-control"></select>
+                <span asp-validation-for="CategoriaId" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+
+    <br />
+    <button type="submit" class="btn btn-success">Salvar</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+
+@*             <div class="form-check mt-2">
+                <input asp-for="ProdutoNovo" class="form-check-input" />
+                <label asp-for="ProdutoNovo" class="form-check-label"></label>
+            </div>
+            <div class="form-check mt-2">
+                <input asp-for="ProdutoMaisVendido" class="form-check-input" />
+                <label asp-for="ProdutoMaisVendido" class="form-check-label"></label>
+            </div> *@

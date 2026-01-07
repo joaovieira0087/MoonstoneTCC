@@ -1,0 +1,38 @@
+﻿@model MoonstoneTCC.Models.CartaoCredito
+@{
+    ViewData["Title"] = "Adicionar Cartão";
+}
+
+<div class="container mt-5">
+    <h3 class="text-white mb-4">Adicionar Novo Cartão</h3>
+
+    <form asp-action="Adicionar" method="post">
+        <div class="form-group mb-3">
+            <label class="form-label text-white">Número do Cartão (somente para exibição dos 4 últimos)</label>
+            <input name="numeroCompleto" class="form-control" required maxlength="19" placeholder="Ex: 1234 5678 9012 3456" />
+        </div>
+
+        <div class="form-group mb-3">
+            <label class="form-label text-white">Validade (MM/AA)</label>
+            <input asp-for="Validade" class="form-control" placeholder="MM/AA" />
+            <span asp-validation-for="Validade" class="text-danger"></span>
+        </div>
+
+        <div class="form-group mb-3">
+            <label class="form-label text-white">Nome do Titular</label>
+            <input asp-for="NomeTitular" class="form-control" />
+            <span asp-validation-for="NomeTitular" class="text-danger"></span>
+        </div>
+
+        <div class="form-group mb-4">
+            <label class="form-label text-white">Código de Verificação (PIN)</label>
+            <input asp-for="CodigoVerificacao" class="form-control" type="password" maxlength="6" />
+            <span asp-validation-for="CodigoVerificacao" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-success px-4">
+            <i class="fa fa-save"></i> Salvar Cartão
+        </button>
+        <a asp-action="Index" class="btn btn-secondary ms-2">Cancelar</a>
+    </form>
+</div>

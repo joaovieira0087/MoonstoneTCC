@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using MoonstoneTCC.Models;
+using MoonstoneTCC.Services;
 
 namespace MoonstoneTCC.Areas.Admin.Controllers
 {
@@ -10,13 +11,18 @@ namespace MoonstoneTCC.Areas.Admin.Controllers
     public class AdminImagensController : Controller
     {
         private readonly ConfigurationImagens _myConfig;
+        private readonly LoggerAdminService _logger;
+
 
         private readonly IWebHostEnvironment _hostingEnvironment;
-        public AdminImagensController(IWebHostEnvironment hostingEnvironment,
-            IOptions<ConfigurationImagens> myConfiguration)
+        public AdminImagensController(
+      IWebHostEnvironment hostingEnvironment,
+      IOptions<ConfigurationImagens> myConfiguration,
+      LoggerAdminService logger)
         {
             _hostingEnvironment = hostingEnvironment;
             _myConfig = myConfiguration.Value;
+            _logger = logger;
         }
 
         public IActionResult Index()
@@ -39,15 +45,14 @@ namespace MoonstoneTCC.Areas.Admin.Controllers
 
             long size = files.Sum(f => f.Length);
             var filePathsName = new List<string>();
-            var filePath = Path.Combine(_hostingEnvironment.WebRootPath,
-                   _myConfig.NomePastaImagensProdutos);
+            var filePath = Path.Combine(_hostingEnvironment.WebRootPath, _myConfig.NomePastaImagensProdutos);
 
             foreach (var formFile in files)
             {
                 if (formFile.FileName.Contains(".jpg") || formFile.FileName.Contains(".gif") ||
-                         formFile.FileName.Contains(".png"))
+                    formFile.FileName.Contains(".png"))
                 {
-                    var fileNameWithPath = string.Concat(filePath, "\\", formFile.FileName);
+                    var fileNameWithPath = Path.Combine(filePath, formFile.FileName);
 
                     filePathsName.Add(fileNameWithPath);
 
@@ -57,15 +62,16 @@ namespace MoonstoneTCC.Areas.Admin.Controllers
                     }
                 }
             }
-            //monta a ViewData que será exibida na view como resultado do envio 
-            ViewData["Resultado"] = $"{files.Count} arquivos foram enviados ao servidor, " +
-             $"com tamanho total de : {size} bytes";
 
+            // LOG APÓS TODOS OS UPLOADS
+            await _logger.RegistrarAcaoAsync($"Enviou {files.Count} imagem(ns) para a pasta de produtos.");
+
+            ViewData["Resultado"] = $"{files.Count} arquivos foram enviados ao servidor, com tamanho total de : {size} bytes";
             ViewBag.Arquivos = filePathsName;
 
-            //retorna a viewdata
             return View(ViewData);
         }
+
         public IActionResult GetImagens()
         {
             FileManagerModel model = new FileManagerModel();
@@ -86,17 +92,20 @@ namespace MoonstoneTCC.Areas.Admin.Controllers
             return View(model);
         }
 
-        public IActionResult Deletefile(string fname)
+        public async Task<IActionResult> Deletefile(string fname)
         {
             string _imagemDeleta = Path.Combine(_hostingEnvironment.WebRootPath,
                 _myConfig.NomePastaImagensProdutos + "\\", fname);
 
-            if ((System.IO.File.Exists(_imagemDeleta)))
+            if (System.IO.File.Exists(_imagemDeleta))
             {
                 System.IO.File.Delete(_imagemDeleta);
+                await _logger.RegistrarAcaoAsync($"Deletou a imagem: {fname}");
                 ViewData["Deletado"] = $"Arquivo(s) {_imagemDeleta} deletado com sucesso";
             }
-            return View("index");
+
+            return View("Index");
         }
+
     }
 }

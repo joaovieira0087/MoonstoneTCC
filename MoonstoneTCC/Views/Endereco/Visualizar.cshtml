@@ -1,0 +1,102 @@
+﻿@model MoonstoneTCC.Models.EnderecoEntrega
+@{
+    ViewData["Title"] = "Visualizar Endereço";
+}
+
+<div class="container my-5">
+    <div class="card border-0 shadow-lg bg-gradient-roxo text-light animate__animated animate__fadeInDown">
+        <div class="card-header bg-roxo-claro text-white d-flex align-items-center">
+            <i class="fas fa-map-marked-alt fa-lg me-2"></i>
+            <h4 class="mb-0">Informações do Endereço</h4>
+        </div>
+        <div class="card-body">
+            <div class="mb-3">
+                <i class="fas fa-user text-purple me-2"></i>
+                <strong>Nome:</strong> @Model.Nome @Model.Sobrenome
+            </div>
+
+            <div class="mb-3">
+                <i class="fas fa-home text-purple me-2"></i>
+                <strong>Endereço:</strong> @Model.Endereco1
+                @if (!string.IsNullOrEmpty(Model.Endereco2))
+                {
+                    <text>, @Model.Endereco2</text>
+                }
+            </div>
+
+            <div class="mb-3">
+                <i class="fas fa-map text-purple me-2"></i>
+                <strong>Cidade:</strong> @Model.Cidade
+            </div>
+
+            <div class="mb-3">
+                <i class="fas fa-globe text-purple me-2"></i>
+                <strong>Estado:</strong> @Model.Estado
+            </div>
+
+            <div class="mb-3">
+                <i class="fas fa-envelope text-purple me-2"></i>
+                <strong>CEP:</strong> @Model.Cep
+            </div>
+
+            <div class="mb-3">
+                <i class="fas fa-phone-alt text-purple me-2"></i>
+                <strong>Telefone:</strong> @Model.Telefone
+            </div>
+
+            @if (Model.EnderecoPadrao)
+            {
+                <div class="alert alert-success d-inline-flex align-items-center px-3 py-2 mt-3">
+                    <i class="fas fa-check-circle me-2"></i>
+                    <span>Este é seu endereço padrão.</span>
+                </div>
+            }
+
+            <div class="mt-4">
+                <a asp-action="Index" class="btn btn-voltar-roxo btn-lg shadow">
+                    <i class="fas fa-arrow-left"></i> Voltar para a lista
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+
+<style>
+    .text-purple {
+        color: #c084fc;
+    }
+
+    .bg-roxo-claro {
+        background: linear-gradient(to right, #6f00cc, #8000ff);
+    }
+
+    .bg-gradient-roxo {
+        background: linear-gradient(to bottom right, #2a004d, #3a0066);
+        border-radius: 15px;
+    }
+
+    .btn-voltar-roxo {
+        background-color: #6f00cc;
+        color: #fff;
+        border: none;
+        transition: 0.3s;
+        border-radius: 10px;
+        padding: 10px 25px;
+    }
+
+        .btn-voltar-roxo:hover {
+            background-color: #5000aa;
+            color: #fff;
+            transform: scale(1.03);
+        }
+
+    .card-body div {
+        font-size: 1.15rem;
+    }
+
+    .card-header h4 {
+        font-weight: 600;
+    }
+</style>

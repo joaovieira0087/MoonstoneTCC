@@ -1,6 +1,27 @@
 ﻿@model Jogo
+@inject MoonstoneTCC.Context.AppDbContext _context
+
+@{
+    var comentarios = _context.ComentariosJogo
+        .Where(c => c.JogoId == Model.JogoId)
+        .ToList();
+
+    var temComentarios = comentarios.Any();
+    var mediaAvaliacao = temComentarios ? comentarios.Average(c => c.Avaliacao) : 5.0;
+    var mediaFormatada = mediaAvaliacao.ToString("0.0").Replace('.', ',');
+}
+
+
 
 <div class="container my-5">
+    @if (TempData["Mensagem"] != null)
+    {
+        var tipo = TempData["TipoMensagem"]?.ToString() ?? "info";
+        <div class="alert alert-@tipo alert-dismissible fade show mt-2" role="alert">
+            @Html.Raw(TempData["Mensagem"])
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+        </div>
+    }
     <div class="row g-4">
         <!-- Carrossel de Imagens -->
         <div class="col-md-6">
@@ -57,27 +78,84 @@
                     {
                         <img src="@Model.ImagensAdicionais3" class="thumbnail" alt="Miniatura 4" data-bs-target="#gameCarousel" data-bs-slide-to="3">
                     }
-                    
                 </div>
             </div>
         </div>
 
-
         <!-- Informações do Jogo -->
         <div class="col-md-6">
-            <div class="p-4 rounded-4 shadow-lg carousel-container text-white">
+            <div class="p-3 rounded-4 shadow-lg carousel-container text-white"
+                 style="font-size: 1.0rem; line-height: 1.0; padding: 1.0rem;">
+
                 <!-- Nome do jogo -->
                 <h1 class="fw-bold mb-4 d-flex align-items-center">
-                     @Model.Nome
+                    @Model.Nome
                 </h1>
+                @if (ViewBag.TagFavorito != null)
+                {
+                    <span class="badge bg-purple mb-3">@ViewBag.TagFavorito</span>
+                }
+
 
                 <!-- Preço e Categoria -->
+                @if (Model.PrecoPromocional != null)
+                {
+                    <p>
+                        <del class="text-muted">De R$ @Model.Preco.ToString("F2")</del>
+                        <strong class="text-danger">por R$ @Model.PrecoPromocional.Value.ToString("F2")</strong>
+                        <span class="badge bg-success ms-2">-@Model.PorcentagemDesconto%</span>
+                    </p>
+                }
+                else
+                {
+                    <p><strong>R$ @Model.Preco.ToString("F2")</strong></p>
+                }
                 <p class="mb-2">
-                    <strong><i class="fas fa-tag me-2 text-success"></i> Preço:</strong> R$ @Model.Preco.ToString("F2")
-                </p>
-                <p class="mb-3">
                     <strong><i class="fas fa-layer-group me-2 text-info"></i> Categoria:</strong> @Model.Genero
                 </p>
+                @if (Model.Desenvolvedora != null)
+                {
+                    <p>
+                        Desenvolvedora:
+                        <a href="@Url.Action("Perfil", "Desenvolvedora", new { id = Model.DesenvolvedoraId })">
+                            @Model.Desenvolvedora.Nome
+                        </a>
+                    </p>
+                }
+                @if (Model.QuantidadeEstoque <= Model.EstoqueMinimoAlerta && Model.QuantidadeEstoque > 0)
+                {
+                    <div class="alert alert-warning mt-3">
+                        <i class="fas fa-exclamation-circle me-2"></i>
+                        Últimas unidades disponíveis!
+                    </div>
+                }
+                @if (mediaAvaliacao > 0)
+                {
+                    <p class="mb-3 text-warning fs-5">
+                        <i class="fas fa-star me-2"></i> @mediaFormatada
+                    </p>
+                }
+                @if (ViewBag.Ranking > 0 && ViewBag.Ranking <= 10)
+                {
+                    string corRanking = ViewBag.Ranking == 1
+                    ? "gold"
+                    : ViewBag.Ranking <= 3
+                    ? "#b266ff"
+                    : "#7a00cc";
+
+                    <text>
+                        <a href="/Tendencias/List" class="text-decoration-none">
+                            <p class="ranking-info mb-3" style="color:@corRanking; font-weight:bold; font-size:0.9rem;">
+                                <i class="fas fa-trophy me-2"></i> #@ViewBag.Ranking JOGO MAIS VENDIDO
+                            </p>
+                        </a>
+                    </text>
+                }
+
+
+
+
+
 
                 <!-- Plataforma e Classificação -->
                 <div class="d-flex align-items-center gap-3 mb-4">
@@ -88,12 +166,72 @@
                     }
                 </div>
 
-                <!-- BOTÕES em 2 colunas -->
-                <div class="row g-3">
+                <div class="d-flex align-items-center gap-1 mb-2" style="font-size: 0.85rem;">
+                    <button id="btnLike"
+                            class="btn btn-outline-success border-0 p-1 d-flex align-items-center"
+                            style="font-size: 1rem; background-color: transparent;"
+                            title="Curtir">
+                        <i class="fa-regular fa-thumbs-up"></i>
+                    </button>
+
+                    <button id="btnDislike"
+                            class="btn btn-outline-danger border-0 p-1 d-flex align-items-center"
+                            style="font-size: 1rem; background-color: transparent;"
+                            title="Não curtir">
+                        <i class="fa-regular fa-thumbs-down"></i>
+                    </button>
+                </div>
+
+
+                @if (Model.QuantidadeEstoque > 0) 
+                {
+                <form asp-controller="CarrinhoCompra" asp-action="ComprarOuAdicionar" method="post" class="row g-1 mb-2">
+                    <input type="hidden" name="jogoId" value="@Model.JogoId" />
+
+                    <div class="col-12">
+                        <label for="quantidade" class="form-label text-light fw-bold">
+                            <i class="fas fa-sort-numeric-up-alt me-2 text-purple"></i> Quantidade:
+                        </label>
+                        <select name="quantidade" id="quantidade" class="form-select styled-select text-white fw-semibold">
+                            @for (int i = 1; i <= 10; i++)
+                            {
+                                <option value="@i">@i unidade@(i > 1 ? "s" : "")</option>
+                            }
+                        </select>
+                    </div>
+
+
                     <div class="col-6">
-                        <a asp-controller="CarrinhoCompra" asp-action="AdicionarItemNoCarrinhoCompra" asp-route-jogoId="@Model.JogoId"
-                           class="btn btn-success w-100 d-flex align-items-center justify-content-center">
-                            <i class="fas fa-bolt me-2"></i> Comprar
+                        <button name="acao" value="comprar" type="submit" class="btn btn-success w-100">
+                            <i class="fas fa-bolt me-2"></i> Comprar Agora
+                        </button>
+                    </div>
+
+                    <div class="col-6">
+                        <button name="acao" value="carrinho" type="submit" class="btn btn-outline-light w-100">
+                            <i class="fas fa-cart-plus me-2"></i> Carrinho
+                        </button>
+                    </div>
+                </form>
+                }
+                else
+                {
+                    <div class="alert alert-danger mt-3">
+                        <i class="fas fa-times-circle me-2"></i> Este jogo está esgotado.
+                    </div>
+                    <form asp-controller="Estoque" asp-action="SolicitarAviso" method="post">
+                        <input type="hidden" name="jogoId" value="@Model.JogoId" />
+                        <button type="submit" class="btn btn-outline-warning mt-2">
+                            <i class="fas fa-bell"></i> Me avise quando estiver disponível
+                        </button>
+                    </form>
+                }
+
+                <!-- BOTÕES em 2 colunas -->
+                <div class="row g-2">
+@*                     <div class="col-6">
+                        <a asp-controller="CarrinhoCompra" asp-action="ComprarAgora" asp-route-jogoId="@Model.JogoId" class="btn btn-success d-flex justify-content-center align-items-center">
+                            <i class="fas fa-bolt me-2"></i> Comprar Agora
                         </a>
                     </div>
                     <div class="col-6">
@@ -101,7 +239,7 @@
                            class="btn btn-outline-light w-100 d-flex align-items-center justify-content-center">
                             <i class="fas fa-cart-plus me-2"></i> Carrinho
                         </a>
-                    </div>
+                    </div> *@
                     <div class="col-6">
                         <a asp-controller="Jogo" asp-action="List"
                            class="btn btn-primary w-100 d-flex align-items-center justify-content-center">
@@ -117,54 +255,357 @@
                             </a>
                         </div>
                     }
+
+                    <div class="col-6">
+                        @{
+                            var tagAtual = (string)ViewBag.TagFavorito;
+                            var tagsPadrao = new[] { "Zerados", "Quero Jogar", "Jogando", "Top 10" };
+                        }
+
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            @* BOTÃO FAVORITAR/DESFAVORITAR *@
+
+                            if (ViewBag.EhFavorito)
+                            {
+                                <!-- Já é favorito: mostrar botão remover -->
+                                <form asp-controller="Favorito" asp-action="Remover" method="post">
+                                    <input type="hidden" name="jogoId" value="@Model.JogoId" />
+                                    <button type="submit" class="btn btn-danger w-100 d-flex align-items-center justify-content-center">
+                                        <i class="fas fa-heart-broken me-2"></i> Remover dos Favoritos
+                                    </button>
+                                </form>
+
+                                @* SELETOR DE TAG *@
+                                <form asp-controller="Favorito" asp-action="AtualizarTag" method="post"
+                                      class="d-flex align-items-center mt-2 gap-2">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="jogoId" value="@Model.JogoId" />
+
+                                    <select name="tag" class="form-select form-select-sm" id="select-tag">
+                                        <option value="">Sem categoria</option>
+
+                                        @foreach (var t in tagsPadrao)
+                                        {
+                                            <option value="@t" selected="@(tagAtual == t)">@t</option>
+                                        }
+
+                                        @if (!string.IsNullOrWhiteSpace(tagAtual) && !tagsPadrao.Contains(tagAtual))
+                                        {
+                                            <option value="@tagAtual" selected>@tagAtual</option>
+                                        }
+
+                                        <option value="nova">Criar nova tag…</option>
+                                    </select>
+
+                                    <input type="text" name="novaTag" class="form-control form-control-sm"
+                                           placeholder="Nova tag" id="input-nova-tag" style="display: none;" />
+
+                                    <button type="submit" class="btn btn-outline-light btn-sm">
+                                        <i class="fas fa-check"></i>
+                                    </button>
+                                </form>
+                            }
+                            else
+                            {
+                                <!-- Ainda não é favorito: botão adicionar -->
+                                <form asp-controller="Favorito" asp-action="Adicionar" method="post">
+                                    <input type="hidden" name="jogoId" value="@Model.JogoId" />
+                                    <button type="submit" class="btn btn-warning w-100 d-flex align-items-center justify-content-center">
+                                        <i class="fas fa-heart me-2"></i> Favoritar
+                                    </button>
+                                </form>
+                            }
+                        }
+                        else
+                        {
+                            <a asp-controller="Account" asp-action="Login"
+                               asp-route-returnUrl="@Url.Action("Details", "Jogo", new { jogoId = Model.JogoId })"
+                               class="btn btn-warning w-100 d-flex align-items-center justify-content-center">
+                                <i class="fas fa-heart me-2"></i> Favoritar
+                            </a>
+                        }
+                        </div>
+
+                        <script>
+                            document.addEventListener('DOMContentLoaded', () => {
+                                const selectTag = document.getElementById('select-tag');
+                                const inputNovaTag = document.getElementById('input-nova-tag');
+
+                                function atualizarCampo() {
+                                    const novaSelecionada = selectTag.value === 'nova';
+                                    inputNovaTag.style.display = novaSelecionada ? 'inline-block' : 'none';
+                                    inputNovaTag.required = novaSelecionada;
+                                    if (!novaSelecionada) inputNovaTag.value = '';
+                                }
+
+                                if (selectTag && inputNovaTag) {
+                                    selectTag.addEventListener('change', atualizarCampo);
+                                    atualizarCampo();
+                                }
+                            });
+                        </script>
+
+
+                    @{
+                        var listasMarcadas = ViewBag.ListasComJogo as List<int> ?? new List<int>();
+                    }
+
+                    <div class="col-6 position-relative">
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <button class="btn btn-success w-100 d-flex align-items-center justify-content-center" id="abrirListasBtn" type="button">
+                                <i class="fas fa-folder-plus me-2"></i> Adicionar à Lista
+                            </button>
+
+                            <div id="painelListas" class="card text-white bg-dark border-light mt-2 p-3"
+                                 style="display:none; position:absolute; z-index:10; width: 300px;">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <strong>Salvar em...</strong>
+                                    <button type="button" class="btn-close btn-close-white" aria-label="Fechar"
+                                            onclick="document.getElementById('painelListas').style.display='none'"></button>
+                                </div>
+
+                                <div class="mb-2">
+                                    @if (ViewBag.ListasDoUsuario != null)
+                                    {
+                                        foreach (var lista in ViewBag.ListasDoUsuario as List<MoonstoneTCC.Models.ListaJogo>)
+                                        {
+                                            var marcado = listasMarcadas.Contains(lista.ListaJogoId);
+                                            <div class="form-check">
+                                                <input class="form-check-input lista-checkbox"
+                                                       type="checkbox"
+                                                       value="@lista.ListaJogoId"
+                                                       id="lista_@lista.ListaJogoId"
+                                                @(marcado ? "checked" : "")
+                                                       onchange="atualizarLista(this, @Model.JogoId, '@lista.Nome')" />
+                                                <label class="form-check-label" for="lista_@lista.ListaJogoId">
+                                                    @lista.Nome
+                                                </label>
+                                            </div>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <p class="text-muted">Você ainda não tem listas.</p>
+                                    }
+                                </div>
+
+                                <form asp-controller="ListaJogo" asp-action="CriarLista" method="post" class="mt-3 d-flex">
+                                    <input type="hidden" name="jogoId" value="@Model.JogoId" />
+                                    <input type="text" name="nomeLista" class="form-control me-2" placeholder="Nova lista..." required />
+                                    <button type="submit" class="btn btn-outline-light">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        }
+                        else
+                        {
+                            <a asp-controller="Account" asp-action="Login"
+                               asp-route-returnUrl="@Url.Action("Details", "Jogo", new { jogoId = Model.JogoId })"
+                               class="btn btn-success w-100 d-flex align-items-center justify-content-center">
+                                <i class="fas fa-folder-plus me-2"></i> Adicionar à Lista
+                            </a>
+                        }
+                    </div>
+
                 </div>
             </div>
         </div>
 
+        <br />
+        <div class="descricao-detalhada">
+            <h3>Descrição do Jogo</h3>
+            <p class="text-justify text-muted">@Model.DescricaoDetalhada</p>
+        </div>
 
+        <br />
+        <br />
+        <!-- Informações Extras -->
+        @{
+            var informacoesExtras = !string.IsNullOrEmpty(Model.InformacoesExtras)
+            ? Model.InformacoesExtras.Split("##", StringSplitOptions.RemoveEmptyEntries)
+            : Array.Empty<string>();
+        }
+        <div class="descricao-detalhada">
+            <h3>Informações Extras</h3>
 
-
-            <br />
-            <div class="descricao-detalhada">
-                <h3>Descrição do Jogo</h3>
-                <p class="text-justify text-muted">@Model.DescricaoDetalhada</p>
-            </div>
-
-
-            <br />
-            <br />
-            <!-- Informações Extras -->
-            @{
-                // Divide as informações extras usando delimitadores ##
-                var informacoesExtras = !string.IsNullOrEmpty(Model.InformacoesExtras)
-                ? Model.InformacoesExtras.Split("##", StringSplitOptions.RemoveEmptyEntries)
-                : Array.Empty<string>();
-            }
-            <div class="descricao-detalhada">
-                <h3>Informações Extras</h3>
-
-                @if (informacoesExtras.Length > 0)
+            @if (informacoesExtras.Length > 0)
+            {
+                @for (int i = 0; i < informacoesExtras.Length; i++)
                 {
-                    @for (int i = 0; i < informacoesExtras.Length; i++)
+                    if (i % 2 == 0)
                     {
-                        if (i % 2 == 0) // Índices pares são títulos
-                        {
-                            <h4>@informacoesExtras[i].Trim()</h4>
-                        }
-                        else // Índices ímpares são descrições
-                        {
-                            <p>@informacoesExtras[i].Trim()</p>
-                        }
+                        <h4>@informacoesExtras[i].Trim()</h4>
+                    }
+                    else
+                    {
+                        <p>@informacoesExtras[i].Trim()</p>
                     }
                 }
-                else
-                {
-                    <p>Não há informações adicionais disponíveis.</p>
-                }
-            </div>
+            }
+            else
+            {
+                <p>Não há informações adicionais disponíveis.</p>
+            }
         </div>
+
+        <!-- Seção: Jogos Recomendados -->
+        <section id="recomendadosContainer" class="mt-5">
+            @await Html.PartialAsync("_JogosRecomendados", (List<MoonstoneTCC.Models.Jogo>)ViewBag.JogosRecomendados)
+        </section>
+
+        <!-- Seção: Outros Jogos -->
+        <section id="outrosJogosContainer" class="mt-5">
+            @await Html.PartialAsync("_OutrosJogos", (List<MoonstoneTCC.Models.Jogo>)ViewBag.OutrosJogos)
+        </section>
+
+        <hr class="text-muted mt-5" />
+        <h4 class="text-white"><i class="fas fa-comments me-2"></i> Comentários</h4>
+
+        @{
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            var isAutenticado = User.Identity.IsAuthenticated;
+            var isAdmin = User.IsInRole("Admin");
+        }
+
+        @if (isAutenticado)
+        {
+            <div class="alert bg-dark border-start border-4 border-purple text-light shadow-sm rounded-3 d-flex align-items-center px-3 py-2 mb-4" style="font-size: 0.95rem;">
+                <i class="fas fa-info-circle me-3 text-warning fs-5"></i>
+                <span>
+                    Para avaliar este jogo, acesse a seção
+                    <a href="/MeusPedidos/Avaliar" class="text-decoration-underline text-info fw-bold">
+                        Avaliar Compras
+                    </a>.
+                </span>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-warning mt-3">
+                <i class="fas fa-lock me-1"></i> Faça <a asp-controller="Account" asp-action="Login" class="text-decoration-underline">login</a> para ver a opção de avaliação.
+            </div>
+        }
+
+        @{
+            var mediaArredondada = Math.Round(mediaAvaliacao * 2) / 2.0;
+            var totalAvaliacoes = ViewBag.TotalAvaliacoes ?? 0;
+        }
+
+        @if (comentarios.Any())
+        {
+            <div class="avaliacao-geral d-flex align-items-center gap-3 mb-4">
+                <div class="nota-media fw-bold fs-2">@mediaAvaliacao.ToString("0.0")</div>
+
+                <div class="estrelas-container">
+                    <div class="estrelas d-flex align-items-center gap-1 mb-1">
+                        @for (int i = 1; i <= 5; i++)
+                        {
+                            if (mediaArredondada >= i)
+                            {
+                                <i class="fas fa-star"></i>
+                            }
+                            else if (mediaArredondada == i - 0.5)
+                            {
+                                <i class="fas fa-star-half-alt"></i>
+                            }
+                            else
+                            {
+                                <i class="far fa-star"></i>
+                            }
+                        }
+                    </div>
+                    <div class="total-avaliacoes">
+                        @totalAvaliacoes avaliação@(totalAvaliacoes == 1 ? "" : "s")
+                    </div>
+                </div>
+            </div>
+
+
+
+            @foreach (var c in ViewBag.Comentarios as List<MoonstoneTCC.Models.ComentarioJogo>)
+            {
+                var isProprioComentario = isAutenticado && c.UsuarioId == userId;
+                var totalCurtidas = _context.ComentarioCurtidas.Count(cc => cc.ComentarioId == c.Id);
+                var jaCurtiu = isAutenticado && _context.ComentarioCurtidas.Any(cc => cc.ComentarioId == c.Id && cc.UsuarioId == userId);
+
+
+
+                <div class="comentario-profissional mb-4 p-4 rounded-4 shadow-sm">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <a href="/Usuario/Perfil/@c.UsuarioId" class="text-white fw-bold">
+                            <i class="fas fa-user me-1"></i> @c.Usuario?.UserName
+                        </a>
+                        <small class="text-muted">@c.Data.ToString("dd MMM. yyyy")</small>
+                    </div>
+
+                    <div class="estrelas text-warning fs-5 mb-2">
+                        @for (int i = 1; i <= 5; i++)
+                        {
+                            if (i <= c.Avaliacao)
+                            {
+                                <i class="fas fa-star"></i>
+                            }
+                            else
+                            {
+                                <i class="far fa-star"></i>
+                            }
+                        }
+                    </div>
+
+                    @if (!string.IsNullOrWhiteSpace(c.Texto))
+                    {
+                        <p class="text-light mt-2 mb-3">@c.Texto</p>
+                    }
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <button class="btn btn-util @(jaCurtiu ? "curtido" : "")" onclick="curtirComentario(@c.Id, this)">
+                            <i class="fas fa-thumbs-up"></i>
+                            <span class="texto">@(!jaCurtiu ? "É útil" : "")</span>
+                            <span class="count">@totalCurtidas</span>
+                        </button>
+
+                        <div class="dropdown ms-auto">
+                            <button class="btn btn-menu-opcoes" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end bg-dark-subtle border-0 shadow-sm">
+                                <li>
+                                    <a class="dropdown-item text-light"
+                                       asp-controller="Comentario"
+                                       asp-action="Editar"
+                                       asp-route-id="@c.Id">
+                                        <i class="fas fa-edit me-2"></i> Editar
+                                    </a>
+                                </li>
+                                <li>
+                                    <form asp-controller="Comentario" asp-action="Excluir" method="post" onsubmit="return confirm('Deseja excluir este comentário?');">
+                                        <input type="hidden" name="id" value="@c.Id" />
+                                        <button type="submit" class="dropdown-item text-light">
+                                            <i class="fas fa-trash-alt me-2"></i> Excluir
+                                        </button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            }
+
+        }
+        else
+        {
+            <p class="text-muted fst-italic">Nenhum comentário ainda.</p>
+        }
+
     </div>
 </div>
+
+<form id="antiForgeryForm">@Html.AntiForgeryToken()</form>
+
+
 
 <style>
     /* Estilo Geral */
@@ -175,7 +616,7 @@
     }
 
     h1 {
-        font-size: 2rem;
+        font-size: 1.5rem;
     }
 
     p {
@@ -185,8 +626,9 @@
     .carousel-container {
         background: #3B0056;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-        padding: 20px;
+        padding: 15px;
         border-radius: 15px;
+        font-size: 0.95rem;
     }
 
     .text-white {
@@ -195,11 +637,18 @@
 
 
     .carousel-item img {
-        object-fit: cover;
         border-radius: 10px;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         transition: transform 0.5s ease;
     }
+
+
+    .carousel-inner { /* mantém proporção mas deixa JS controlar */
+        max-height: 500px;
+        overflow: hidden;
+    }
+
+
 
     .carousel-item:hover img {
         transform: scale(1.05);
@@ -268,4 +717,406 @@
         border: 1px solid #d1d1d1;
         color: #333;
     }
+
+    .avaliacao-estrelas {
+        display: inline-flex;
+        flex-direction: row-reverse;
+        justify-content: flex-start;
+    }
+
+        .avaliacao-estrelas input[type="radio"] {
+            display: none;
+        }
+
+        .avaliacao-estrelas label {
+            font-size: 2rem;
+            color: #888;
+            cursor: pointer;
+            transition: color 0.2s ease;
+            margin: 0 3px;
+        }
+
+            .avaliacao-estrelas label::before {
+                content: "\f005"; /* ícone de estrela */
+                font-family: "Font Awesome 5 Free";
+                font-weight: 900;
+            }
+
+        .avaliacao-estrelas input[type="radio"]:checked ~ label,
+        .avaliacao-estrelas input[type="radio"]:checked ~ label ~ label {
+            color: gold;
+        }
+
+        .avaliacao-estrelas label:hover,
+        .avaliacao-estrelas label:hover ~ label {
+            color: gold;
+        }
+
+        .alert a {
+            text-decoration: underline;
+            font-weight: bold;
+        }
+
+    .ranking-info {
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+        transition: all 0.3s ease-in-out;
+        display: inline-block;
+        padding: 6px 14px;
+        border-radius: 8px;
+        background-color: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(4px);
+    }
+
+
+    /* Estilo para o select */
+    .styled-select {
+        background-color: #3B0056;
+        border: 2px solid #a34dc5;
+        border-radius: 8px;
+        padding: 0.6rem 1rem;
+        box-shadow: 0 0 8px rgba(163, 77, 197, 0.3);
+        transition: all 0.3s ease-in-out;
+    }
+
+        /* Cor ao focar */
+        .styled-select:focus {
+            border-color: #c77dff;
+            box-shadow: 0 0 10px rgba(199, 125, 255, 0.6);
+            outline: none;
+        }
+
+        /* Cor de fundo das opções (somente em alguns browsers) */
+        .styled-select option {
+            background-color: #2a0042;
+            color: white;
+        }
+
+    /* Ícone da label (opcional) */
+    .text-purple {
+        color: #c77dff;
+    }
+
+    .bg-purple {
+        background-color: #9d3ce6;
+        color: white;
+        font-weight: bold;
+    }
+
+    /* comentário */
+
+    .comentario-profissional {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(5px);
+        border-radius: 15px;
+        transition: all 0.3s ease;
+    }
+
+        .comentario-profissional:hover {
+            border-color: #a34dc5;
+            box-shadow: 0 0 12px rgba(163, 77, 197, 0.3);
+        }
+
+        .comentario-profissional p {
+            font-size: 1rem;
+            color: white;
+            line-height: 1.6;
+        }
+
+    .btn-util {
+        background-color: #3a82f7;
+        color: white;
+        font-weight: bold;
+        border: none;
+        border-radius: 30px;
+        padding: 6px 14px;
+        font-size: 0.9rem;
+        display: inline-flex;
+        align-items: center;
+        transition: all 0.2s ease;
+    }
+
+        .btn-util:hover {
+            background-color: #6f42c1;
+            color: white;
+        }
+
+        .btn-util.curtido {
+            background-color: #6f42c1;
+            color: white;
+        }
+
+        .btn-util .fa-thumbs-up {
+            font-size: 1rem;
+        }
+
+        .btn-util .texto {
+            margin-left: 6px;
+        }
+
+        .btn-util .count {
+            margin-left: 6px;
+        }
+
+        .btn-util.curtido .texto {
+            display: none;
+        }
+
+    /* Botão dos 3 pontinhos no comentarios */
+    .btn-menu-opcoes {
+        background: transparent;
+        color: #ccc;
+        border: none;
+        padding: 4px 8px;
+        font-size: 1.1rem;
+    }
+
+        .btn-menu-opcoes:hover {
+            color: #fff;
+        }
+
+    /* Dropdown do menu de opções */
+    .dropdown-menu {
+        min-width: 160px;
+        border-radius: 10px;
+        background-color: #2a003f;
+    }
+
+        .dropdown-menu .dropdown-item {
+            font-size: 0.9rem;
+            padding: 8px 14px;
+            color: #ddd;
+            transition: background 0.2s ease;
+        }
+
+            .dropdown-menu .dropdown-item:hover {
+                background-color: #3a0066;
+                color: #fff;
+            }
+
+            .dropdown-menu .dropdown-item i {
+                width: 20px;
+                text-align: center;
+            }
+    /* avaliação geral estrlas media */
+    .avaliacao-geral {
+        background-color: rgba(255, 255, 255, 0.05);
+        border-radius: 12px;
+        padding: 10px 16px;
+        display: inline-flex;
+        align-items: center;
+        gap: 16px;
+        color: white;
+    }
+
+        .avaliacao-geral .nota-media {
+            font-size: 2.5rem;
+            line-height: 1;
+            color: white;
+        }
+
+    .estrelas-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+        .estrelas-container i {
+            font-size: 1.4rem;
+            color: white;
+        }
+
+    .total-avaliacoes {
+        font-size: 0.85rem;
+        color: white;
+    }
+
+
+
+
 </style>
+
+
+<script>
+
+    // COMECO JS CURTIDA COMENTARIO
+    function curtirComentario(comentarioId, botao) {
+        fetch(`/Comentario/Curtir?id=${comentarioId}`, {
+            method: "POST",
+            headers: {
+                'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+            }
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.sucesso) {
+                    const countSpan = botao.querySelector(".count");
+                    const textoSpan = botao.querySelector(".texto");
+
+                    countSpan.textContent = data.curtidas;
+
+                    if (data.curtido) {
+                        botao.classList.add("curtido");
+                    } else {
+                        botao.classList.remove("curtido");
+                    }
+
+                    // Mostra ou oculta o texto "É útil"
+                    if (textoSpan) {
+                        textoSpan.style.display = data.curtido ? "none" : "inline";
+                    }
+                } else {
+                    alert("Erro ao curtir.");
+                }
+            })
+            .catch(error => {
+                console.error("Erro:", error);
+                alert("Erro na requisição.");
+            });
+    }
+
+    //FINAL CURTIDA COMENTARIO
+
+    // carrosel
+
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".carousel-item img").forEach(img => {
+
+            function ajustar() {
+                const proporcao = img.naturalWidth / img.naturalHeight;
+
+                if (proporcao < 1) {          // vertical
+                    img.style.width = "auto"; // deixa o navegador ajustar
+                    img.style.height = "100%";
+                    img.style.maxHeight = "500px";   // altura-padrão
+                    img.style.objectFit = "contain";
+                    img.style.objectPosition = "center";
+                } else {                      // horizontal
+                    img.style.width = "100%";
+                    img.style.height = "500px";
+                    img.style.objectFit = "cover";
+                    img.style.objectPosition = "center";
+                }
+            }
+
+            if (img.complete) ajustar();      // imagem já em cache
+            else img.onload = ajustar;
+        });
+    });
+
+
+        //final carrosel 
+
+
+
+
+
+    // COMECO JOGOS RECOMENDADOS
+
+    // let recomendadoCarregado = false;
+    // let outrosCarregado = false;
+
+    // window.addEventListener('scroll', function () {
+    //     const alturaPagina = document.documentElement.scrollHeight;
+    //     const scrollAtual = window.innerHeight + window.scrollY;
+
+    //     if (!recomendadoCarregado && scrollAtual >= alturaPagina * 0.5) {
+    //         recomendadoCarregado = true;
+    //         fetch(`/Jogo/Recomendados?jogoId=@Model.JogoId`)
+    //             .then(res => res.text())
+    //             .then(html => {
+    //                 document.getElementById('recomendadosContainer').innerHTML = html;
+    //             });
+    //     }
+
+    //     if (!outrosCarregado && scrollAtual >= alturaPagina * 0.7) {
+    //         outrosCarregado = true;
+    //         fetch(`/Jogo/OutrosJogos?jogoId=@Model.JogoId`)
+    //             .then(res => res.text())
+    //             .then(html => {
+    //                 document.getElementById('outrosJogosContainer').innerHTML = html;
+    //             });
+    //     }
+    // });
+        // FINAL JOGOS RECOMENDADOS 
+
+
+
+
+        document.getElementById("abrirListasBtn")?.addEventListener("click", function () {
+            const painel = document.getElementById("painelListas");
+        painel.style.display = painel.style.display === "none" ? "block" : "none";
+        });
+
+        function atualizarLista(checkbox, jogoId, nomeLista) {
+            const listaId = checkbox.value;
+        const adicionar = checkbox.checked;
+
+        fetch('/ListaJogo/AtualizarLista', {
+            method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `listaId=${listaId}&jogoId=${jogoId}&adicionar=${adicionar}`
+            }).then(response => {
+                if (response.ok) {
+            mostrarNotificacao(adicionar
+                ? `✅ Adicionado à lista "${nomeLista}"`
+                : `❌ Removido da lista "${nomeLista}"`);
+                }
+            });
+        }
+
+        function mostrarNotificacao(msg) {
+            const noti = document.createElement("div");
+        noti.innerText = msg;
+        noti.style = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background-color: #4B0082;
+        color: white;
+        padding: 12px 20px;
+        border-radius: 10px;
+        font-weight: bold;
+        font-family: Arial, sans-serif;
+        box-shadow: 0 0 10px rgba(0,0,0,0.3);
+        z-index: 9999;
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out;
+        `;
+
+        document.body.appendChild(noti);
+            setTimeout(() => {noti.style.opacity = 1; }, 10);
+            setTimeout(() => {
+            noti.style.opacity = 0;
+                setTimeout(() => noti.remove(), 500);
+            }, 3000);
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+        const token = document.querySelector('#antiForgeryForm input[name="__RequestVerificationToken"]').value;
+
+        fetch('/Historico/Registrar', {
+            method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        'RequestVerificationToken': token
+            },
+        body: JSON.stringify({jogoId: @Model.JogoId })
+        });
+    });
+    // sistema de like e deslike do jogos js
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+
+@section Scripts {
+    <script src="~/js/likeDislike.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const token = document.querySelector('#antiForgeryForm input[name="__RequestVerificationToken"]').value;
+            const jogoId = @Model.JogoId;
+            inicializarLikeDislike(jogoId, token);
+        });
+    </script>
+}

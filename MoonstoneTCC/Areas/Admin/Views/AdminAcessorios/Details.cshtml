@@ -1,0 +1,43 @@
+﻿@model MoonstoneTCC.Models.Acessorio
+
+@{
+    ViewData["Title"] = "Detalhes do Acessório";
+}
+
+<h2>Detalhes do Acessório</h2>
+
+<div class="table-responsive">
+    <table class="table table-bordered">
+        <tr><th>Nome</th><td>@Model.Nome</td></tr>
+        <tr><th>Descrição Curta</th><td>@Model.DescricaoCurta</td></tr>
+        <tr><th>Descrição Detalhada</th><td>@Model.DescricaoDetalhada</td></tr>
+        <tr><th>Preço</th><td>R$ @Model.Preco.ToString("F2")</td></tr>
+        <tr><th>Preço Promocional</th><td>R$ @(Model.PrecoPromocional?.ToString("F2") ?? "-")</td></tr>
+        <tr><th>Marca</th><td>@Model.Marca</td></tr>
+        <tr><th>Modelo</th><td>@Model.Modelo</td></tr>
+        <tr><th>Cor</th><td>@Model.Cor</td></tr>
+        <tr><th>Tipo</th><td>@Model.Tipo</td></tr>
+        <tr><th>Conectividade</th><td>@Model.Conectividade</td></tr>
+        <tr><th>Compatibilidade</th><td>@Model.Compatibilidade</td></tr>
+        <tr><th>Material</th><td>@Model.Material</td></tr>
+        <tr><th>Peso</th><td>@Model.Peso</td></tr>
+        <tr><th>Dimensões</th><td>@Model.Dimensoes</td></tr>
+        <tr><th>Bateria</th><td>@Model.Bateria</td></tr>
+        <tr><th>Garantia</th><td>@Model.Garantia</td></tr>
+        <tr><th>Itens Inclusos</th><td>@Model.ItensInclusos</td></tr>
+        <tr><th>Classificação de Uso</th><td>@Model.ClassificacaoUso</td></tr>
+        <tr><th>Quantidade em Estoque</th><td>@Model.QuantidadeEstoque</td></tr>
+        <tr><th>Estoque Mínimo Alerta</th><td>@Model.EstoqueMinimoAlerta</td></tr>
+        <tr><th>Em Estoque</th><td>@(Model.EmEstoque ? "Sim" : "Não")</td></tr>
+        <tr><th>Destaque</th><td>@(Model.IsAcessorioDestaque ? "Sim" : "Não")</td></tr>
+        <tr><th>Produto Novo</th><td>@(Model.ProdutoNovo ? "Sim" : "Não")</td></tr>
+        <tr><th>Mais Vendido</th><td>@(Model.ProdutoMaisVendido ? "Sim" : "Não")</td></tr>
+        <tr><th>Categoria</th><td>@Model.Categoria?.CategoriaNome</td></tr>
+        <tr><th>Data de Cadastro</th><td>@Model.DataCadastro.ToString("dd/MM/yyyy")</td></tr>
+    </table>
+</div>
+
+<div class="mt-3">
+    <a asp-action="Edit" asp-route-id="@Model.AcessorioId" class="btn btn-primary">Editar</a>
+    <a asp-action="Index" class="btn btn-secondary">Voltar</a>
+</div>

@@ -1,0 +1,102 @@
+﻿@model MoonstoneTCC.Models.VagaEmprego
+@{
+    ViewData["Title"] = "Detalhes da Vaga";
+}
+
+<style>
+    body {
+        color: #fff;
+    }
+
+    .vaga-detalhe-box {
+        background-color: #2b0048;
+        border-radius: 16px;
+        padding: 30px;
+        box-shadow: 0 0 18px #7c00ff44;
+    }
+
+    h2 {
+        font-size: 2rem;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .vaga-info p {
+        font-size: 1rem;
+        margin-bottom: 1rem;
+        color: #ccc;
+    }
+
+    .vaga-info strong {
+        color: #ffffff;
+    }
+
+    .badge.bg-danger {
+        background-color: #ff3b3b;
+        font-size: 0.9rem;
+        padding: 6px 12px;
+        border-radius: 8px;
+    }
+
+    .alert-danger {
+        background-color: #4c001a;
+        border-left: 4px solid #ff3b3b;
+        color: #fff;
+        font-weight: 500;
+    }
+
+    .btn-candidatar {
+        background-color: #9b00ff;
+        border: none;
+        color: white;
+        padding: 10px 22px;
+        font-size: 1rem;
+        border-radius: 8px;
+        transition: 0.3s ease;
+        box-shadow: 0 0 10px #9b00ff44;
+    }
+
+    .btn-candidatar:hover {
+        background-color: #b84dff;
+        box-shadow: 0 0 15px #b84dffaa;
+    }
+</style>
+
+<section class="container py-5">
+    <div class="vaga-detalhe-box">
+        <h2>
+            @Model.Titulo
+
+            @if (Model.DataEncerramento.HasValue && Model.DataEncerramento.Value < DateTime.Now)
+            {
+                <span class="badge bg-danger">
+                    <i class="fa fa-lock me-1"></i> Encerrada
+                </span>
+            }
+        </h2>
+
+        <div class="vaga-info mt-4">
+            <p><strong>Cargo:</strong> @Model.Cargo</p>
+            <p><strong>Salário:</strong> R$ @Model.Salario.ToString("N2")</p>
+            <p><strong>Descrição:</strong><br /> @Model.Descricao</p>
+            <p><strong>Requisitos:</strong><br /> @Model.Requisitos</p>
+            <p><strong>Total de Candidatos:</strong> @Model.Candidaturas?.Count() ?? 0</p>
+        </div>
+
+        @if (Model.DataEncerramento.HasValue && Model.DataEncerramento.Value < DateTime.Now)
+        {
+            <div class="alert alert-danger mt-4">
+                <i class="fa fa-calendar-times me-1"></i>
+                Vaga encerrada em @Model.DataEncerramento.Value.ToString("dd/MM/yyyy")
+            </div>
+        }
+        else
+        {
+            <a href="@Url.Action("Candidatar", new { id = Model.Id })" class="btn btn-candidatar mt-3">
+                <i class="fa fa-paper-plane me-1"></i> Candidatar-se
+            </a>
+        }
+    </div>
+</section>

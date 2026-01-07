@@ -1,0 +1,73 @@
+﻿@model MoonstoneTCC.Models.VagaEmprego
+@{
+    ViewData["Title"] = "Excluir Vaga";
+}
+
+<section class="container mt-5">
+    <h2 class="mb-3 text-danger">Confirmar Exclusão</h2>
+    <p>Você realmente deseja excluir a vaga <strong>@Model.Titulo</strong>?</p>
+
+    <form asp-action="Delete" method="post">
+        <input type="hidden" asp-for="Id" />
+        <button type="submit" class="btn btn-danger">Sim, Excluir</button>
+        <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+    </form>
+</section>
+
+<style>
+    body {
+        color: #ffffff;
+    }
+
+    h2.text-danger {
+        color: #ff3b3b !important;
+        font-weight: bold;
+    }
+
+    p {
+        color: #cccccc;
+        font-size: 1.05rem;
+    }
+
+    strong {
+        color: #ffffff;
+    }
+
+    .btn-danger {
+        background-color: #ff3b3b;
+        border: none;
+        color: #fff;
+        font-weight: 500;
+        padding: 10px 20px;
+        transition: 0.3s ease-in-out;
+        border-radius: 8px;
+        box-shadow: 0 0 8px #ff3b3b55;
+    }
+
+    .btn-danger:hover {
+        background-color: #ff0000;
+        box-shadow: 0 0 12px #ff000088;
+    }
+
+    .btn-secondary {
+        background-color: #444;
+        border: none;
+        color: #fff;
+        font-weight: 500;
+        padding: 10px 20px;
+        margin-left: 10px;
+        border-radius: 8px;
+    }
+
+    .btn-secondary:hover {
+        background-color: #666;
+    }
+
+    .container {
+        max-width: 600px;
+        background-color: #2b0048;
+        padding: 40px;
+        border-radius: 16px;
+        box-shadow: 0 0 18px #9b00ff33;
+    }
+</style>

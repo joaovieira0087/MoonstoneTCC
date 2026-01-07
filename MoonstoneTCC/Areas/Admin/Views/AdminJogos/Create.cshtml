@@ -23,6 +23,15 @@
                 </div>
 
                 <div class="col-md-6 mb-3">
+                    <label asp-for="TrailerYoutubeUrl" class="control-label">
+                        <i class="fab fa-youtube text-danger"></i> URL do Trailer no YouTube
+                    </label>
+                    <input asp-for="TrailerYoutubeUrl" class="form-control" />
+                    <span asp-validation-for="TrailerYoutubeUrl" class="text-danger"></span>
+                </div>
+
+
+                <div class="col-md-6 mb-3">
                     <label asp-for="DescricaoCurta" class="control-label">
                         <i class="fas fa-info-circle text-info"></i> Descrição Curta
                     </label>
@@ -61,6 +70,31 @@
                     <input asp-for="ImagemThumbnailUrl" class="form-control" />
                     <span asp-validation-for="ImagemThumbnailUrl" class="text-danger"></span>
                 </div>
+
+                <div class="col-md-4 mb-3">
+                    <label asp-for="ImagensAdicionais" class="control-label">
+                        <i class="fas fa-image text-info"></i> Imagem Adicional 1
+                    </label>
+                    <input asp-for="ImagensAdicionais" class="form-control" />
+                    <span asp-validation-for="ImagensAdicionais" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label asp-for="ImagensAdicionais2" class="control-label">
+                        <i class="fas fa-image text-info"></i> Imagem Adicional 2
+                    </label>
+                    <input asp-for="ImagensAdicionais2" class="form-control" />
+                    <span asp-validation-for="ImagensAdicionais2" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label asp-for="ImagensAdicionais3" class="control-label">
+                        <i class="fas fa-image text-info"></i> Imagem Adicional 3
+                    </label>
+                    <input asp-for="ImagensAdicionais3" class="form-control" />
+                    <span asp-validation-for="ImagensAdicionais3" class="text-danger"></span>
+                </div>
+
 
                 <div class="col-md-6 mb-3">
                     <label asp-for="Plataformas" class="control-label">
@@ -103,13 +137,40 @@
                     <span asp-validation-for="ClassificacaoEtaria" class="text-danger"></span>
                 </div>
 
-                <div class="col-md-7 mb-4">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="ClassificacaoEtariaImagemUrl" class="control-label">
+                        <i class="fas fa-image text-danger"></i> URL da Imagem de Classificação Etária
+                    </label>
+                    <input asp-for="ClassificacaoEtariaImagemUrl" class="form-control" />
+                    <span asp-validation-for="ClassificacaoEtariaImagemUrl" class="text-danger"></span>
+                </div>
+
+
+                <div class="col-md-12 mb-4">
                     <label asp-for="InformacoesExtras" class="control-label">
                         <i class="fas fa-info-circle text-primary"></i> Informações Extras
                     </label>
-                    <input asp-for="ClassificacaoEtaria" class="form-control" />
-                    <span asp-validation-for="ClassificacaoEtaria" class="text-danger"></span>
+                    <textarea asp-for="InformacoesExtras" class="form-control" rows="3"></textarea>
+                    <span asp-validation-for="InformacoesExtras" class="text-danger"></span>
                 </div>
+
+                <div class="col-md-4 mb-3">
+                    <label asp-for="QuantidadeEstoque" class="control-label">
+                        <i class="fas fa-boxes text-success"></i> Quantidade em Estoque
+                    </label>
+                    <input asp-for="QuantidadeEstoque" class="form-control" min="0" />
+                    <span asp-validation-for="QuantidadeEstoque" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label asp-for="EstoqueMinimoAlerta" class="control-label">
+                        <i class="fas fa-bell text-warning"></i> Estoque mínimo para alerta
+                    </label>
+                    <input asp-for="EstoqueMinimoAlerta" class="form-control" min="0" />
+                    <span asp-validation-for="EstoqueMinimoAlerta" class="text-danger"></span>
+                </div>
+
+
 
                 <div class="row">
                     <div class="col-md-4 mb-3">
@@ -130,6 +191,26 @@
                         </div>
                     </div>
                 </div>
+                <div class="form-group">
+                    <label asp-for="DesenvolvedoraId" class="control-label">Desenvolvedora</label>
+
+                    @if (ViewBag.Desenvolvedoras != null && ((IEnumerable<SelectListItem>)ViewBag.Desenvolvedoras).Any())
+                    {
+                        <select asp-for="DesenvolvedoraId" class="form-control" asp-items="ViewBag.Desenvolvedoras">
+                            <option value="">-- Selecione uma desenvolvedora --</option>
+                        </select>
+                    }
+                    else
+                    {
+                        <div class="alert alert-warning mt-2">
+                            Nenhuma desenvolvedora encontrada.
+                            <a asp-area="Admin" asp-controller="Desenvolvedora" asp-action="Create" class="btn btn-sm btn-outline-primary ml-2">
+                                <i class="fas fa-plus"></i> Criar agora
+                            </a>
+                        </div>
+                    }
+                </div>
+
             </div>
 
             <div class="text-center mt-4">

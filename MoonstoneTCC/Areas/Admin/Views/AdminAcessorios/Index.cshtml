@@ -1,0 +1,45 @@
+﻿@* Areas/Admin/Views/AdminAcessorios/Index.cshtml *@
+@model IEnumerable<MoonstoneTCC.Models.Acessorio>
+
+@{
+    ViewData["Title"] = "Acessórios";
+}
+
+<h2 class="mb-4">Lista de Acessórios</h2>
+<a asp-action="Create" class="btn btn-primary mb-3">Novo Acessório</a>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Marca</th>
+            <th>Modelo</th>
+            <th>Tipo</th>
+            <th>Preço</th>
+            <th>Estoque</th>
+            <th>Categoria</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Nome</td>
+                <td>@item.Marca</td>
+                <td>@item.Modelo</td>
+                <td>@item.Tipo</td>
+                <td>R$ @item.Preco.ToString("F2")</td>
+                <td>@item.QuantidadeEstoque</td>
+                <td>@item.Categoria?.CategoriaNome</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.AcessorioId">Editar</a> |
+                    <a asp-action="Details" asp-route-id="@item.AcessorioId">Detalhes</a> |
+                    <a asp-action="Delete" asp-route-id="@item.AcessorioId">Excluir</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@* Demais views como Create, Edit, Details e Delete serão adicionadas em seguida conforme avançamos *@
+

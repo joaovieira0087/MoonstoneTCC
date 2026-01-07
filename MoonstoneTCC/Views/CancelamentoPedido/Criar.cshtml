@@ -1,0 +1,98 @@
+﻿@model MoonstoneTCC.Models.Pedido
+@{
+    ViewData["Title"] = "Cancelar Pedido";
+    ViewData["HideFooter"] = true;
+}
+
+<div class="container mt-5" style="max-width: 980px;">
+    <h2 class="text-light">
+        <i class="fas fa-times-circle text-danger me-2"></i>
+        Cancelar Pedido <span class="text-warning">@Model.CodigoPedido</span>
+    </h2>
+
+    <!-- Resumo do pedido -->
+    <div class="card shadow-lg mt-3 border-0" style="background:#3b0056; color:#fff;">
+        <div class="p-4">
+            <div class="d-flex flex-wrap justify-content-between align-items-center">
+                <div>
+                    <div class="small text-muted">Pedido #@Model.PedidoId</div>
+                    <div class="fw-semibold">Realizado em @Model.PedidoEnviado.ToString("dd/MM/yyyy HH:mm")</div>
+                </div>
+                <div class="text-end">
+                    <div class="small text-muted">Total</div>
+                    <h4 class="m-0">@Model.PedidoTotal.ToString("C")</h4>
+                </div>
+            </div>
+
+            <hr class="border-light opacity-25" />
+
+            <h6 class="mb-2"><i class="fas fa-list-ul me-2"></i>Itens do pedido</h6>
+            @if (Model.PedidoItens != null && Model.PedidoItens.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-sm table-borderless align-middle mb-0" style="color:#fff;">
+                        <thead class="text-muted">
+                            <tr>
+                                <th class="ps-0">Item</th>
+                                <th class="text-center" style="width:120px;">Qtd.</th>
+                                <th class="text-end pe-0" style="width:160px;">Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var i in Model.PedidoItens)
+                            {
+                                <tr>
+                                    <td class="ps-0">
+                                        @(i.Jogo != null ? i.Jogo.Nome : "Item")
+                                    </td>
+                                    <td class="text-center">@i.Quantidade</td>
+                                    <td class="text-end pe-0">@((i.Preco * i.Quantidade).ToString("C"))</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="text-muted">Nenhum item disponível para exibir.</div>
+            }
+        </div>
+    </div>
+
+    <!-- Aviso -->
+    <div class="alert alert-warning mt-3 border-0" role="alert">
+        <i class="fas fa-exclamation-triangle me-2"></i>
+        Ao confirmar, o pedido será <strong>cancelado</strong>, o <strong>estoque será reposto</strong> e o
+        <strong>valor total será creditado na sua carteira</strong>.
+    </div>
+
+    <!-- Formulário -->
+    <div class="card shadow-lg border-0 mt-3" style="background:#3b0056; color:#fff;">
+        <div class="p-4">
+            <form asp-action="Criar" method="post" class="row g-3">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@Model.PedidoId" />
+
+                <div class="col-12">
+                    <label class="form-label">
+                        <i class="fas fa-comment-alt me-1 text-light"></i> Motivo do Cancelamento (opcional)
+                    </label>
+                    <textarea name="motivo"
+                              class="form-control"
+                              rows="4"
+                              placeholder="Ex.: Pedi errado, não quero mais, etc..."></textarea>
+                </div>
+
+                <div class="col-12 d-flex gap-2">
+                    <button type="submit" class="btn btn-danger px-4">
+                        <i class="fas fa-times-circle me-1"></i> Cancelar Pedido
+                    </button>
+                    <a asp-controller="MeusPedidos" asp-action="Index" class="btn btn-outline-light px-4">
+                        <i class="fas fa-arrow-left me-1"></i> Voltar
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

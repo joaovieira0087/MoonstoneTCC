@@ -1,0 +1,121 @@
+﻿@model MoonstoneTCC.Models.Pedido
+
+@{
+    ViewData["Title"] = "Detalhes do Pedido";
+}
+
+<div class="container mt-5">
+    <h2 class="text-white mb-4"><i class="fas fa-receipt"></i> Detalhes do Pedido</h2>
+
+    <div class="card shadow border-0 mb-4">
+        <div class="card-header bg-dark text-white">
+            <i class="fas fa-hashtag"></i> Pedido: <strong>@Model.CodigoPedido</strong>
+            <span class="float-end text-muted"><i class="far fa-calendar-alt"></i> @Model.PedidoEnviado.ToString("dd/MM/yyyy HH:mm")</span>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="fas fa-user"></i> Informações do Cliente</h5>
+                    <p><strong>Nome:</strong> @Model.Nome @Model.Sobrenome</p>
+                    <p><strong>Email:</strong> @Model.Email</p>
+                    <p><strong>Telefone:</strong> @Model.Telefone</p>
+                </div>
+                <div class="col-md-6">
+                    <h5><i class="fas fa-map-marker-alt"></i> Endereço de Entrega</h5>
+                    <p>@Model.Endereco1</p>
+                    @if (!string.IsNullOrEmpty(Model.Endereco2))
+                    {
+                        <p>@Model.Endereco2</p>
+                    }
+                    <p>@Model.Cidade - @Model.Estado</p>
+                    <p><strong>CEP:</strong> @Model.Cep</p>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <h5><i class="fas fa-info-circle"></i> Status do Pedido</h5>
+                <span class="badge px-3 py-2 rounded-pill fw-bold
+                    @(Model.StatusPedido == "Pagamento Confirmado" ? "bg-success" :
+                      Model.StatusPedido == "Preparando Pedido" ? "bg-warning text-dark" :
+                      Model.StatusPedido == "Pedido Enviado" ? "bg-primary" :
+                      Model.StatusPedido == "Pedido Entregue" ? "bg-info text-dark" :
+                      Model.StatusPedido == "Cancelado" ? "bg-danger" : "bg-secondary")">
+                    @Model.StatusPedido
+                </span>
+            </div>
+
+            @{
+                string estimativa = "";
+                if (Model.StatusPedido == "Pedido Entregue")
+                {
+                    estimativa = Model.PedidoEntregueEm?.ToString("dd/MM/yyyy HH:mm") ?? "Indeterminado";
+                }
+                else if (Model.StatusPedido == "Pedido Enviado")
+                {
+                    estimativa = Model.PedidoEnviado.AddDays(1).ToString("dd/MM/yyyy HH:mm");
+                }
+                else if (Model.StatusPedido == "Preparando Pedido")
+                {
+                    estimativa = Model.PedidoEnviado.AddDays(3).ToString("dd/MM/yyyy HH:mm");
+                }
+                else if (Model.StatusPedido == "Pagamento Confirmado")
+                {
+                    estimativa = Model.PedidoEnviado.AddDays(5).ToString("dd/MM/yyyy HH:mm");
+                }
+                else
+                {
+                    estimativa = "Indeterminado";
+                }
+            }
+            <p class="mt-2"><i class="fas fa-clock"></i> <strong>Estimativa de Entrega:</strong> @estimativa</p>
+
+        </div>
+    </div>
+
+    <div class="card shadow border-0 mb-4">
+        <div class="card-header bg-purple-700 text-white">
+            <i class="fas fa-box"></i> Itens do Pedido
+        </div>
+        <div class="card-body">
+            <table class="table table-striped">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Imagem</th>
+                        <th>Jogo</th>
+                        <th>Quantidade</th>
+                        <th>Preço Unitário</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.PedidoItens)
+                    {
+                        <tr>
+                            <td>
+                                <img src="@item.Jogo.ImagemUrl" alt="@item.Jogo.Nome" width="60" height="60" class="rounded shadow-sm" />
+                            </td>
+                            <td>@item.Jogo.Nome</td>
+                            <td>@item.Quantidade</td>
+                            <td>@item.Preco.ToString("C2")</td>
+                            <td>@(item.Preco * item.Quantidade).ToString("C2")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <hr />
+            <h5 class="text-end">Total do Pedido: <strong>@Model.PedidoTotal.ToString("C2")</strong></h5>
+        </div>
+    </div>
+
+    <div class="text-center">
+        <a class="btn btn-outline-light btn-lg" asp-controller="MeusPedidos" asp-action="Index">
+            <i class="fas fa-arrow-left"></i> Voltar aos Meus Pedidos
+        </a>
+    </div>
+</div>
+
+<style>
+    .bg-purple-700 {
+        background-color: #3B0056;
+    }
+</style>

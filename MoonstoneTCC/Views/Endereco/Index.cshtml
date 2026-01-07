@@ -1,0 +1,145 @@
+﻿@model List<MoonstoneTCC.Models.EnderecoEntrega>
+
+<div class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-white">
+            <i class="fas fa-map-marker-alt me-2 text-purple"></i> Seus Endereços
+        </h2>
+        <a class="btn btn-purple btn-lg shadow" asp-action="Adicionar">
+            <i class="fas fa-plus-circle me-1"></i> Adicionar Endereço
+        </a>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info text-white bg-purple border-0">
+            <i class="fas fa-info-circle"></i> Você ainda não adicionou nenhum endereço.
+        </div>
+    }
+    else
+    {
+        <div class="row g-4">
+            @foreach (var endereco in Model)
+            {
+                <div class="col-lg-4 col-md-6">
+                    <div class="card border-0 shadow-lg h-100 bg-dark text-light">
+                        <div class="card-body">
+                            <h5 class="card-title text-purple">
+                                <i class="fas fa-user me-1"></i> @endereco.Nome @endereco.Sobrenome
+                            </h5>
+                            <p class="card-text mb-2">
+                                <i class="fas fa-home me-1 text-purple"></i>
+                                @endereco.Endereco1
+                                @if (!string.IsNullOrEmpty(endereco.Endereco2))
+                                {
+                                    <text>, @endereco.Endereco2</text>
+                                }
+                                <br />
+                                <i class="fas fa-map me-1 text-purple"></i> @endereco.Cidade - @endereco.Estado - @endereco.Cep
+                                <br />
+                                <i class="fas fa-phone me-1 text-purple"></i> @endereco.Telefone
+                            </p>
+
+                            @if (endereco.EnderecoPadrao)
+                            {
+                                <span class="badge bg-success"><i class="fas fa-check-circle"></i> Endereço Padrão</span>
+                            }
+
+                            <div class="card-footer bg-transparent border-0 mt-auto pt-3 d-flex justify-content-center flex-wrap gap-2">
+                                <a class="btn btn-outline-warning btn-sm px-3" asp-action="Editar" asp-route-id="@endereco.EnderecoEntregaId">
+                                    <i class="fas fa-edit"></i> Editar
+                                </a>
+                                <a class="btn btn-danger btn-sm px-3" asp-action="Excluir" asp-route-id="@endereco.EnderecoEntregaId">
+                                    <i class="fas fa-trash-alt"></i> Excluir
+                                </a>
+                                <a class="btn btn-info btn-sm px-3 text-white" asp-action="Visualizar" asp-route-id="@endereco.EnderecoEntregaId">
+                                    <i class="fas fa-eye"></i> Visualizar
+                                </a>
+                                @if (!endereco.EnderecoPadrao)
+                                {
+                                    <a class="btn btn-outline-light btn-sm px-3" asp-action="DefinirComoPadrao" asp-route-id="@endereco.EnderecoEntregaId">
+                                        <i class="fas fa-star"></i> Tornar Padrão
+                                    </a>
+                                }
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+<style>
+    .btn-purple {
+        background-color: #6f00cc;
+        border: none;
+        color: white;
+        transition: 0.3s ease;
+    }
+
+        .btn-purple:hover {
+            background-color: #4b0099;
+        }
+
+    .text-purple {
+        color: #a94bff;
+    }
+
+    .bg-purple {
+        background-color: #5e00a8 !important;
+    }
+
+    .card {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        border-left: 4px solid #a94bff;
+        border-radius: 12px;
+        background-color: #1b1b2f;
+    }
+
+    .card-body {
+        flex-grow: 1;
+        padding: 1.5rem;
+    }
+
+    .card-title {
+        font-weight: bold;
+        font-size: 1.1rem;
+    }
+
+    .card-footer .btn {
+        font-size: 0.9rem;
+        min-width: 120px;
+        border-radius: 6px;
+        transition: all 0.2s ease-in-out;
+    }
+
+    .btn-info {
+        background-color: #17a2b8;
+        border: none;
+    }
+
+        .btn-info:hover {
+            background-color: #138496;
+            color: #fff;
+        }
+
+    .btn-outline-warning:hover {
+        background-color: #ffc107;
+        color: #000;
+    }
+
+    .btn-outline-light:hover {
+        background-color: #fff;
+        color: #000;
+    }
+
+    .btn-danger:hover {
+        background-color: #dc3545;
+        color: white;
+    }
+</style>
+

@@ -67,29 +67,70 @@
 
 </style>
 
-<div class="pergunta-container">
-    <h2>Enviar uma Pergunta ou Sugestão</h2>
+@{
+    var pedidoId = ViewBag.PedidoId as int?;
+    var pedido = ViewBag.Pedido as MoonstoneTCC.Models.Pedido;
+}
+
+<div class="pergunta-container mt-5">
+    <h2 class="text-light mb-4">
+        <i class="fas fa-question-circle text-cyan me-2"></i> Enviar uma Pergunta ou Sugestão
+    </h2>
+
+    @if (pedido != null)
+    {
+        <div class="alert alert-info text-dark">
+            <h5 class="mb-3">
+                <i class="fas fa-receipt me-2"></i> Esta pergunta será vinculada ao pedido <strong>#@pedido.CodigoPedido</strong>
+            </h5>
+
+            <p class="mb-1"><i class="fas fa-calendar-alt me-1"></i> <strong>Data:</strong> @pedido.PedidoEnviado.ToString("dd/MM/yyyy HH:mm")</p>
+            <p class="mb-2"><i class="fas fa-coins me-1"></i> <strong>Valor Total:</strong> R$ @pedido.PedidoTotal.ToString("N2")</p>
+
+            <p class="mb-2"><i class="fas fa-gamepad me-1"></i> <strong>Jogos no Pedido:</strong></p>
+            <ul class="list-group">
+                @foreach (var item in pedido.PedidoItens)
+                {
+                    <li class="list-group-item d-flex justify-content-between align-items-center bg-light text-dark">
+                        <div>
+                            <strong>@item.Jogo.Nome</strong> <span class="text-muted">(x@item.Quantidade)</span>
+                        </div>
+                        <span class="badge bg-primary">R$ @item.Preco.ToString("N2")</span>
+                    </li>
+                }
+            </ul>
+        </div>
+    }
 
     <form asp-action="Criar" method="post">
-        <div class="form-group">
-            <label for="titulo">Título</label>
-            <input name="Titulo" id="titulo" class="form-control" placeholder="Digite um título curto..." required />
+        @if (pedido != null)
+        {
+            <input type="hidden" name="PedidoId" value="@pedido.PedidoId" />
+        }
+
+        <div class="form-group mb-3">
+            <label for="titulo" class="form-label text-light">Título</label>
+            <input name="Titulo" id="titulo" class="form-control" placeholder="Digite um título curto..."
+                   value="@(pedido != null ? $"Dúvida sobre o pedido #{pedido.CodigoPedido}" : "")"
+                   required />
         </div>
 
-        <div class="form-group">
-            <label for="mensagem">Mensagem</label>
+        <div class="form-group mb-3">
+            <label for="mensagem" class="form-label text-light">Mensagem</label>
             <textarea name="Mensagem" id="mensagem" class="form-control" rows="5" placeholder="Escreva sua sugestão ou dúvida..." required></textarea>
         </div>
 
-        <button type="submit" class="btn-enviar">
-            <i class="fas fa-paper-plane"></i> Enviar
+        <button type="submit" class="btn btn-success px-4">
+            <i class="fas fa-paper-plane me-1"></i> Enviar
         </button>
 
-        <div class="text-center mt-3">
-            <a asp-controller="Pergunta" asp-action="MinhasPerguntas" class="ver-perguntas-link">
-                <i class="fas fa-comment-dots"></i> Ver minhas perguntas anteriores
+        <div class="text-center mt-4">
+            <a asp-controller="Pergunta" asp-action="MinhasPerguntas" class="circle-link">
+                <i class="fas fa-comment-dots"></i>
+                <div class="circle-text">Minhas Perguntas</div>
             </a>
         </div>
-
     </form>
 </div>
+
+

@@ -1,106 +1,344 @@
-﻿<div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
-    <div class="carousel-indicators">
-        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
-        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
-        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="3" aria-label="Slide 4"></button>
-        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="4" aria-label="Slide 5"></button>
-    </div>
+﻿@* === HERO CAROUSEL (Moonstone) — espaçamento, setas com recuo, parallax, pausa ao perder foco, atalhos de teclado === *@
+<div class="hero-wrap">
+    <div id="heroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" aria-label="Destaques">
 
-    <div class="carousel-inner">
-        <!-- Slide 1: Imagem -->
-        <div class="carousel-item active">
-            <img src="~/img/EGS_TheEvilWithin2_TangoGameworks_S1_2560x1440-c87f377e1990d84a98db5fb4836af9a9.jpg" class="d-block w-100" alt="Imagem 1">
+        <!-- Indicadores -->
+        <div class="carousel-indicators custom-indicators">
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="The Evil Within 2"></button>
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1" aria-label="Far Cry 6"></button>
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2" aria-label="Trailer Doom"></button>
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="3" aria-label="GTA V"></button>
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="4" aria-label="Call of Duty"></button>
         </div>
-        <!-- Slide 2: Imagem -->
-        <div class="carousel-item">
-            <img src="~/img/carrossel_far_cry_6.jpg" class="d-block w-100" alt="Imagem 2">
+
+        <!-- Barra de progresso -->
+        <div class="slide-progress">
+            <div class="slide-progress-bar" id="slideProgressBar"></div>
         </div>
-        <!-- Slide 3: Vídeo -->
-        <div class="carousel-item">
-            <video id="videoSlide" class="d-block w-100">
-                <source src="~/img/$RRWDB4N.webm" type="video/mp4">
-                Seu navegador não suporta o elemento vídeo.
-            </video>
-            <div class="carousel-caption d-none d-md-block">
-                <a href="https://example.com" target="_blank" class="btn btn-primary">COMPRE AGORA</a>
+
+        <div class="carousel-inner">
+            <!-- Slide 1 -->
+            <div class="carousel-item active" data-interval="6000" data-type="image">
+                <img src="~/img/EGS_TheEvilWithin2_TangoGameworks_S1_2560x1440-c87f377e1990d84a98db5fb4836af9a9.jpg"
+                     class="d-block w-100 hero-media" alt="The Evil Within 2" loading="eager" />
+                <div class="overlay"></div>
+            </div>
+
+            <!-- Slide 2 -->
+            <div class="carousel-item" data-interval="6000" data-type="image">
+                <img src="~/img/carrossel_far_cry_6.jpg"
+                     class="d-block w-100 hero-media" alt="Far Cry 6" loading="lazy" />
+                <div class="overlay"></div>
+            </div>
+
+            <!-- Slide 3 (VÍDEO) -->
+            <div class="carousel-item" data-type="video" data-interval="999999">
+                <video class="d-block w-100 hero-media" id="heroVideo"
+                       muted playsinline preload="metadata"
+                       poster="https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/782330/capsule_616x353.jpg?t=1755109910">
+                    <source src="~/videos/doom_trailer.mp4" type="video/mp4" />
+                    Seu navegador não suporta vídeo HTML5.
+                </video>
+                <div class="overlay"></div>
+            </div>
+
+            <!-- Slide 4 -->
+            <div class="carousel-item" data-interval="6000" data-type="image">
+                <img src="~/img/poster-grand-theft-auto-v-gta-5-c-afe2ac45.jpg"
+                     class="d-block w-100 hero-media" alt="GTA V" loading="lazy" />
+                <div class="overlay"></div>
+            </div>
+
+            <!-- Slide 5 -->
+            <div class="carousel-item" data-interval="6000" data-type="image">
+                <img src="~/img/carrossel_call-of-duty-modern-warfare.jpeg"
+                     class="d-block w-100 hero-media" alt="Call of Duty" loading="lazy" />
+                <div class="overlay"></div>
             </div>
         </div>
-        <!-- Slide 4: Imagem -->
-        <div class="carousel-item">
-            <img src="~/img/poster-grand-theft-auto-v-gta-5-c-afe2ac45.jpg" class="d-block w-100" alt="Imagem 4">
-        </div>
-        <!-- Slide 5: Imagem -->
-        <div class="carousel-item">
-            <img src="~/img/carrossel_call-of-duty-modern-warfare.jpeg" class="d-block w-100" alt="Imagem 5">
-        </div>
-    </div>
 
-    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Anterior</span>
-    </button>
-    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Próximo</span>
-    </button>
+        <!-- SETAS (com recuo) -->
+        <button class="carousel-control-prev neo-arrow" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev" aria-label="Anterior">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        </button>
+        <button class="carousel-control-next neo-arrow" type="button" data-bs-target="#heroCarousel" data-bs-slide="next" aria-label="Próximo">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        </button>
+    </div>
 </div>
 
 <style>
-    .carousel {
-        margin-bottom: 50px;
+    :root {
+        --hero-gutter: clamp(14px, 3.5vw, 36px); /* espaçamento externo do bloco */
+        --hero-maxw: 1400px; /* largura máxima */
+        --arrow-inset: clamp(18px, 3.2vw, 56px); /* RECÚO das setas a partir da borda interna do slide */
     }
 
-    .carousel-item img,
-    .carousel-item video {
-        height: 600px;
+    /* Wrapper com respiro e limite de largura */
+    .hero-wrap {
+        max-width: var(--hero-maxw);
+        margin: 0 auto;
+        padding: var(--hero-gutter);
+        padding-top: calc(var(--hero-gutter) + 4px);
+        padding-bottom: calc(var(--hero-gutter) + 6px);
+    }
+
+    /* Altura responsiva (JS ajusta; isso é fallback/limite) */
+    #heroCarousel .hero-media {
+        height: clamp(320px, 60vh, 720px);
         object-fit: cover;
-        border-radius: 10px;
-        box-shadow: 0 10px 30px rgba(0, 255, 255, 0.5), 0 0 15px rgba(255, 0, 230, 0.5);
-        transition: transform 0.5s ease;
+        border-radius: 18px;
+        box-shadow: 0 24px 60px rgba(0,0,0,.45);
+        transform: translateZ(0);
+        will-change: transform; /* parallax suave */
     }
 
-    .carousel-item:hover img,
-    .carousel-item:hover video {
-        transform: scale(1.05);
+    #heroCarousel .carousel-inner {
+        border-radius: 18px;
+        overflow: hidden;
     }
-</style>
+
+    #heroCarousel .carousel-item {
+        position: relative;
+    }
+
+    /* Overlay sutil para contraste */
+    #heroCarousel .overlay {
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(75% 100% at 20% 50%, rgba(58,0,102,.38) 0%, rgba(0,0,0,.22) 60%, rgba(0,0,0,.48) 100%);
+        mix-blend-mode: multiply;
+        border-radius: 18px;
+        pointer-events: none;
+    }
+
+    /* Indicadores custom */
+    #heroCarousel .custom-indicators {
+        bottom: 14px;
+    }
+
+        #heroCarousel .custom-indicators button {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255,255,255,.55);
+            border: 0;
+            margin: 0 6px;
+            transition: transform .15s ease;
+        }
+
+        #heroCarousel .custom-indicators .active {
+            background: #7C3AED;
+            box-shadow: 0 0 0 4px rgba(124,58,237,.25);
+            transform: scale(1.1);
+        }
+
+    /* Setas com recuo e visual neo */
+    .neo-arrow {
+        width: 56px;
+        height: 56px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(255,255,255,.08);
+        border-radius: 999px;
+        border: 1px solid rgba(255,255,255,.35);
+        box-shadow: 0 8px 24px rgba(0,0,0,.35), inset 0 0 0 1px rgba(255,255,255,.2);
+        transition: background .2s ease, transform .15s ease, box-shadow .2s ease;
+    }
+    /* recuo lateral real (afasta da “parede”) */
+    #heroCarousel .carousel-control-prev {
+        left: var(--arrow-inset);
+    }
+
+    #heroCarousel .carousel-control-next {
+        right: var(--arrow-inset);
+    }
+
+    .neo-arrow:hover {
+        background: rgba(124,58,237,.18);
+        transform: translateY(-50%) scale(1.05);
+        box-shadow: 0 12px 32px rgba(124,58,237,.35);
+    }
+
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon {
+        filter: drop-shadow(0 2px 6px rgba(0,0,0,.45));
+    }
+
+    /* Hover sutil */
+    #heroCarousel .carousel-item .hero-media {
+        transition: transform .6s ease, box-shadow .6s ease;
+    }
+
+    #heroCarousel .carousel-item:hover .hero-media {
+        box-shadow: 0 28px 72px rgba(124,58,237,.35);
+    }
+
+    /* Barra de progresso */
+    .slide-progress {
+        position: absolute;
+        top: 12px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: min(720px, 90%);
+        height: 4px;
+        z-index: 5;
+        background: rgba(255,255,255,.15);
+        border-radius: 999px;
+        overflow: hidden;
+    }
+
+    .slide-progress-bar {
+        width: 0%;
+        height: 100%;
+        background: linear-gradient(90deg, #22d3ee, #a78bfa, #f472b6);
+        transition: width .2s linear;
+    }
+
+    </style>
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        var carouselElement = document.getElementById('carouselExampleIndicators');
-        var myCarousel = new bootstrap.Carousel(carouselElement, {
-            interval: 5000, // intervalo para slides de imagem
-            ride: 'carousel'
-        });
+      const el = document.getElementById('heroCarousel');
+      const progressBar = document.getElementById('slideProgressBar');
+      const carousel = new bootstrap.Carousel(el, {
+        interval: 6000,
+        pause: 'hover',
+        keyboard: true,
+        ride: 'carousel',
+        touch: true,
+        wrap: true
+      });
 
-        // Evento disparado após a transição do slide
-        carouselElement.addEventListener('slid.bs.carousel', function () {
-            var activeSlide = carouselElement.querySelector('.carousel-item.active');
-            var video = activeSlide.querySelector('video');
+      let timer = null;
+      let currentInterval = 6000;
 
-            if (video) {
-                // Se o slide ativo é o de vídeo, pausa a rotação automática e inicia o vídeo
-                myCarousel.pause();
-                // Reinicia o vídeo (opcional) e inicia o play automaticamente
-                video.currentTime = 0;
-                video.play().catch(function (error) {
-                    // Em alguns navegadores o autoplay pode ser bloqueado se não houver interação do usuário
-                    console.error("Autoplay do vídeo foi bloqueado:", error);
-                });
-            } else {
-                // Se não for o slide de vídeo, retoma a rotação automática
-                myCarousel.cycle();
-            }
-        });
+      /* ---- Barra de progresso ---- */
+      function startProgress(duration){
+        clearInterval(timer);
+        progressBar.style.width = '0%';
+        const start = performance.now();
+        timer = setInterval(() => {
+          const elapsed = performance.now() - start;
+          const pct = Math.min(100, (elapsed / duration) * 100);
+          progressBar.style.width = pct + '%';
+          if (pct >= 100) clearInterval(timer);
+        }, 100);
+      }
 
-        // Quando o vídeo terminar, avança para o próximo slide e retoma o ciclo automático
-        var videoElement = document.getElementById('videoSlide');
-        if (videoElement) {
-            videoElement.addEventListener('ended', function () {
-                myCarousel.next();
-                myCarousel.cycle();
-            });
+      /* ---- Troca de slides + vídeo ---- */
+      function handleSlideChange(){
+        const active = el.querySelector('.carousel-item.active');
+        const type = active?.dataset.type || 'image';
+        const customInterval = parseInt(active?.dataset.interval || '6000', 10);
+
+        currentInterval = (type === 'video') ? 999999 : customInterval;
+        carousel._config.interval = currentInterval;
+
+        const video = active?.querySelector('video');
+
+        if (type === 'video' && video){
+          carousel.pause();
+          startProgress(8000); // visual no vídeo (opcional)
+          try{
+            video.currentTime = 0;
+            video.play().catch(()=>{});
+          }catch(e){}
+          video.onended = () => { carousel.next(); carousel.cycle(); };
+        }else{
+          // pausa possíveis vídeos anteriores
+          el.querySelectorAll('video').forEach(v => { try{ v.pause(); v.currentTime = 0; }catch(e){} });
+          startProgress(currentInterval);
+          carousel.cycle();
         }
+      }
+
+      // inicializa
+      handleSlideChange();
+      el.addEventListener('slid.bs.carousel', handleSlideChange);
+      el.addEventListener('slide.bs.carousel', () => { clearInterval(timer); progressBar.style.width = '0%'; });
+
+      /* ---- Altura automática (viewport-aware) ---- */
+      const medias = el.querySelectorAll('.hero-media');
+      function calcHeroHeight(){
+        const vw = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+        const vh = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+
+        let ratio;
+        if (vw >= 1200)      ratio = 21/9;   // desktop
+        else if (vw >= 768)  ratio = 16/9;   // tablet
+        else                 ratio = 4/3;    // mobile
+
+        const container = el.querySelector('.carousel-inner');
+        const cw = container ? container.clientWidth : vw;
+        let target = Math.round(cw / ratio);
+
+        const minH = 320, ideal = Math.round(vh * 0.60), maxH = 720;
+        target = Math.max(minH, Math.min(maxH, Math.min(target, ideal)));
+
+        medias.forEach(m => { m.style.height = target + 'px'; });
+      }
+      calcHeroHeight();
+      const ro = new ResizeObserver(calcHeroHeight);
+      ro.observe(document.body);
+      window.addEventListener('resize', calcHeroHeight);
+      window.addEventListener('orientationchange', calcHeroHeight);
+
+      /* ---- Função 1: Parallax sutil pelo mouse ---- */
+      let parallaxRAF;
+      const parallax = (e) => {
+        const rect = el.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width - 0.5;  // -0.5..0.5
+        const y = (e.clientY - rect.top) / rect.height - 0.5;
+        const tx = Math.max(-10, Math.min(10, x * 20));
+        const ty = Math.max(-10, Math.min(10, y * 20));
+        cancelAnimationFrame(parallaxRAF);
+        parallaxRAF = requestAnimationFrame(() => {
+          el.querySelectorAll('.carousel-item.active .hero-media').forEach(m => {
+            m.style.transform = `translate(${tx}px, ${ty}px) scale(1.02)`;
+          });
+        });
+      };
+      const resetParallax = () => {
+        el.querySelectorAll('.hero-media').forEach(m => { m.style.transform = 'translate(0,0)'; });
+      };
+      el.addEventListener('mousemove', parallax);
+      el.addEventListener('mouseleave', resetParallax);
+
+      /* ---- Função 2 (nova): Atalhos de teclado ----
+         - Espaço: pausa/retoma
+         - 1..5: vai direto para o slide correspondente
+         (ignora se o foco está em inputs/select/textarea/contenteditable) */
+      document.addEventListener('keydown', (ev) => {
+        const tag = (ev.target.tagName || '').toLowerCase();
+        if (['input','textarea','select'].includes(tag) || ev.target.isContentEditable) return;
+
+        if (ev.code === 'Space'){
+          ev.preventDefault();
+          // toggle pause/play
+          if (carousel._isPaused) { carousel.cycle(); handleSlideChange(); }
+          else { carousel.pause(); clearInterval(timer); }
+          carousel._isPaused = !carousel._isPaused;
+        }
+
+        // números 1..5
+        if (/^[1-5]$/.test(ev.key)){
+          const idx = parseInt(ev.key, 10) - 1;
+          const indicators = el.querySelectorAll('.carousel-indicators [data-bs-slide-to]');
+          if (indicators[idx]){
+            indicators[idx].click(); // usa o próprio BS para navegar
+          }
+        }
+      });
+
+      /* ---- Pausa quando a aba perde foco ---- */
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden){
+          carousel.pause();
+          clearInterval(timer);
+        }else{
+          handleSlideChange();
+        }
+      });
     });
 </script>

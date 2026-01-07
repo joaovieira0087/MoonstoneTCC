@@ -2,15 +2,19 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Threading.Tasks;
-using MoonstoneTCC.Models; 
+using MoonstoneTCC.Models;
+using MoonstoneTCC.Services;
+
 
 namespace MoonstoneTCC.Areas.Admin.Controllers
 {
     [Area("Admin")]
     public class AdminUsuariosController : Controller
     {
+        private readonly LoggerAdminService _logger;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+
 
         public AdminUsuariosController(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
         {
@@ -52,6 +56,7 @@ namespace MoonstoneTCC.Areas.Admin.Controllers
 
             if (resultado.Succeeded)
             {
+                await _logger.RegistrarAcaoAsync($"Criou o usuário: {email}");
                 return RedirectToAction(nameof(Index));
             }
 
@@ -89,6 +94,7 @@ namespace MoonstoneTCC.Areas.Admin.Controllers
 
             if (resultado.Succeeded)
             {
+                await _logger.RegistrarAcaoAsync($"Editou o e-mail do usuário: {usuario.Email}");
                 return RedirectToAction(nameof(Index));
             }
 
@@ -113,6 +119,7 @@ namespace MoonstoneTCC.Areas.Admin.Controllers
 
             if (resultado.Succeeded)
             {
+                await _logger.RegistrarAcaoAsync($"Excluiu o usuário: {usuario.Email}");
                 return RedirectToAction(nameof(Index));
             }
 

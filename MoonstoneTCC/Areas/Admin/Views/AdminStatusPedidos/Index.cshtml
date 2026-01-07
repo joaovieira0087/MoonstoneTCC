@@ -1,0 +1,36 @@
+﻿// Index.cshtml
+@model IEnumerable<MoonstoneTCC.Models.Pedido>
+
+@{
+    ViewData["Title"] = "Atualizar Status de Pedidos";
+}
+
+<h2 class="text-center text-primary fw-bold">Atualizar Status dos Pedidos</h2>
+
+<table class="table table-bordered table-hover mt-4">
+    <thead class="table-dark">
+        <tr>
+            <th>Código</th>
+            <th>Nome</th>
+            <th>Status Atual</th>
+            <th>Ação</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var pedido in Model)
+        {
+            <tr>
+                <td>@pedido.CodigoPedido</td>
+                <td>@pedido.Nome @pedido.Sobrenome</td>
+                <td>
+                    <span class="badge bg-secondary">@pedido.StatusPedido</span>
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@pedido.PedidoId" class="btn btn-sm btn-warning">
+                        <i class="fas fa-edit"></i> Atualizar Status
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

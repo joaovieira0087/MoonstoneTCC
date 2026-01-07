@@ -1,0 +1,60 @@
+﻿@model List<MoonstoneTCC.Models.Jogo>
+@{
+    ViewData["Title"] = "Gerenciar Estoque";
+}
+
+<h1 class="text-center my-4">GERENCIAMENTO DE ESTOQUE</h1>
+
+<div class="container">
+    <table class="table table-bordered table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>Nome</th>
+                <th>Categoria</th>
+                <th>Estoque Atual</th>
+                <th>Estoque Mínimo</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var jogo in Model)
+            {
+                <tr>
+                    <td>@jogo.Nome</td>
+                    <td>@jogo.Categoria?.CategoriaNome</td>
+                    <td>@jogo.QuantidadeEstoque</td>
+                    <td>@jogo.EstoqueMinimoAlerta</td>
+                    <td class="d-flex gap-2">
+                        <form asp-action="IncrementarEstoque" method="post">
+                            <input type="hidden" name="jogoId" value="@jogo.JogoId" />
+                            <button class="btn btn-success btn-sm" type="submit">
+                                <i class="fas fa-plus"></i> +1
+                            </button>
+                        </form>
+                        <form asp-action="AtualizarEstoque" method="post" class="d-flex align-items-center">
+                            <input type="hidden" name="jogoId" value="@jogo.JogoId" />
+                            <input type="number" name="novaQuantidade" class="form-control form-control-sm w-50" placeholder="Qtd" min="0" />
+                            <button class="btn btn-warning btn-sm ms-2" type="submit">
+                                <i class="fas fa-pen"></i> Atualizar
+                            </button>
+                        </form>
+                        <a class="btn btn-info btn-sm" asp-action="UsuariosAguardando" asp-route-jogoId="@jogo.JogoId">
+                            <i class="fas fa-bell"></i> Interessados
+                        </a>
+                    </td>
+                </tr>
+                @if (TempData[$"EstoqueAtualizado_{jogo.JogoId}"] != null)
+                {
+                    <tr>
+                        <td colspan="5">
+                            <div class="alert alert-success mb-0">
+                                Estoque do jogo <strong>@jogo.Nome</strong> atualizado com sucesso!
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+

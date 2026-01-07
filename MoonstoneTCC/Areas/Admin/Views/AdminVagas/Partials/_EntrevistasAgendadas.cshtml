@@ -1,0 +1,96 @@
+﻿@model List<MoonstoneTCC.Models.EntrevistaAgendada>
+
+@if (Model == null || !Model.Any())
+{
+    <div class="alert alert-info">Nenhuma entrevista agendada.</div>
+}
+else
+{
+    <div class="card mb-4">
+        <div class="card-header bg-success text-white">
+            <strong><i class="fa fa-calendar-check me-1"></i> Entrevistas Agendadas</strong>
+        </div>
+        <div class="card-body p-0">
+            <table class="table table-sm table-bordered mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Candidato</th>
+                        <th>Email</th>
+                        <th>Data e Hora</th>
+                        <th>Observações</th>
+                        <th>Vaga</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var e in Model.OrderBy(x => x.DataHoraEntrevista))
+                    {
+                        <tr>
+                            <td>@e.Candidatura?.NomeCompleto</td>
+                            <td>@e.Candidatura?.Usuario?.Email</td>
+                            <td>@e.DataHoraEntrevista.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td>@e.Observacoes</td>
+                            <td>@e.Candidatura?.Vaga?.Titulo</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+<style>
+    .card {
+        background-color: #2b0048;
+        border: 1px solid #9b00ff33;
+        border-radius: 12px;
+        box-shadow: 0 0 12px #7c00ff33;
+    }
+
+    .card-header.bg-success {
+        background-color: #00c851 !important;
+        color: white;
+        font-weight: 600;
+        font-size: 1rem;
+        padding: 12px 20px;
+        border-top-left-radius: 12px;
+        border-top-right-radius: 12px;
+    }
+
+    .table-sm {
+        font-size: 0.92rem;
+    }
+
+    .table {
+        margin-bottom: 0;
+        background-color: #3a0055;
+        color: #ffffff;
+    }
+
+    .table-bordered > :not(caption) > * > * {
+        border-color: #ffffff22;
+    }
+
+    .table thead.table-light {
+        background-color: #4a0072;
+        color: #ffffff;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: #5f007a;
+    }
+
+    .table td, .table th {
+        vertical-align: middle;
+    }
+
+    .alert-info {
+        background-color: #004080;
+        border-left: 4px solid #3399ff;
+        color: #cce6ff;
+        font-weight: 500;
+    }
+
+    .fa-calendar-check {
+        color: white;
+    }
+</style>
+

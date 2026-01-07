@@ -1,0 +1,129 @@
+﻿@model List<MoonstoneTCC.Models.VagaEmprego>
+@{
+    ViewData["Title"] = "Vagas Abertas";
+}
+
+@if (TempData["Erro"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["Erro"]
+    </div>
+}
+
+<style>
+    body {
+        color: #ffffff;
+    }
+
+    h1, h2, h5, p, small {
+        color: #ffffff;
+    }
+
+    .vaga-card {
+        background-color: #2b0048;
+        border: 1px solid #7c00ff44;
+        border-radius: 16px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 0 12px #7c00ff33;
+        transition: 0.3s ease-in-out;
+    }
+
+        .vaga-card:hover {
+            box-shadow: 0 0 20px #9b00ff88;
+            transform: translateY(-3px);
+        }
+
+        .vaga-card a {
+            text-decoration: none;
+            color: #ffffff;
+        }
+
+            .vaga-card a:hover {
+                color: #9b00ff;
+            }
+
+    .vaga-info {
+        font-size: 0.95rem;
+        color: #ccc;
+    }
+
+    .vaga-data {
+        font-size: 0.85rem;
+        color: #bbb;
+    }
+
+    .badge-danger {
+        background-color: #ff3b3b;
+        font-size: 0.75rem;
+        padding: 4px 8px;
+        border-radius: 8px;
+    }
+
+    .btn-minhas {
+        background-color: #9b00ff;
+        color: white;
+        border: none;
+        transition: 0.3s ease;
+    }
+
+        .btn-minhas:hover {
+            background-color: #b94dff;
+            color: white;
+        }
+
+    .lead {
+        color: #d3cce3;
+    }
+</style>
+
+<section class="container py-5">
+    <div class="row align-items-center mb-5">
+        <div class="col-md-6">
+            <img src="https://www.agirsaude.org.br/uploads/tinymce/pagina/Rst54_16_ewiNVV0crhV9ARL5D3fURYk.png" class="img-fluid rounded shadow" alt="Trabalhe na Moonstone">
+        </div>
+        <div class="col-md-6 text-center text-md-start">
+            <h1 class="display-5 fw-bold mb-3">Trabalhe Conosco</h1>
+            <p class="lead">Faça parte do time Moonstone! Buscamos talentos apaixonados por tecnologia, inovação e jogos. Envie seu currículo e venha construir o futuro com a gente.</p>
+        </div>
+    </div>
+</section>
+
+<section class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Vagas Disponíveis</h2>
+
+        @if (User.Identity.IsAuthenticated)
+        {
+            <a asp-controller="Vagas" asp-action="Status" class="btn btn-minhas">
+                <i class="fa-solid fa-list-check"></i> Minhas Candidaturas
+            </a>
+        }
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">Nenhuma vaga disponível no momento.</div>
+    }
+    else
+    {
+        @foreach (var vaga in Model)
+        {
+            <div class="vaga-card">
+                <a href="@Url.Action("Detalhes", "Vagas", new { id = vaga.Id })">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h5 class="mb-0">@vaga.Titulo</h5>
+                        <small class="vaga-data">@vaga.DataCriacao.ToString("dd/MM/yyyy")</small>
+                    </div>
+
+                    <p class="vaga-info mb-2">@vaga.Cargo — <strong>@(vaga.Candidaturas?.Count() ?? 0)</strong> candidatos</p>
+
+                    @if (vaga.DataEncerramento.HasValue && vaga.DataEncerramento.Value < DateTime.Now)
+                    {
+                        <span class="badge badge-danger">Encerrada</span>
+                    }
+                </a>
+            </div>
+        }
+    }
+</section>

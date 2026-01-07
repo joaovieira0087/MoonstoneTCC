@@ -127,6 +127,18 @@
                 <input type="submit" value="Salvar" class="btn btn-primary btn-lg px-5" />
                 <a asp-action="Index" class="btn btn-secondary btn-lg px-5 ml-2">Voltar à Lista</a>
             </div>
+            <div class="row mb-3">
+                <div class="form-group col-md-6">
+                    <label asp-for="StatusPedido" class="control-label d-flex align-items-center">
+                        <i class="fas fa-info-circle text-warning mr-2" style="font-size: 1.2rem;"></i>
+                        <span>Status do Pedido</span>
+                    </label>
+                    <select asp-for="StatusPedido" class="form-control border-warning" asp-items="ViewBag.StatusList">
+                        <option value="">Selecione o status...</option>
+                    </select>
+                    <span asp-validation-for="StatusPedido" class="text-danger"></span>
+                </div>
+            </div>
         </form>
     </div>
 </div>

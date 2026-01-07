@@ -1,0 +1,85 @@
+﻿@model IEnumerable<MoonstoneTCC.Models.Jogo>
+
+<div id="recomendados" class="mt-5">
+    <h3 class="text-white"> Jogos Recomendados</h3>
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4 mt-3">
+        @foreach (var jogo in Model)
+
+        {
+            <div class="col">
+                <div class="card h-100 shadow-lg border-0" style="background: linear-gradient(180deg, #4B0082, #2b004d); border-radius: 18px; overflow: hidden;">
+
+                    <!-- Imagem com classificação etária -->
+                    <a asp-controller="Jogo" asp-action="Details" asp-route-jogoId="@jogo.JogoId" class="text-decoration-none">
+                        <div class="position-relative">
+                            <img src="@jogo.ImagemUrl" alt="@jogo.Nome" class="card-img-top img-fluid" style="aspect-ratio: 4 / 5; object-fit: cover;">
+                            <div class="position-absolute top-0 end-0 m-2">
+                                <img src="@jogo.ClassificacaoEtariaImagemUrl"
+                                     alt="Classificação Etária"
+                                     class="rounded-circle border border-white shadow"
+                                     style="width: 42px; height: 42px; object-fit: cover;">
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- Conteúdo -->
+                    <div class="card-body d-flex flex-column text-white p-3">
+                        <h5 class="card-title fw-bold text-center mb-2">@jogo.Nome</h5>
+
+                        <div class="text-center mb-2 small" style="color: #d1c9e6;">
+                            <p class="mb-1">
+                                <i class="fa-solid fa-gamepad me-1"></i> @jogo.Genero
+                            </p>
+                            <p>
+                                <i class="fa-solid fa-laptop me-1"></i> @jogo.Plataformas
+                            </p>
+                        </div>
+
+                        <p class="fw-bold text-center mb-3" style="font-size: 1.1rem;">
+                            @if (jogo.PrecoPromocional != null && jogo.PorcentagemDesconto != null)
+
+                            {
+                                <span class="text-white-50 text-decoration-line-through me-2">
+                                    @jogo.Preco.ToString("C")
+                                </span>
+                                <span class="text-warning fw-bold">
+                                    @jogo.PrecoPromocional?.ToString("C")
+                                </span>
+                                <span class="badge bg-success ms-2">
+                                    -@jogo.PorcentagemDesconto%
+                                </span>
+                            }
+
+                            else
+
+                            {
+                                <span class="text-white">@jogo.Preco.ToString("C")</span>
+                            }
+                        </p>
+                    </div>
+
+                    <!-- Botão -->
+                    <div class="card-footer bg-transparent text-center p-3 border-top-0">
+                        <a class="btn w-100 text-white fw-semibold d-flex align-items-center justify-content-center btn-roxo-degrade"
+                           asp-controller="CarrinhoCompra"
+                           asp-action="AdicionarItemNoCarrinhoCompra"
+                           asp-route-JogoId="@jogo.JogoId">
+                            <i class="fa-solid fa-cart-plus me-2"></i> Adicionar ao Carrinho
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+<style>
+    .btn-roxo-degrade {
+        background: linear-gradient(90deg, #a64bf4, #6a0dad);
+        border-radius: 10px;
+        transition: background 0.3s, filter 0.3s;
+    }
+
+        .btn-roxo-degrade:hover {
+            filter: brightness(0.85);
+        }
+</style>

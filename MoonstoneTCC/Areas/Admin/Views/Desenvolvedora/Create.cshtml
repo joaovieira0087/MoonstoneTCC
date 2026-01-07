@@ -1,0 +1,57 @@
+﻿@model MoonstoneTCC.Models.Desenvolvedora
+
+@{
+    ViewData["Title"] = "Criar Desenvolvedora";
+}
+
+<div class="container mt-5">
+    <div class="card shadow border-0">
+        <div class="card-header bg-primary text-white">
+            <h2 class="mb-0"><i class="fas fa-building"></i> Nova Desenvolvedora</h2>
+        </div>
+        <div class="card-body">
+            <form asp-action="Create" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <div class="form-group">
+                    <label asp-for="Nome" class="control-label">Nome</label>
+                    <input asp-for="Nome" class="form-control" />
+                    <span asp-validation-for="Nome" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Descricao" class="control-label">Descrição</label>
+                    <textarea asp-for="Descricao" class="form-control" rows="3"></textarea>
+                    <span asp-validation-for="Descricao" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="FotoPerfilUrl" class="control-label">Foto de Perfil (URL)</label>
+                    <input asp-for="FotoPerfilUrl" class="form-control" />
+                    <span asp-validation-for="FotoPerfilUrl" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Curiosidades" class="control-label">Curiosidades</label>
+                    <textarea asp-for="Curiosidades" class="form-control" rows="2"></textarea>
+                    <span asp-validation-for="Curiosidades" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="SlideImagens" class="control-label">Slides (URLs separadas por ponto e vírgula)</label>
+                    <input asp-for="SlideImagens" class="form-control" />
+                    <span asp-validation-for="SlideImagens" class="text-danger"></span>
+                </div>
+
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-success px-4">
+                        <i class="fas fa-plus"></i> Criar
+                    </button>
+                    <a asp-action="Index" class="btn btn-secondary px-4">
+                        <i class="fas fa-arrow-left"></i> Voltar
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

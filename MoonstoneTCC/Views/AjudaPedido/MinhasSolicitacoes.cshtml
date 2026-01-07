@@ -1,0 +1,60 @@
+﻿@model IEnumerable<MoonstoneTCC.Models.AjudaPedido>
+@{
+    ViewData["Title"] = "Minhas Solicitações de Ajuda";
+}
+
+<div class="container mt-5">
+    <h2 class="text-light mb-4">
+        <i class="fas fa-life-ring me-2"></i> Minhas Solicitações de Ajuda
+    </h2>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-warning text-center">
+            <i class="fas fa-info-circle"></i> Você ainda não enviou nenhuma solicitação.
+        </div>
+    }
+    else
+    {
+        foreach (var ajuda in Model)
+        {
+            <div class="card mb-4 shadow-sm border-0 rounded-3" style="background: #3b0056; color: #fff;">
+                <div class="card-body">
+                    <h5 class="card-title">Pedido: <strong>@ajuda.Pedido.CodigoPedido</strong></h5>
+                    <p class="mb-1"><i class="fas fa-exclamation-circle me-1"></i> <strong>Problema:</strong> @ajuda.TipoProblema</p>
+                    @if (!string.IsNullOrWhiteSpace(ajuda.Descricao))
+                    {
+                        <p class="mb-1"><i class="fas fa-comment-dots me-1"></i> <strong>Descrição:</strong> @ajuda.Descricao</p>
+                    }
+                    <p class="mb-1"><i class="fas fa-calendar-alt me-1"></i> <strong>Data:</strong> @ajuda.DataEnvio.ToString("dd/MM/yyyy HH:mm")</p>
+
+                    <p class="mt-2">
+                        <strong>Status:</strong>
+                        @if (ajuda.Resolvido)
+                        {
+                            <span class="badge bg-success text-dark">Resolvido</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-warning text-dark">Em análise</span>
+                        }
+                    </p>
+
+                    @if (!string.IsNullOrWhiteSpace(ajuda.RespostaAdmin))
+                    {
+                        <div class="alert alert-light mt-3">
+                            <i class="fas fa-reply text-success"></i> <strong>Resposta do Suporte:</strong><br />
+                            @ajuda.RespostaAdmin
+                        </div>
+                    }
+
+                    <a asp-controller="Pergunta" asp-action="Criar" asp-route-pedidoId="@ajuda.Pedido.PedidoId" class="btn btn-outline-light mt-2">
+                        <i class="fa-solid fa-comment-dots me-1"></i> Enviar pergunta sobre o pedido
+                    </a>
+
+                </div>
+            </div>
+        }
+    }
+</div>
+

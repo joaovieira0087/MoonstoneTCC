@@ -1,0 +1,488 @@
+﻿@model MoonstoneTCC.Models.VagaEmprego
+@using System.Linq
+@{
+    ViewData["Title"] = $"Candidatos para {Model.Titulo}";
+}
+
+<section class="container mt-5">
+    <h2 class="mb-3">Candidatos para a vaga: <strong>@Model.Titulo</strong></h2>
+
+    <form asp-action="Candidatos" method="get" class="mb-4">
+        <input type="hidden" name="id" value="@Model.Id" />
+
+        <div class="row g-3 align-items-end">
+            <div class="col-md-4">
+                <label class="form-label">Filtrar por Status:</label>
+                <select name="status" class="form-select form-select-sm">
+                    @{
+                        var statusSelecionado = ViewBag.StatusSelecionado?.ToString();
+                        var opcoes = new[] { "Todos", "Pendente", "Em Análise", "Aprovado", "Rejeitado" };
+
+                        foreach (var opcao in opcoes)
+                        {
+                            if (statusSelecionado == opcao)
+                            {
+                                <option value="@opcao" selected>@opcao</option>
+                            }
+                            else
+                            {
+                                <option value="@opcao">@opcao</option>
+                            }
+                        }
+                    }
+                </select>
+            </div>
+
+            <div class="col-12 mt-4">
+                <h3 class="mb-2">📅 Entrevistas Agendadas</h3>
+                @await Html.PartialAsync(
+                         "Partials/_EntrevistasAgendadas",
+                         (List<MoonstoneTCC.Models.EntrevistaAgendada>)ViewBag.Entrevistas)
+            </div>
+
+
+            <div class="col-md-4">
+                <label class="form-label">Buscar por Nome:</label>
+                <input type="text" name="nome" class="form-control form-control-sm"
+                       value="@ViewBag.NomeBusca" placeholder="Digite o nome do candidato..." />
+            </div>
+
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-sm btn-primary mt-2">
+                    <i class="fa fa-search"></i> Filtrar
+                </button>
+            </div>
+        </div>
+    </form>
+
+
+
+
+    @if (Model.Candidaturas == null || !Model.Candidaturas.Any())
+    {
+        <div class="alert alert-warning">Nenhum candidato para esta vaga ainda.</div>
+    }
+    else
+    {
+        foreach (var candidatura in Model.Candidaturas)
+        {
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span>
+                        <strong>@candidatura.NomeCompleto</strong> —
+                        @(candidatura.Usuario?.Email ?? "E-mail não disponível")
+                    </span>
+
+                    <form asp-action="AtualizarStatus" method="post" class="d-flex gap-2">
+                        <input type="hidden" name="candidaturaId" value="@candidatura.Id" />
+                        <select name="novoStatus" class="form-select form-select-sm">
+                            <option value="Pendente" selected="@("Pendente" == candidatura.Status)">Pendente</option>
+                            <option value="Em Análise" selected="@("Em Análise" == candidatura.Status)">Em Análise</option>
+                            <option value="Aprovado" selected="@("Aprovado" == candidatura.Status)">Aprovado</option>
+                            <option value="Rejeitado" selected="@("Rejeitado" == candidatura.Status)">Rejeitado</option>
+                        </select>
+                        <button type="submit" class="btn btn-sm btn-primary">Atualizar</button>
+                    </form>
+                </div>
+
+                <div class="card-body">
+                    @{
+                        var etapasFixas = new[] { "Pendente", "Em Análise", "Entrevista", "Aprovado/Rejeitado" };
+                        var etapasConcluidas = new List<string>();
+
+                        if (candidatura.Status == "Pendente" || candidatura.Status == "Em Análise" || candidatura.Status == "Aprovado" || candidatura.Status == "Rejeitado")
+                            etapasConcluidas.Add("Pendente");
+
+                        if (candidatura.Status == "Em Análise" || candidatura.Status == "Aprovado" || candidatura.Status == "Rejeitado")
+                            etapasConcluidas.Add("Em Análise");
+
+                        if (candidatura.EntrevistaAgendada != null)
+                            etapasConcluidas.Add("Entrevista");
+
+                        if (candidatura.Status == "Aprovado" || candidatura.Status == "Rejeitado")
+                            etapasConcluidas.Add("Aprovado/Rejeitado");
+
+                        int etapaPercentual = 100 / etapasFixas.Length;
+                    }
+
+                    <div class="progress mb-3" style="height: 28px; border-radius: 8px; overflow: hidden;">
+                        @foreach (var etapa in etapasFixas)
+                        {
+                            var concluida = etapasConcluidas.Contains(etapa);
+                            var bgClass = concluida ? "bg-success" : "bg-light text-dark";
+
+                            <div class="progress-bar @bgClass"
+                                 role="progressbar"
+                                 style="width: @(etapaPercentual)% ; font-size: 0.75rem;"
+                                 aria-valuenow="@etapaPercentual" aria-valuemin="0" aria-valuemax="100">
+                                @etapa
+                            </div>
+                        }
+                    </div>
+
+                    @if (candidatura.Cancelada)
+                    {
+                        <div class="alert alert-danger mb-2">
+                            <i class="fa fa-ban"></i> Candidatura cancelada pelo candidato.
+                            @if (!string.IsNullOrWhiteSpace(candidatura.MotivoCancelamento))
+                            {
+                                <br />
+
+                                <strong>Motivo:</strong> @candidatura.MotivoCancelamento
+                            }
+                        </div>
+                    }
+                    <p>
+                        <strong><i class="fa fa-clock me-1 text-secondary"></i> Data da Candidatura:</strong>
+                        @candidatura.DataEnvio.ToString("dd/MM/yyyy HH:mm")
+                    </p>
+                    <p><strong>CPF:</strong> @candidatura.CPF</p>
+                    <p><strong>RG:</strong> @candidatura.RG</p>
+                    <p><strong>Endereço:</strong> @candidatura.Endereco</p>
+                    <p><strong>Telefone:</strong> @candidatura.Telefone</p>
+
+                    <h5 class="mt-4">Etapas do Processo Seletivo:</h5>
+
+                    @if (candidatura.Etapas != null && candidatura.Etapas.Any())
+                    {
+                        <ul class="list-group mb-3">
+                            @foreach (var etapa in candidatura.Etapas.OrderByDescending(e => e.Data))
+                            {
+                                <li class="list-group-item">
+                                    <strong>@etapa.NomeEtapa</strong>
+                                    <span class="text-muted small ms-2">@etapa.Data.ToString("dd/MM/yyyy HH:mm")</span>
+                                    <div class="text-secondary small">@etapa.Observacoes</div>
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <p class="text-muted">Nenhuma etapa registrada ainda.</p>
+                    }
+
+                    <form asp-controller="AdminVagas" asp-action="AdicionarEtapa" method="post" class="d-flex flex-column gap-2">
+                        <input type="hidden" name="candidaturaId" value="@candidatura.Id" />
+                        <input type="text" name="nomeEtapa" class="form-control" placeholder="Nome da Etapa" required />
+                        <textarea name="observacoes" class="form-control" placeholder="Observações (opcional)"></textarea>
+                        <button type="submit" class="btn btn-sm btn-outline-primary mt-1">Adicionar Etapa</button>
+                    </form>
+
+                    <form asp-action="SalvarFeedback" method="post" class="mt-2">
+                        <input type="hidden" name="candidaturaId" value="@candidatura.Id" />
+                        <div class="mb-2">
+                            <label class="form-label">Feedback para o Candidato: (Não Obrigatório)</label>
+                            <textarea name="feedback" class="form-control" rows="2">@candidatura.Feedback</textarea>
+                        </div>
+                        <button type="submit" class="btn btn-sm btn-warning">Salvar Feedback</button>
+                    </form>
+
+
+                    <h5 class="mt-3">Respostas:</h5>
+                    @if (candidatura.Respostas != null && candidatura.Respostas.Any())
+                    {
+                        <table class="table table-sm table-bordered">
+                            <thead class="table-light">
+                                <tr>
+                                    <th style="width: 50%">Pergunta</th>
+                                    <th style="width: 50%">Resposta</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var resposta in candidatura.Respostas)
+                                {
+                                    <tr>
+                                        <td>@resposta.Pergunta?.Texto</td>
+                                        <td>@resposta.RespostaTexto</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+
+                    }
+                    else
+                    {
+                        <p class="text-muted">Nenhuma resposta registrada.</p>
+                    }
+
+                    <form asp-action="AgendarEntrevista" method="post" class="mt-2">
+                        <input type="hidden" name="candidaturaId" value="@candidatura.Id" />
+                        <div class="row g-2">
+                            <div class="col-md-4">
+                                <input type="datetime-local" name="dataHora" class="form-control form-control-sm" required />
+                            </div>
+                            <div class="col-md-5">
+                                <input type="text" name="observacoes" class="form-control form-control-sm" placeholder="Observações" />
+                            </div>
+                            <div class="col-md-3">
+                                <button type="submit" class="btn btn-sm btn-outline-success">
+                                    <i class="fa fa-calendar-check"></i> Agendar Entrevista
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                    @if (candidatura.EntrevistaAgendada != null)
+                    {
+                        <div class="alert alert-success mt-3">
+                            <i class="fa fa-calendar-alt me-1"></i>
+                            <strong>Entrevista Agendada:</strong><br />
+                            <span><strong>Data:</strong> @candidatura.EntrevistaAgendada.DataHoraEntrevista.ToString("dd/MM/yyyy 'às' HH:mm")</span><br />
+                            @if (!string.IsNullOrWhiteSpace(candidatura.EntrevistaAgendada.Observacoes))
+                            {
+                                <span><strong>Obs:</strong> @candidatura.EntrevistaAgendada.Observacoes</span>
+                            }
+                        </div>
+                    }
+
+                    @if (candidatura.Mensagens != null && candidatura.Mensagens.Any())
+                    {
+                        <div class="mt-3">
+                            <h6>Mensagens do Candidato:</h6>
+                            <ul class="list-group">
+                                @foreach (var msg in candidatura.Mensagens.OrderBy(m => m.DataHora))
+                                {
+                                    <li class="list-group-item">
+                                        <strong>@msg.Remetente:</strong> @msg.Texto
+                                        <span class="float-end text-muted small">@msg.DataHora.ToString("dd/MM HH:mm")</span>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    }
+
+                    <form asp-action="ResponderMensagem" method="post" class="mt-2">
+                        <input type="hidden" name="candidaturaId" value="@candidatura.Id" />
+                        <div class="input-group">
+                            <input type="text" name="mensagem" class="form-control" placeholder="Responder ao candidato..." required />
+                            <button type="submit" class="btn btn-outline-success">Responder</button>
+                        </div>
+                    </form>
+
+                    <h5 class="mt-3">Comentário Interno: (Não Obrigatório)</h5>
+
+                    <form asp-action="SalvarComentarioInterno" method="post" class="mb-3">
+                        <input type="hidden" name="candidaturaId" value="@candidatura.Id" />
+                        <textarea name="comentario" class="form-control" rows="2"
+                                  placeholder="Ex: Chamado para entrevista – bom perfil">@candidatura.ComentarioInterno</textarea>
+                        <button type="submit" class="btn btn-sm btn-secondary mt-2">
+                            <i class="fa fa-save"></i> Salvar Comentário
+                        </button>
+                    </form>
+
+                    <h5 class="mt-4">📜 Histórico da Candidatura:</h5>
+
+                    @if ((candidatura.HistoricoStatus?.Any() ?? false) || (candidatura.Etapas?.Any() ?? false))
+                    {
+                        <ul class="list-group mb-3">
+                            @if (candidatura.HistoricoStatus != null)
+                            {
+                                foreach (var h in candidatura.HistoricoStatus.OrderByDescending(h => h.DataHora))
+                                {
+                                    <li class="list-group-item">
+                                        <i class="fa fa-random text-info me-1"></i>
+                                        Status alterado de <strong>@h.DeStatus</strong> para <strong>@h.ParaStatus</strong>
+                                        em @h.DataHora.ToString("dd/MM/yyyy 'às' HH:mm")
+                                    </li>
+                                }
+                            }
+
+                            @if (candidatura.Etapas != null)
+                            {
+                                foreach (var e in candidatura.Etapas.OrderByDescending(e => e.Data))
+                                {
+                                    <li class="list-group-item">
+                                        <i class="fa fa-flag text-warning me-1"></i>
+                                        Etapa: <strong>@e.NomeEtapa</strong> — @e.Data.ToString("dd/MM/yyyy 'às' HH:mm")
+                                        <br />
+                                        <span class="text-muted">@e.Observacoes</span>
+                                    </li>
+                                }
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <p class="text-muted">Nenhum histórico registrado.</p>
+                    }
+                </div>
+            </div>
+        }
+    }
+</section>
+
+
+<style>
+    /* ---------- Paleta base Moonstone ---------- */
+    :root {
+        --ms-bg-dark: #1a002d; /* fundo geral  */
+        --ms-bg-card: #2b0048; /* cartões      */
+        --ms-purple: #9b00ff; /* destaque     */
+        --ms-purple-2: #b84dff; /* hover / claro*/
+        --ms-text: #ffffff; /* texto prim.  */
+        --ms-text-sec: #cccccc; /* texto secund.*/
+        --ms-danger: #ff3b3b;
+        --ms-success: #00c851;
+    }
+
+    body {
+        color: var(--ms-text);
+    }
+
+    /* ---------- Cabeçalhos & títulos ---------- */
+    h2, h3, h5 {
+        color: var(--ms-text);
+    }
+
+    /* ---------- Formulários / Inputs ---------- */
+    .form-control,
+    .form-select {
+        background: #3a0055;
+        border: 1px solid var(--ms-purple);
+        color: #fff;
+        font-size: 0.9rem;
+    }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--ms-purple-2);
+            box-shadow: 0 0 6px var(--ms-purple-2);
+        }
+
+    /* ---------- Botões ---------- */
+    .btn-primary {
+        background: var(--ms-purple);
+        border: none;
+    }
+
+        .btn-primary:hover {
+            background: var(--ms-purple-2);
+        }
+
+    .btn-outline-primary {
+        color: var(--ms-purple);
+        border-color: var(--ms-purple);
+    }
+
+        .btn-outline-primary:hover {
+            background: var(--ms-purple);
+            color: #fff;
+        }
+
+    .btn-outline-success {
+        color: var(--ms-success);
+        border-color: var(--ms-success);
+    }
+
+        .btn-outline-success:hover {
+            background: var(--ms-success);
+            color: #fff;
+        }
+
+    .btn-warning {
+        background: #ffb300;
+        border: none;
+        color: #1a002d;
+    }
+
+        .btn-warning:hover {
+            background: #ffc94d;
+        }
+
+    .btn-secondary {
+        background: #444;
+        border: none;
+        color: #fff;
+    }
+
+    /* ---------- Cartões dos candidatos ---------- */
+    .card {
+        background: var(--ms-bg-card);
+        border: 1px solid var(--ms-purple)44;
+        border-radius: 16px;
+        box-shadow: 0 0 12px var(--ms-purple)33;
+    }
+
+    .card-header {
+        background: transparent;
+        border-bottom: 1px solid #ffffff22;
+        color: var(--ms-text);
+    }
+
+    /* ---------- Progress Bar custom ---------- */
+    .progress {
+        background: #00000033;
+    }
+
+    .progress-bar {
+        font-weight: 600;
+        letter-spacing: .3px;
+    }
+
+        .progress-bar.bg-success {
+            background: var(--ms-success);
+        }
+
+        .progress-bar.bg-light {
+            background: #5e5e5e;
+            color: #fff;
+        }
+
+    /* ---------- Badges & alerts ---------- */
+    .badge-danger, .bg-danger {
+        background: var(--ms-danger) !important;
+    }
+
+    .alert-danger {
+        background: #4c001a;
+        border-left: 4px solid var(--ms-danger);
+        color: #fff;
+    }
+
+    .alert-success {
+        background: #004d40;
+        border-left: 4px solid var(--ms-success);
+        color: #eee;
+    }
+
+    .alert-warning {
+        background: #665500;
+        border-left: 4px solid #ffcc00;
+        color: #fff;
+    }
+
+    /* ---------- List group (histórico / mensagens) ---------- */
+    .list-group-item {
+        background: #35005f;
+        border-color: #ffffff20;
+        color: #eee;
+    }
+
+    /* ---------- Tabelas (respostas) ---------- */
+    .table {
+        color: #fff;
+    }
+
+    .table-light > tr > th {
+        background: #4a0072;
+        color: #fff;
+        border-color: #ffffff22;
+    }
+
+    .table-bordered > :not(caption) > * {
+        border-color: #ffffff22;
+    }
+
+    /* ---------- Textarea de comentário interno ---------- */
+    textarea[name="comentario"] {
+        background: #3a0055;
+        color: #fff;
+        border: 1px solid var(--ms-purple);
+        font-size: .9rem;
+    }
+
+    /* ---------- Ícones pequenos alinhados ---------- */
+    .fa {
+        line-height: 1;
+    }
+</style>
+

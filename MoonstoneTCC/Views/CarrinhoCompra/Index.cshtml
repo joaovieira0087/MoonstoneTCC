@@ -124,7 +124,7 @@
                             </colgroup>
                             <thead>
                                 <tr>
-                                    <th>Jogo</th>
+                                    <th>Produto</th>
                                     <th>Plataformas</th>
                                     <th class="text-center">Quantidade</th>
                                     <th class="text-end">Preço</th>
@@ -137,49 +137,101 @@
                                 {
                                     <tr>
                                         <td class="d-flex align-items-center">
-                                            <img src="@item.Jogo.ImagemUrl"
-                                                 alt="@item.Jogo.Nome"
-                                                 style="width:60px;height:60px;object-fit:cover;margin-right:1rem;" />
-                                            <span class="fw-semibold text-purple">
-                                                @item.Jogo.Nome
-                                            </span>
+                                            @if (item.Jogo != null)
+                                            {
+                                                <img src="@item.Jogo.ImagemUrl"
+                                                     alt="@item.Jogo.Nome"
+                                                     style="width:60px;height:60px;object-fit:cover;margin-right:1rem;" />
+                                                <span class="fw-semibold text-purple">@item.Jogo.Nome</span>
+                                            }
+                                            else if (item.Acessorio != null)
+                                            {
+                                                <img src="@item.Acessorio.ImagemUrl"
+                                                     alt="@item.Acessorio.Nome"
+                                                     style="width:60px;height:60px;object-fit:cover;margin-right:1rem;" />
+                                                <span class="fw-semibold text-info">@item.Acessorio.Nome</span>
+                                            }
                                         </td>
-                                        <td>@item.Jogo.Plataformas</td>
+
+                                        <td>
+                                            @if (item.Jogo != null)
+                                            {
+                                                @item.Jogo.Plataformas
+                                            }
+                                            else if (item.Acessorio != null)
+                                            {
+                                                @item.Acessorio.Categoria
+                                            }
+                                        </td>
+
                                         <td class="text-center">
                                             <div class="d-inline-flex quantity-group">
+                                                @if (item.Jogo != null)
+                                                {
+                                                    <a asp-controller="CarrinhoCompra"
+                                                       asp-action="RemoverItemDoCarrinhoCompra"
+                                                       asp-route-jogoId="@item.Jogo.JogoId"
+                                                       class="btn btn-light" title="Diminuir">
+                                                        <i class="fa-solid fa-minus"></i>
+                                                    </a>
+                                                }
+                                                else if (item.Acessorio != null)
+                                                {
+                                                    <a asp-controller="CarrinhoCompra"
+                                                       asp-action="RemoverItemDoCarrinhoCompra"
+                                                       asp-route-acessorioId="@item.Acessorio.AcessorioId"
+                                                       class="btn btn-light" title="Diminuir">
+                                                        <i class="fa-solid fa-minus"></i>
+                                                    </a>
+                                                }
+
+                                                <span class="quantity-display">@item.Quantidade</span>
+
+                                                @if (item.Jogo != null)
+                                                {
+                                                    <a asp-controller="CarrinhoCompra"
+                                                       asp-action="AdicionarItemNoCarrinhoCompra"
+                                                       asp-route-jogoId="@item.Jogo.JogoId"
+                                                       class="btn btn-light" title="Aumentar">
+                                                        <i class="fa-solid fa-plus"></i>
+                                                    </a>
+                                                }
+                                                else if (item.Acessorio != null)
+                                                {
+                                                    <a asp-controller="CarrinhoCompra"
+                                                       asp-action="AdicionarItemNoCarrinhoCompraAcessorio"
+                                                       asp-route-acessorioId="@item.Acessorio.AcessorioId"
+                                                       class="btn btn-light" title="Aumentar">
+                                                        <i class="fa-solid fa-plus"></i>
+                                                    </a>
+                                                }
+                                            </div>
+                                        </td>
+
+                                        <td class="text-end">@($"R$ {item.PrecoUnitario:N2}")</td>
+                                        <td class="text-end">@($"R$ {(item.Quantidade * item.PrecoUnitario):N2}")</td>
+
+                                        <td class="text-center">
+                                            @if (item.Jogo != null)
+                                            {
                                                 <a asp-controller="CarrinhoCompra"
                                                    asp-action="RemoverItemDoCarrinhoCompra"
                                                    asp-route-jogoId="@item.Jogo.JogoId"
-                                                   class="btn btn-light"
-                                                   title="Diminuir">
-                                                    <i class="fa-solid fa-minus"></i>
+                                                   class="btn btn-outline-danger btn-sm"
+                                                   title="Remover do carrinho">
+                                                    <i class="fa-solid fa-trash"></i>
                                                 </a>
-                                                <span class="quantity-display">
-                                                    @item.Quantidade
-                                                </span>
+                                            }
+                                            else if (item.Acessorio != null)
+                                            {
                                                 <a asp-controller="CarrinhoCompra"
-                                                   asp-action="AdicionarItemNoCarrinhoCompra"
-                                                   asp-route-jogoId="@item.Jogo.JogoId"
-                                                   class="btn btn-light"
-                                                   title="Aumentar">
-                                                    <i class="fa-solid fa-plus"></i>
+                                                   asp-action="RemoverItemDoCarrinhoCompraAcessorio"
+                                                   asp-route-acessorioId="@item.Acessorio.AcessorioId"
+                                                   class="btn btn-outline-danger btn-sm"
+                                                   title="Remover do carrinho">
+                                                    <i class="fa-solid fa-trash"></i>
                                                 </a>
-                                            </div>
-                                        </td>
-                                        <td class="text-end">
-                                            @($"R$ {item.Jogo.Preco:N2}")
-                                        </td>
-                                        <td class="text-end">
-                                            @($"R$ {(item.Quantidade * item.Jogo.Preco):N2}")
-                                        </td>
-                                        <td class="text-center">
-                                            <a asp-controller="CarrinhoCompra"
-                                               asp-action="RemoverItemDoCarrinhoCompra"
-                                               asp-route-jogoId="@item.Jogo.JogoId"
-                                               class="btn btn-outline-danger btn-sm"
-                                               title="Remover do carrinho">
-                                                <i class="fa-solid fa-trash"></i>
-                                            </a>
+                                            }
                                         </td>
                                     </tr>
                                 }
@@ -190,10 +242,39 @@
                                     <td colspan="4"></td>
                                     <td class="text-end total-label">Total:</td>
                                     <td class="text-end total-value">
-                                            @($"R$ {(Model.Desconto > 0 ? Model.TotalComDesconto : Model.CarrinhoCompraTotal):N2}")
+                                        @($"R$ {((Model.Desconto > 0 ? Model.TotalComDesconto : Model.CarrinhoCompraTotal) + Model.ValorFrete):N2}")
                                     </td>
                                 </tr>
                             </tfoot>
+
+                                @if (Model.EconomiaTotal > 0)
+                                {
+                                <tr>
+                                    <td colspan="6" class="text-end text-success fw-semibold">
+                                        <i class="fas fa-tags me-1"></i>
+                                        Você economizou <strong>R$ @Model.EconomiaTotal.ToString("N2")</strong> com promoções!
+                                    </td>
+                                </tr>
+                                }
+                            <div class="panel p-3 mb-3">
+                                <form id="freteForm" class="row g-2">
+                                    <div class="col-auto">
+                                        <input id="cep" name="cep" class="form-control" placeholder="CEP (somente números)" maxlength="9" value="@Model.CepDestino" />
+                                    </div>
+                                    <div class="col-auto">
+                                        <button class="btn btn-primary" id="btnFrete">Calcular frete</button>
+                                    </div>
+                                    <div class="col-auto align-self-center" id="freteResultado">
+                                        @if (Model != null && Model.ValorFrete > 0)
+                                        {
+                                            <span>
+                                                Frete: <strong>R$ @Model.ValorFrete.ToString("N2")</strong>
+                                                • Prazo: @Model.PrazoFreteDias dia(s) • @Model.RegiaoDestino
+                                            </span>
+                                        }
+                                    </div>
+                                </form>
+                            </div>
                         </table>
                     </div>
                     <br />

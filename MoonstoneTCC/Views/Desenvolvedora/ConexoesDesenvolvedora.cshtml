@@ -1,0 +1,93 @@
+﻿@{
+    ViewData["Title"] = "Conexões";
+    var desenvolvedora = ViewBag.Desenvolvedora as MoonstoneTCC.Models.Desenvolvedora;
+    var seguidores = ViewBag.Seguidores as List<MoonstoneTCC.Models.SeguidorDesenvolvedora>;
+}
+
+<div class="container mt-5 text-white">
+    <div class="text-center mb-5">
+        <h2 class="fw-bold text-white">
+            <i class="fa-solid fa-users text-purple me-2"></i> Seguidores de @desenvolvedora.Nome
+        </h2>
+    </div>
+
+    <div class="row g-4 justify-content-center">
+        <!-- SEGUIDORES -->
+        <div class="col-md-8" id="seguidores">
+            <div class="card bg-roxo-claro shadow-lg p-4 h-100">
+                <h4 class="text-white mb-3">
+                    <i class="fa-solid fa-user-plus text-purple me-2"></i> Seguidores
+                </h4>
+
+                @if (seguidores.Any())
+                {
+                    <ul class="list-unstyled">
+                        @foreach (var s in seguidores)
+                        {
+                            <li class="mb-3 d-flex align-items-center gap-3">
+                                <i class="fa-solid fa-circle-user fs-4 text-purple"></i>
+                                <a href="/Usuario/Perfil/@s.UsuarioId" class="text-decoration-none text-white hover-zoom">
+                                    <strong>@s.Usuario.UserName</strong>
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p class="text-muted">Ainda sem seguidores.</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .bg-purple {
+        background-color: #6a0dad !important;
+    }
+
+    .badge-purple {
+        background-color: #7c4dff !important;
+        color: white !important;
+    }
+
+    .btn-outline-purple {
+        border: 1px solid #6a0dad;
+        color: #6a0dad;
+        transition: 0.3s ease;
+    }
+
+    .btn-outline-purple:hover {
+        background-color: #6a0dad;
+        color: white;
+    }
+
+    .btn-purple {
+        background-color: #7c4dff;
+        color: white;
+        border: none;
+        transition: 0.3s ease;
+    }
+
+    .btn-purple:hover {
+        background-color: #6a0dad;
+        color: white;
+    }
+
+    .bg-roxo-claro {
+        background: linear-gradient(145deg, #3e0070, #4e008a);
+        border: 1px solid #6a0dad44;
+        box-shadow: 0 0 10px rgba(122, 0, 200, 0.2);
+    }
+
+    .hover-zoom:hover {
+        transform: scale(1.05);
+        transition: 0.3s ease;
+    }
+
+    .border-purple {
+        border-color: #6a0dad !important;
+    }
+</style>
+

@@ -256,33 +256,73 @@
             <i class="fas fa-file-pdf"></i> <span>Baixar Relatório de Jogos em PDF</span>
         </a>
 
-        <a asp-area="Admin" asp-controller="AdminPerguntas" asp-action="Index"
-           class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "AdminPerguntas" ? "active" : "")">
-            <i class="fas fa-question-circle"></i> <span>Perguntas de Usuários</span>
+        <a asp-area="Admin" asp-controller="AdminPromocoes" asp-action="Index"
+           class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "AdminPromocoes" ? "active" : "")">
+            <i class="fas fa-percent"></i> <span>Gerenciar Promoções</span>
         </a>
+
+
+        <li class="nav-item dropdown @(ViewContext.RouteData.Values["controller"]?.ToString().StartsWith("AdminPerguntas") == true ? "active" : "")">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdownInteracoes" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fas fa-comments"></i> <span>Interações de Usuários</span>
+            </a>
+            <ul class="dropdown-menu bg-dark border-0" aria-labelledby="dropdownInteracoes">
+                <li>
+                    <a class="dropdown-item text-white" asp-area="Admin" asp-controller="AdminPerguntas" asp-action="Index">
+                        <i class="fas fa-question-circle me-2"></i>Perguntas de Usuários
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item text-white" asp-area="Admin" asp-controller="AdminComentarios" asp-action="Index">
+                        <i class="fas fa-comment-dots me-2"></i>Comentários em Jogos
+                    </a>
+                </li>
+            </ul>
+        </li>
+
+        <a asp-area="Admin" asp-controller="Desenvolvedora" asp-action="Create"
+           class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Desenvolvedora" && ViewContext.RouteData.Values["action"]?.ToString() == "Create" ? "active" : "")">
+            <i class="fas fa-plus-circle"></i> <span>Criar Desenvolvedora</span>
+        </a>
+
+
 
         <a asp-area="Admin" asp-controller="AdminComunicado" asp-action="Index"
            class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "AdminComunicado" ? "active" : "")">
             <i class="fas fa-bullhorn"></i> <span>Comunicados</span>
         </a>
 
-
-
-
-
-        <a asp-area="Admin" asp-controller="Promocoes" asp-action="Index"
-           class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Promocoes" ? "active" : "")">
-            <i class="fas fa-tags"></i> <span>Gestão de Promoções</span>
+        <a asp-area="Admin" asp-controller="AdminStatusPedidos" asp-action="Index"
+           class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "AdminStatusPedidos" ? "active" : "")">
+            <i class="fas fa-truck"></i> <span>Status dos Pedidos</span>
         </a>
+
+        <a asp-area="Admin" asp-controller="AdminVagas" asp-action="Index"
+           class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "AdminVagas" ? "active" : "")">
+            <i class="fas fa-briefcase"></i> <span>Trabalhe Conosco</span>
+        </a>
+
+        <a asp-area="Admin" asp-controller="AdminAcessorios" asp-action="Index"
+           class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "AdminAcessorios" ? "active" : "")">
+            <i class="fas fa-headphones-alt"></i> <span>Acessórios</span>
+        </a>
+
+
+        <a asp-area="Admin" asp-controller="AdminEstoque" asp-action="Index"
+           class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "AdminEstoque" ? "active" : "")">
+            <i class="fas fa-boxes"></i> <span>Estoque</span>
+        </a>
+
+
 
         <a asp-controller="Account" asp-action="Logout">
             <i class="fas fa-sign-out-alt"></i> <span>Sair</span>
         </a>
 
         <!-- PERFIL -->
-        <div class="profile">
+        @* <div class="profile">
             <i class="fas fa-user-circle"></i> <span>Admin User</span>
-        </div>
+        </div> *@
     </div>
 
     <!-- BOTÃO HAMBÚRGUER -->

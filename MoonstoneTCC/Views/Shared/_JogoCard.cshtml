@@ -1,0 +1,226 @@
+﻿@model MoonstoneTCC.ViewModels.CardJogoViewModel
+@{
+    var jogo = Model.Jogo;
+    var media = jogo.AvaliacaoMedia; // propriedade calculada no seu Jogo.cs
+    var porcentagemEstrelas = (media / 5.0) * 100.0;
+    var totalAvaliacoes = jogo.Comentarios?.Count ?? 0;
+    var temPromo = jogo.PrecoPromocional != null && jogo.PorcentagemDesconto != null;
+
+    // badge principal de seção (ex.: "Continuar vendo")
+    string badgeTexto = Model.Badge;
+    bool destaque = Model.Destaque;
+
+    // badge de ranking ("MAIS VENDIDO", "2º MAIS VENDIDO"...)
+    int? pos = Model.RankingPosicao;
+    string rankingTexto = pos.HasValue
+        ? (pos.Value == 1 ? "MAIS VENDIDO" : $"{pos.Value}º MAIS VENDIDO")
+        : null;
+}
+
+<div class="moon-card @(destaque ? "moon-card--highlight" : "")">
+    <a asp-controller="Jogo" asp-action="Details" asp-route-jogoId="@jogo.JogoId" class="moon-card__media-link">
+        <div class="moon-card__media">
+            @* Badge de Ranking *@
+            @if (!string.IsNullOrWhiteSpace(rankingTexto))
+            {
+                <div class="moon-card__rank">@rankingTexto</div>
+            }
+
+            @* Badge de contexto da seção *@
+            @if (!string.IsNullOrWhiteSpace(badgeTexto))
+            {
+                <div class="moon-card__badge">@badgeTexto</div>
+            }
+
+            <img src="@jogo.ImagemUrl" alt="@jogo.Nome" class="moon-card__cover" />
+
+            @* Classificação etária *@
+            @if (!string.IsNullOrWhiteSpace(jogo.ClassificacaoEtariaImagemUrl))
+            {
+                <img src="@jogo.ClassificacaoEtariaImagemUrl" alt="Classificação"
+                     class="moon-card__age" />
+            }
+        </div>
+    </a>
+
+    <div class="moon-card__body">
+        <h5 class="moon-card__title">
+            <a asp-controller="Jogo" asp-action="Details" asp-route-jogoId="@jogo.JogoId" class="moon-link">
+                @jogo.Nome
+            </a>
+        </h5>
+
+        <div class="moon-card__meta">
+            <span><i class="fa-solid fa-gamepad me-1"></i>@jogo.Genero</span>
+            <span class="dot">•</span>
+            <span><i class="fa-solid fa-laptop me-1"></i>@jogo.Plataformas</span>
+        </div>
+
+        <div class="moon-card__rating">
+            <div class="stars-outer me-2"><div class="stars-inner" style="width:@porcentagemEstrelas%;"></div></div>
+            <span class="moon-muted small">(@totalAvaliacoes)</span>
+        </div>
+
+        <div class="moon-card__price">
+            @if (temPromo)
+            {
+                <span class="old">@jogo.Preco.ToString("C")</span>
+                <span class="new">@jogo.PrecoPromocional?.ToString("C")</span>
+                <span class="tag">-@jogo.PorcentagemDesconto%</span>
+            }
+            else
+            {
+                <span class="normal">@jogo.Preco.ToString("C")</span>
+            }
+        </div>
+    </div>
+
+    <div class="moon-card__actions">
+        @if (Model.UsuarioAutenticado)
+        {
+            <form asp-controller="Favorito" asp-action="@(Model.EhFavorito ? "Remover" : "Adicionar")" method="post" class="w-100">
+                <input type="hidden" name="jogoId" value="@jogo.JogoId" />
+                <button type="submit" class="btn-fav w-100">
+                    <i class="fas fa-heart me-2"></i> @(Model.EhFavorito ? "Remover dos favoritos" : "Adicionar aos favoritos")
+                </button>
+            </form>
+        }
+        else
+        {
+            <a asp-controller="Account" asp-action="Login"
+               asp-route-returnUrl="@Url.Action("Details", "Jogo", new { jogoId = jogo.JogoId })"
+               class="btn-fav w-100">
+                <i class="fas fa-heart me-2"></i> Favoritar
+            </a>
+        }
+    </div>
+</div>
+
+<style>
+    /* ====== CARD MODERNO / GLASS + NEON ====== */
+    .moon-card{
+        background: radial-gradient(120% 120% at 10% 10%, rgba(157,60,230,.15) 0%, rgba(58,0,102,.25) 45%, rgba(24,16,40,.65) 100%),
+                    linear-gradient(145deg, rgba(28,12,43,.85), rgba(42,18,65,.9));
+        border: 1px solid rgba(157,60,230,.25);
+        border-radius: 18px;
+        overflow: hidden;
+        box-shadow: 0 8px 24px rgba(0,0,0,.35), 0 0 28px rgba(157,60,230,.15) inset;
+        transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+        color: #F5FDFF;
+        display:flex;
+        flex-direction:column;
+        height:100%;
+    }
+    .moon-card:hover{
+        transform: translateY(-6px);
+        box-shadow: 0 14px 28px rgba(0,0,0,.45), 0 0 32px rgba(157,60,230,.35) inset;
+        border-color: rgba(157,60,230,.45);
+    }
+
+    .moon-card--highlight{
+        box-shadow: 0 0 40px rgba(157,60,230,.35), 0 12px 32px rgba(0,0,0,.5);
+        border-color: rgba(157,60,230,.6);
+    }
+
+    .moon-card__media-link{ text-decoration:none; color:inherit; }
+    .moon-card__media{
+        position:relative;
+        overflow:hidden;
+    }
+    .moon-card__cover{
+        width:100%;
+        height:auto;
+        aspect-ratio: 4/5;
+        object-fit:cover;
+        display:block;
+        border-bottom: 1px solid rgba(157,60,230,.3);
+    }
+    .moon-card__age{
+        position:absolute; top:12px; right:12px;
+        width:48px; height:48px; border-radius:50%;
+        border: 2px solid #fff;
+        box-shadow: 0 0 12px rgba(0,0,0,.3);
+        background:#fff;
+    }
+
+    .moon-card__rank{
+        position:absolute; top:12px; left:12px;
+        background: linear-gradient(90deg, #9d3ce6, #7e00c8);
+        padding:6px 12px; border-radius:10px;
+        font-size:.72rem; font-weight:800; letter-spacing:.04em;
+        color:#fff; box-shadow: 0 0 14px rgba(157,60,230,.55);
+    }
+    .moon-card__badge{
+        position:absolute; bottom:12px; left:12px;
+        background: rgba(0,0,0,.45);
+        backdrop-filter: blur(6px);
+        border: 1px solid rgba(255,255,255,.15);
+        padding:6px 10px; border-radius:10px;
+        font-size:.78rem; font-weight:700; color:#EDE7F6;
+    }
+
+    .moon-card__body{
+        padding:14px 14px 0 14px;
+    }
+    .moon-card__title{
+        font-weight:800; margin:0 0 8px 0; text-align:center;
+        line-height:1.25; min-height:2.6rem;
+    }
+    .moon-link{ color:#F5FDFF; text-decoration:none; }
+    .moon-link:hover{ color:#CDA6FF; }
+
+    .moon-card__meta{
+        display:flex; justify-content:center; gap:.5rem; align-items:center;
+        color:#cfc9d9; font-size:.9rem; margin-bottom:8px;
+    }
+    .moon-card__meta .dot{ opacity:.5; }
+
+    .moon-card__rating{
+        display:flex; justify-content:center; align-items:center; margin-bottom:10px;
+    }
+
+    .moon-muted{ color:#cfc9d9; opacity:.9; }
+
+    /* Preços */
+    .moon-card__price{
+        display:flex; align-items:center; justify-content:center; gap:.6rem;
+        margin-bottom:14px; flex-wrap:wrap;
+    }
+    .moon-card__price .old{ color:#c5bbd6; text-decoration:line-through; opacity:.8; }
+    .moon-card__price .new{ color:#ff6b6b; font-weight:900; }
+    .moon-card__price .normal{ color:#F5FDFF; font-weight:800; }
+    .moon-card__price .tag{
+        background:#00c853; color:#fff; border-radius:12px;
+        padding:2px 8px; font-size:.82rem; font-weight:800;
+    }
+
+    /* Ações */
+    .moon-card__actions{
+        padding:0 14px 14px 14px; margin-top:auto;
+    }
+    .btn-fav{
+        display:flex; align-items:center; justify-content:center;
+        border:1px solid rgba(255,255,255,.15);
+        background: linear-gradient(145deg, rgba(126,0,200,.8), rgba(157,60,230,.9));
+        color:#fff; font-weight:800; border-radius:12px;
+        padding:.65rem 1rem; transition: all .2s ease; text-decoration:none;
+    }
+    .btn-fav:hover{
+        transform: translateY(-2px);
+        box-shadow: 0 10px 18px rgba(157,60,230,.35);
+        color:#fff;
+    }
+
+    /* Estrelas */
+    .stars-outer{
+        position:relative; display:inline-block; color:#666;
+    }
+    .stars-inner{
+        position:absolute; top:0; left:0; white-space:nowrap; overflow:hidden; color:#FFA500;
+    }
+    .stars-outer::before, .stars-inner::before{
+        content:"\f005\f005\f005\f005\f005";
+        font-family:'Font Awesome 5 Free'; font-weight:900;
+    }
+</style>
+

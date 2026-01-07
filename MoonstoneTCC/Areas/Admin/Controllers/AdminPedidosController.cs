@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MoonstoneTCC.Context;
 using MoonstoneTCC.Models;
+using MoonstoneTCC.Services;
 using MoonstoneTCC.ViewModels;
 using ReflectionIT.Mvc.Paging;
 
@@ -19,10 +20,13 @@ namespace MoonstoneTCC.Areas.Admin.Controllers
     public class AdminPedidosController : Controller
     {
         private readonly AppDbContext _context;
+        private readonly LoggerAdminService _logger;
 
-        public AdminPedidosController(AppDbContext context)
+
+        public AdminPedidosController(AppDbContext context, LoggerAdminService logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         public IActionResult PedidoJogos(int? id)
@@ -103,6 +107,7 @@ namespace MoonstoneTCC.Areas.Admin.Controllers
             {
                 _context.Add(pedido);
                 await _context.SaveChangesAsync();
+                await _logger.RegistrarAcaoAsync($"Criou um novo pedido para: {pedido.Nome}");
                 return RedirectToAction(nameof(Index));
             }
             return View(pedido);
@@ -142,6 +147,7 @@ namespace MoonstoneTCC.Areas.Admin.Controllers
                 {
                     _context.Update(pedido);
                     await _context.SaveChangesAsync();
+                    await _logger.RegistrarAcaoAsync($"Criou um novo pedido para: {pedido.Nome}");
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -189,6 +195,7 @@ namespace MoonstoneTCC.Areas.Admin.Controllers
             }
 
             await _context.SaveChangesAsync();
+            await _logger.RegistrarAcaoAsync($"Criou um novo pedido para: {pedido.Nome}");
             return RedirectToAction(nameof(Index));
         }
 

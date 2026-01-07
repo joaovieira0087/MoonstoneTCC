@@ -1,0 +1,122 @@
+﻿@model MoonstoneTCC.Models.NotificacoesViewModel
+@{
+    ViewData["Title"] = "Minhas Notificações";
+}
+
+<div class="container mt-5 text-white">
+    <h2 class="fw-bold mb-4">
+        <i class="fas fa-bell me-2"></i> Minhas Notificações
+    </h2>
+
+    <!-- Notificações de Estoque -->
+    <h4 class="mt-4"><i class="fas fa-box-open me-2"></i> Reposição de Estoque</h4>
+
+    @if (!Model.Estoque.Any())
+    {
+        <div class="alert alert-info text-center bg-opacity-25 border border-info text-white rounded-3 p-3" style="background-color: #3a0066;">
+            <i class="fas fa-info-circle me-2"></i> Nenhuma notificação de estoque no momento.
+        </div>
+    }
+    else
+    {
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            @foreach (var noti in Model.Estoque)
+            {
+                var jogo = noti.Jogo;
+
+                <div class="col">
+                    <div class="card h-100 border-0 rounded-4" style="background: linear-gradient(145deg, #4b0082, #3a0066); color: #fff;">
+                        <a asp-controller="Jogo" asp-action="Details" asp-route-jogoId="@jogo.JogoId" class="text-decoration-none">
+                            <img src="@jogo.ImagemThumbnailUrl" alt="@jogo.Nome" class="card-img-top rounded-top" style="height: 200px; object-fit: cover;" />
+                        </a>
+                        <div class="card-body">
+                            <h5 class="card-title fw-semibold">@jogo.Nome</h5>
+                            <p class="card-text">@noti.Mensagem</p>
+                            <p class="small text-white-50"><i class="fas fa-clock me-1"></i>@noti.DataCriacao.ToString("dd/MM/yyyy HH:mm")</p>
+                        </div>
+                        <div class="card-footer d-grid gap-2 bg-transparent border-top-0">
+                            <a asp-controller="CarrinhoCompra" asp-action="ComprarAgora" asp-route-jogoId="@jogo.JogoId" class="btn btn-success btn-sm">
+                                <i class="fas fa-bolt me-1"></i> Comprar Agora
+                            </a>
+                            <a asp-controller="CarrinhoCompra" asp-action="AdicionarItemNoCarrinhoCompra" asp-route-jogoId="@jogo.JogoId" class="btn btn-outline-light btn-sm">
+                                <i class="fas fa-cart-plus me-1"></i> Adicionar ao Carrinho
+                            </a>
+                            <a asp-controller="Jogo" asp-action="Details" asp-route-jogoId="@jogo.JogoId" class="btn btn-primary btn-sm">
+                                <i class="fas fa-eye me-1"></i> Ver Detalhes
+                            </a>
+                            <form asp-action="MarcarComoLidaEstoque" method="post">
+                                <input type="hidden" name="id" value="@noti.Id" />
+                                <button type="submit" class="btn btn-outline-success btn-sm">
+                                    <i class="fas fa-check me-1"></i> Marcar como lida
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
+
+    <!-- Notificações de Pedido -->
+    <h4 class="mt-5"><i class="fas fa-truck me-2"></i> Atualizações de Pedido</h4>
+
+    @if (!Model.Pedido.Any())
+    {
+        <div class="alert alert-info text-center bg-dark bg-opacity-50 border border-info">
+            <i class="fas fa-info-circle me-2"></i> Nenhuma notificação de pedido no momento.
+        </div>
+    }
+    else
+    {
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            @foreach (var noti in Model.Pedido)
+            {
+                <div class="col">
+                    <div class="card h-100 bg-purple text-white shadow-lg border-0 rounded-4">
+                        <div class="card-body">
+                            <h5 class="card-title text-warning">Pedido #@noti.PedidoId</h5>
+                            <p class="card-text">@noti.Mensagem</p>
+                            <p class="text-muted small"><i class="fas fa-clock me-1"></i>@noti.DataCriacao.ToString("dd/MM/yyyy HH:mm")</p>
+                        </div>
+                        <div class="card-footer d-grid gap-2 bg-transparent border-top-0">
+                            <a asp-controller="MeusPedidos" asp-action="Detalhes" asp-route-id="@noti.PedidoId" class="btn btn-outline-light">
+                                <i class="fas fa-eye me-1"></i> Ver Detalhes
+                            </a>
+                            <form asp-action="MarcarComoLidaPedido" method="post">
+                                <input type="hidden" name="id" value="@noti.Id" />
+                                <button type="submit" class="btn btn-outline-success">
+                                    <i class="fas fa-check me-1"></i> Marcar como lida
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+<style>
+    .bg-purple {
+        background-color: #3A0066 !important;
+    }
+
+    .card-footer form {
+        margin-bottom: 0;
+    }
+    .card-title {
+        font-size: 1.1rem;
+        color: #ffffff;
+    }
+
+    .card-body p {
+        margin-bottom: 0.5rem;
+    }
+
+    .card-footer .btn {
+        font-size: 0.9rem;
+        padding: 8px;
+    }
+
+</style>

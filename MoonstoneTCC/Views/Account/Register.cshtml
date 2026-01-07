@@ -1,159 +1,124 @@
-﻿@model LoginViewModel
+﻿@model MoonstoneTCC.ViewModels.RegisterViewModel
 
 @{
-    ViewData["HideHeader"] = true; // Esconder o header
-    ViewData["HideFooter"] = true; // Esconder o footer
+    ViewData["HideHeader"] = true;
+    ViewData["HideFooter"] = true;
 }
 
-<style>
-    /* Reaproveitando o CSS da página de login */
-    html, body {
-        font-family: 'Arial', sans-serif;
-        margin: 0;
-        padding: 0;
-        height: 100%;
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background: linear-gradient(135deg, #1e1e2f, #4b0082);
-        color: #fff;
-        overflow: hidden;
-        position: relative;
-    }
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8" />
+    <title>Registrar - MoonstoneTCC</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <style>
+        html, body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #1e1e2f, #4b0082);
+            color: #fff;
+            overflow: hidden;
+            position: relative;
+        }
 
-    .register-container {
-        max-width: 500px;
-        width: 100%;
-        padding: 20px;
-        background: #2c2c44;
-        margin-left: 400px;
-        border-radius: 10px;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
-        text-align: center;
-        position: relative;
-    }
+        .register-container {
+            max-width: 500px;
+            width: 100%;
+            padding: 20px;
+            background: #2c2c44;
+            border-radius: 10px;
+            margin-left: 400px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
 
-    .register-header img {
-        max-width: 180px;
-        margin-bottom: 15px;
-    }
+        .register-header img {
+            max-width: 180px;
+            margin-bottom: 15px;
+        }
 
-    h4 {
-        color: #a64bd9;
-        font-size: 24px;
-        margin-bottom: 20px;
-    }
+        h4 {
+            color: #a64bd9;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
 
-    .register-form .form-control {
-        background: #3b3b55;
-        border: 1px solid #4b0082;
-        border-radius: 5px;
-        color: #fff;
-        padding: 10px;
-        width: 100%;
-        margin-bottom: 15px;
-        transition: all 0.3s;
-    }
+        .register-form .form-control {
+            background: #3b3b55;
+            border: 1px solid #4b0082;
+            border-radius: 5px;
+            color: #fff;
+            padding: 10px;
+            width: 100%;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+        }
 
-    .register-form .form-control:focus {
-        border-color: #a64bd9;
-        outline: none;
-        box-shadow: 0 0 8px #a64bd9;
-    }
+            .register-form .form-control:focus {
+                border-color: #a64bd9;
+                outline: none;
+                box-shadow: 0 0 8px #a64bd9;
+            }
 
-    .btn-register {
-        background-color: #a64bd9;
-        border: none;
-        border-radius: 5px;
-        color: #fff;
-        cursor: pointer;
-        padding: 10px 20px;
-        font-size: 16px;
-        transition: background 0.3s ease;
-        width: 100%;
-    }
+        .btn-register {
+            background-color: #a64bd9;
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            cursor: pointer;
+            padding: 10px 20px;
+            font-size: 16px;
+            transition: background 0.3s ease;
+            width: 100%;
+        }
 
-    .btn-register:hover {
-        background-color: #932dba;
-    }
+            .btn-register:hover {
+                background-color: #932dba;
+            }
 
-    .form-group label {
-        display: flex;
-        align-items: center;
-        font-size: 14px;
-        margin-bottom: 5px;
-    }
+        .form-group label {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
 
-    .form-group label i {
-        margin-right: 8px;
-        color: #a64bd9;
-    }
+            .form-group label i {
+                margin-right: 8px;
+                color: #a64bd9;
+            }
 
-    .text-danger {
-        color: #ff4c4c;
-        font-size: 12px;
-    }
+        .text-danger {
+            color: #ff4c4c;
+            font-size: 12px;
+        }
 
-    .register-footer {
-        margin-top: 20px;
-        font-size: 12px;
-        color: #aaa;
-    }
+        .register-footer {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #aaa;
+        }
 
-    .register-footer a {
-        color: #a64bd9;
-        text-decoration: none;
-    }
+            .register-footer a {
+                color: #a64bd9;
+                text-decoration: none;
+            }
 
-    .register-footer a:hover {
-        text-decoration: underline;
-    }
-
-    /* Estilos atualizados para o checkbox de termos */
-    .terms {
-        display: flex;
-        align-items: center;
-        margin-bottom: 15px;
-        font-size: 14px;
-    }
-    .terms input[type="checkbox"] {
-        appearance: none;
-        -webkit-appearance: none;
-        width: 18px;
-        height: 18px;
-        border: 2px solid #a64bd9;
-        border-radius: 4px;
-        background: #2c2c44;
-        position: relative;
-        margin-right: 10px;
-        cursor: pointer;
-        transition: background 0.3s ease, border-color 0.3s ease;
-    }
-    .terms input[type="checkbox"]:checked {
-        background: #a64bd9;
-        border-color: #a64bd9;
-    }
-    .terms input[type="checkbox"]:checked::after {
-        content: "";
-        position: absolute;
-        top: 3px;
-        left: 6px;
-        width: 4px;
-        height: 8px;
-        border: solid #fff;
-        border-width: 0 2px 2px 0;
-        transform: rotate(45deg);
-    }
-    .terms a {
-        color: #a64bd9;
-        text-decoration: underline;
-        cursor: pointer;
-    }
-    .terms a:hover {
-        color: #932dba;
-    }
-</style>
+                .register-footer a:hover {
+                    text-decoration: underline;
+                }
+    </style>
+</head>
 <body>
     <div class="register-container">
         <div class="register-header">
@@ -162,29 +127,88 @@
         <h4>REGISTRAR USUÁRIO</h4>
         <form asp-controller="Account" asp-action="Register" method="post" class="register-form">
             <div asp-validation-summary="All" class="text-danger"></div>
+
             <div class="form-group">
                 <label asp-for="UserName"><i class="fas fa-user"></i> Nome de Usuário</label>
-                <input asp-for="UserName" class="form-control" />
+                <input asp-for="UserName" class="form-control" id="UserName" />
                 <span asp-validation-for="UserName" class="text-danger"></span>
+                <small id="erroUserName" class="text-danger d-block mt-1"></small>
             </div>
+
+            <div class="form-group">
+                <label asp-for="Email"><i class="fas fa-envelope"></i> Gmail</label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
             <div class="form-group">
                 <label asp-for="Password"><i class="fas fa-lock"></i> Senha</label>
                 <input asp-for="Password" type="password" class="form-control" />
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
-            <!-- Campo para aceitar termos de uso -->
-            <div class="form-group terms">
-                <input type="checkbox" id="AcceptTerms" name="AcceptTerms" />
-                <label for="AcceptTerms">
-                    Eu aceito os <a asp-controller="Home" asp-action="Terms" target="_blank">Termos de Uso</a>
-                </label>
-                
+
+            <div class="form-group">
+                <label asp-for="ConfirmPassword"><i class="fas fa-lock"></i> Confirmar Senha</label>
+                <input asp-for="ConfirmPassword" type="password" class="form-control" />
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
             </div>
-            <button type="submit" class="btn-register">Registrar</button>
+
+            <button type="submit" class="btn-register" id="btnRegistrar" disabled>Registrar</button>
         </form>
         <div class="register-footer">
             <p>Já tem uma conta? <a asp-controller="Account" asp-action="Login">Faça Login</a></p>
         </div>
     </div>
-</body>
 
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const userInput = document.getElementById("UserName");
+            const btn = document.getElementById("btnRegistrar");
+            const erroPersonalizado = document.getElementById("erroUserName");
+
+            if (!userInput || !btn || !erroPersonalizado) return;
+
+            function validarNomeUsuario() {
+                const valor = userInput.value.trim();
+                const regex = /^[a-zA-Z0-9_]{3,20}$/;
+
+                if (!regex.test(valor)) {
+                    erroPersonalizado.textContent = "❌ Use apenas letras, números e underline (_). Evite , !, ., etc.";
+                    btn.disabled = true;
+                } else {
+                    erroPersonalizado.textContent = "";
+                    verificarCamposPreenchidos(); // chama a verificação geral de preenchimento
+                }
+            }
+
+            function verificarCamposPreenchidos() {
+                const form = document.querySelector('form');
+                const inputs = form.querySelectorAll('input');
+                let allFilled = true;
+
+                inputs.forEach(input => {
+                    if (input.type !== "hidden" && input.value.trim() === "") {
+                        allFilled = false;
+                    }
+                });
+
+                // Habilita o botão apenas se tudo estiver preenchido e o nome for válido
+                if (erroPersonalizado.textContent === "") {
+                    btn.disabled = !allFilled;
+                }
+            }
+
+            userInput.addEventListener("input", validarNomeUsuario);
+
+            const form = document.querySelector('form');
+            const inputs = form.querySelectorAll('input');
+            form.addEventListener('input', verificarCamposPreenchidos);
+
+            validarNomeUsuario(); // já valida ao carregar
+        });
+    </script>
+}
+
+</body>
+</html>

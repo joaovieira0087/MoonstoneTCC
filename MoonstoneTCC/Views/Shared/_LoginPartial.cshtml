@@ -5,7 +5,7 @@
 {
     <div class="d-flex align-items-center text-white user-info">
         <i class="fa-solid fa-user-circle user-icon"></i>
-        <a asp-controller="Account" asp-action="Perfil" class="username-link text-decoration-none text-white ms-2">
+        <a asp-controller="Perfil" asp-action="Index" class="username-link text-decoration-none text-white ms-2">
             <span id="usernameDisplay" class="username">@User.Identity.Name</span>
         </a>
         <form asp-area="" asp-controller="Account" asp-action="Logout" id="logoutForm" method="post" class="ms-3">
@@ -26,6 +26,7 @@ else
         </a>
     </div>
 }
+
 
 <script>
     // Truncar o nome de usuário se exceder o limite

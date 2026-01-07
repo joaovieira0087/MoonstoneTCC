@@ -1,0 +1,96 @@
+﻿@model List<MoonstoneTCC.Models.Jogo>
+<link rel="stylesheet" href="~/css/ExperienciaCompras.css" />
+
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<link rel="stylesheet" href="~/css/ExperienciaCompras.css" />
+<head>
+    <meta charset="utf-8" />
+    <title>Sua Jornada de Jogador</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+</head>
+<body>
+    <a id="btnVoltar" href="@Url.Action("Index", "Home")">Voltar</a>
+
+    <div id="jogoDisplay">
+        <button class="seta" id="setaEsquerda">&#10094;</button>
+        <button class="seta" id="setaDireita">&#10095;</button>
+
+        <div class="overlay-content" id="overlayContent">
+            <h1 id="tituloJogo"></h1>
+            <p id="categoria"></p>
+            <a id="detalhesLink" target="_blank">Ver Detalhes</a>
+        </div>
+
+
+        <div id="contador"></div>
+    </div>
+
+    <script>
+        const jogos = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+        Model.Select(j => new
+        {
+            Nome = j.Nome,
+            Categoria = j.Categoria?.CategoriaNome ?? "Sem Categoria",
+            UrlImagem = j.ImagemThumbnailUrl ?? j.ImagemUrl ?? "",
+            Link = Url.Action("Details", "Jogo", new { jogoId = j.JogoId })
+        }),
+        new System.Text.Json.JsonSerializerOptions { WriteIndented = false }));
+
+        let current = 0;
+        const display = document.getElementById("jogoDisplay");
+        const titulo = document.getElementById("tituloJogo");
+        const categoria = document.getElementById("categoria");
+        const link = document.getElementById("detalhesLink");
+        const overlay = document.getElementById("overlayContent");
+        const contador = document.getElementById("contador");
+
+        function mostrarJogo(index) {
+            const jogo = jogos[index];
+
+            overlay.style.opacity = "0";
+            void overlay.offsetWidth;
+            overlay.style.animation = "fadeIn 1s ease forwards";
+
+            titulo.textContent = jogo.Nome;
+            categoria.textContent = jogo.Categoria;
+            link.href = jogo.Link;
+            display.style.backgroundImage = `linear-gradient(to bottom, rgba(5,0,20,0.7), rgba(5,0,20,0.95)), url('${jogo.UrlImagem}')`;
+            contador.textContent = `${index + 1} / ${jogos.length}`;
+
+            titulo.textContent = jogo.Nome;
+            categoria.textContent = jogo.Categoria;
+            link.href = jogo.Link;
+            link.style.display = "inline-block";
+
+            overlay.style.opacity = "0";
+            void overlay.offsetWidth; // força reiniciar animação
+            overlay.style.animation = "fadeIn 1s ease forwards";
+
+        }
+
+        function avancar() {
+            current = (current + 1) % jogos.length;
+            mostrarJogo(current);
+        }
+
+        function voltar() {
+            current = (current - 1 + jogos.length) % jogos.length;
+            mostrarJogo(current);
+        }
+
+        document.getElementById("setaDireita").addEventListener("click", avancar);
+        document.getElementById("setaEsquerda").addEventListener("click", voltar);
+
+        // Carrossel automático
+        setInterval(avancar, 7000); // troca a cada 7 segundos
+
+        mostrarJogo(current);
+    </script>
+</body>
+</html>

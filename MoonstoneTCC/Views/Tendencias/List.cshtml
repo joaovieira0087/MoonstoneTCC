@@ -1,0 +1,119 @@
+﻿@model IEnumerable<MoonstoneTCC.Models.Jogo>
+@{
+    ViewData["Title"] = "Tendências de Compra";
+}
+
+<div class="container mt-5 text-white">
+    <h2 class="fw-bold mb-4">
+        <i class="fas fa-fire text-purple me-2"></i> @ViewBag.Titulo
+    </h2>
+
+    <!-- Filtro de Categoria -->
+    <form method="get" class="mb-4">
+        <div class="d-flex gap-2 flex-wrap">
+            <select name="categoriaId" class="form-select w-auto">
+                @Html.Raw($"<option value=\"\" {(ViewBag.CategoriaSelecionada == 0 ? "selected" : "")}>Geral</option>")
+                @foreach (var cat in (IEnumerable<MoonstoneTCC.Models.Categoria>)ViewBag.Categorias)
+                {
+                    var selecionado = ViewBag.CategoriaSelecionada == cat.CategoriaId ? "selected" : "";
+                    @Html.Raw($"<option value=\"{cat.CategoriaId}\" {selecionado}>{cat.CategoriaNome}</option>")
+                }
+            </select>
+            <button class="btn btn-purple"><i class="fas fa-filter me-1"></i> Filtrar</button>
+        </div>
+    </form>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info text-center">
+            <i class="fas fa-info-circle me-2"></i>
+            Nenhum jogo encontrado no momento.
+        </div>
+    }
+    else
+    {
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
+            @{
+                int i = 1;
+            }
+            @foreach (var jogo in Model)
+            {
+                <div class="col">
+                    <div class="carousel-container h-100 d-flex flex-column p-3 rounded-4 shadow-lg position-relative">
+                        <!-- Ranking -->
+                        <div style="position: absolute; top: 10px; left: 10px; background-color: #7e00c8; color: white; padding: 6px 12px; font-weight: bold; border-radius: 6px; box-shadow: 0 0 6px #7e00c8;">
+                            #@i
+                        </div>
+
+                        <!-- Imagem -->
+                        <div class="text-center mb-3">
+                            <img src="@jogo.ImagemThumbnailUrl"
+                                 alt="@jogo.Nome"
+                                 class="img-fluid rounded shadow"
+                                 style="max-height: 200px; object-fit: cover;" />
+                        </div>
+
+                        <!-- Informações -->
+                        <div class="text-white text-center flex-grow-1">
+                            <h5 class="fw-bold">@jogo.Nome</h5>
+                            <p class="mb-1">
+                                Categoria: <span class="badge bg-secondary">@jogo.Categoria?.CategoriaNome</span>
+                            </p>
+                            <p class="mb-1">
+                                Plataforma: <span class="badge bg-secondary">@jogo.Plataformas</span>
+                            </p>
+                            <p class="fw-semibold text-success">R$ @jogo.Preco.ToString("F2")</p>
+                        </div>
+
+                        <!-- Ações -->
+                        <div class="mt-3 d-grid gap-2">
+                            <a asp-controller="CarrinhoCompra" asp-action="ComprarAgora" asp-route-jogoId="@jogo.JogoId" class="btn btn-success d-flex justify-content-center align-items-center">
+                                <i class="fas fa-bolt me-2"></i> Comprar Agora
+                            </a>
+
+                            <a asp-controller="CarrinhoCompra" asp-action="AdicionarItemNoCarrinhoCompra" asp-route-jogoId="@jogo.JogoId"
+                               class="btn btn-outline-light d-flex justify-content-center align-items-center">
+                                <i class="fas fa-cart-plus me-2"></i> Adicionar ao Carrinho
+                            </a>
+
+                            <a asp-controller="Jogo" asp-action="Details" asp-route-jogoId="@jogo.JogoId"
+                               class="btn btn-primary d-flex justify-content-center align-items-center">
+                                <i class="fas fa-eye me-2"></i> Ver Detalhes
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                i++;
+            }
+        </div>
+    }
+</div>
+
+<style>
+    .text-purple {
+        color: #9d3ce6;
+    }
+
+    .btn-purple {
+        background-color: #7e00c8;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 6px;
+        transition: background-color 0.3s ease;
+    }
+
+        .btn-purple:hover {
+            background-color: #9d3ce6;
+        }
+
+    .carousel-container {
+        background-color: #2b1b3a;
+        border-radius: 12px;
+        transition: background-color 0.3s ease;
+    }
+
+        .carousel-container:hover {
+            background-color: #3b2650;
+        }
+</style>

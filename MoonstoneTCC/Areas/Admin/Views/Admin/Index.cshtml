@@ -1,1 +1,436 @@
-﻿
+﻿@model List<MoonstoneTCC.Models.AcaoAdmin>
+@{
+    ViewData["Title"] = "Dashboard do Admin";
+    int modalId = 0;
+}
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+<style>
+    :root {
+        --moon-purple-1: #7e38a2; /* seu gradiente base */
+        --moon-purple-2: #5c1d7f;
+        --moon-dark: #111318;
+        --moon-card: #161a22;
+        --moon-soft: #222735;
+        --moon-text: #e9e9f1;
+        --moon-muted: #98a2b3;
+        --moon-success: #22c55e;
+        --moon-danger: #ef4444;
+        --moon-warning: #f59e0b;
+        --moon-info: #38bdf8;
+    }
+
+    body {
+        background: #0b0d12;
+        color: var(--moon-text);
+    }
+
+    .dash-header {
+        background: linear-gradient(90deg, var(--moon-purple-1), var(--moon-purple-2));
+        border-radius: 18px;
+        padding: 22px 26px;
+        box-shadow: 0 10px 30px rgba(126,56,162,.35);
+    }
+
+    .kpi-card {
+        background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+        border: 1px solid rgba(255,255,255,.06);
+        border-radius: 16px;
+        padding: 16px 18px;
+        transition: .2s transform, .2s box-shadow, .2s border-color;
+    }
+
+        .kpi-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px rgba(0,0,0,.35);
+            border-color: rgba(255,255,255,.12);
+        }
+
+    .kpi-title {
+        font-size: .9rem;
+        color: var(--moon-muted);
+    }
+
+    .kpi-value {
+        font-size: 1.8rem;
+        font-weight: 700;
+        letter-spacing: .5px;
+    }
+
+    .quick-actions .btn {
+        background: var(--moon-card);
+        border: 1px solid rgba(255,255,255,.08);
+        color: var(--moon-text);
+    }
+
+        .quick-actions .btn:hover {
+            border-color: rgba(255,255,255,.20);
+        }
+
+    .panel {
+        background: var(--moon-card);
+        border-radius: 16px;
+        border: 1px solid rgba(255,255,255,.06);
+        overflow: hidden;
+    }
+
+    .panel-header {
+        padding: 14px 18px;
+        background: var(--moon-soft);
+        border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+
+    .panel-body {
+        padding: 12px 18px;
+    }
+
+    .table-dark-custom {
+        --bs-table-bg: transparent;
+        color: var(--moon-text);
+    }
+
+        .table-dark-custom thead th {
+            background: rgba(255,255,255,.06);
+            color: var(--moon-text);
+            border: 0;
+        }
+
+        .table-dark-custom tbody tr {
+            border-color: rgba(255,255,255,.06);
+        }
+
+    .badge-dot {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .badge-dot::before {
+            content: "";
+            width: 8px;
+            height: 8px;
+            border-radius: 999px;
+            background: var(--moon-info);
+            display: inline-block;
+        }
+
+    .search-input {
+        background: #0e1118;
+        border: 1px solid rgba(255,255,255,.08);
+        color: var(--moon-text);
+    }
+
+        .search-input:focus {
+            border-color: var(--moon-purple-1);
+            box-shadow: 0 0 0 .2rem rgba(126,56,162,.2);
+        }
+
+    .skeleton {
+        background: linear-gradient(90deg, rgba(255,255,255,.08), rgba(255,255,255,.02), rgba(255,255,255,.08));
+        background-size: 200% 100%;
+        animation: shimmer 1.2s infinite;
+        border-radius: 12px;
+        height: 300px;
+    }
+
+
+</style>
+
+<div class="container-fluid py-4">
+
+    <!-- HEADER -->
+    <div class="dash-header mb-4 d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center gap-3">
+            <span class="text-2xl"><i class="fa-solid fa-user-shield"></i></span>
+            <div>
+                <h2 class="m-0 fw-bold">Dashboard do Admin</h2>
+                <div class="small opacity-90">Visão geral do Moonstone • <span class="badge-dot">tempo real</span></div>
+            </div>
+        </div>
+        <div class="d-flex gap-2">
+            <a asp-action="ResumoDoDia" class="btn btn-light btn-sm"><i class="fa-solid fa-calendar-day"></i> Resumo do Dia</a>
+            <a asp-action="ExportarAcoesCsv" class="btn btn-dark btn-sm"><i class="fa-solid fa-file-arrow-down"></i> Exportar Ações (CSV)</a>
+        </div>
+    </div>
+
+    <!-- KPIs -->
+    <div class="row g-3 mb-4">
+        <div class="col-12 col-md-6 col-xl-3">
+            <div class="kpi-card h-100">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="kpi-title"><i class="fa-solid fa-users me-2"></i>Total de Usuários</div>
+                        <div class="kpi-value">@ViewBag.TotalUsuarios</div>
+                    </div>
+                    <i class="fa-solid fa-circle-user fa-2x opacity-50"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 col-xl-3">
+            <div class="kpi-card h-100">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="kpi-title"><i class="fa-solid fa-gamepad me-2"></i>Jogos Cadastrados</div>
+                        <div class="kpi-value">@ViewBag.TotalJogos</div>
+                    </div>
+                    <i class="fa-solid fa-ghost fa-2x opacity-50"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 col-xl-3">
+            <div class="kpi-card h-100">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="kpi-title"><i class="fa-solid fa-list-ul me-2"></i>Categorias</div>
+                        <div class="kpi-value">@ViewBag.TotalCategorias</div>
+                    </div>
+                    <i class="fa-solid fa-layer-group fa-2x opacity-50"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 col-xl-3">
+            <div class="kpi-card h-100">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="kpi-title"><i class="fa-solid fa-circle-question me-2"></i>Perguntas Pendentes</div>
+                        <div class="kpi-value">@ViewBag.TotalPerguntasPendentes</div>
+                    </div>
+                    <i class="fa-solid fa-message fa-2x opacity-50"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ATALHOS + GRÁFICOS -->
+    <div class="row g-4 mb-4">
+        <!-- Atalhos -->
+        <div class="col-12 col-xl-3">
+            <div class="panel h-100">
+                <div class="panel-header d-flex align-items-center justify-content-between">
+                    <div class="fw-semibold"><i class="fa-solid fa-bolt"></i> Ações Rápidas</div>
+                </div>
+                <div class="panel-body">
+                    <div class="quick-actions d-grid gap-2">
+                        <a asp-area="Admin" asp-controller="AdminJogos" asp-action="Create" class="btn btn-sm">
+                            <i class="fa-solid fa-plus"></i> Novo Jogo
+                        </a>
+                        <a asp-area="Admin" asp-controller="AdminJogos" asp-action="Index" class="btn btn-sm">
+                            <i class="fa-solid fa-gamepad"></i> Gerenciar Jogos
+                        </a>
+                        <a asp-area="Admin" asp-controller="Categorias" asp-action="Index" class="btn btn-sm">
+                            <i class="fa-solid fa-list"></i> Categorias
+                        </a>
+                        <a asp-area="Admin" asp-controller="AdminPedidos" asp-action="Index" class="btn btn-sm">
+                            <i class="fa-solid fa-cart-shopping"></i> Pedidos
+                        </a>
+                        <a asp-area="Admin" asp-controller="Comunicados" asp-action="Index" class="btn btn-sm">
+                            <i class="fa-solid fa-bullhorn"></i> Comunicados
+                        </a>
+                        <a asp-area="Admin" asp-controller="Relatorios" asp-action="Vendas" class="btn btn-sm">
+                            <i class="fa-solid fa-chart-line"></i> Relatório de Vendas
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gráfico 1 -->
+        <div class="col-12 col-xl-5">
+            <div class="panel h-100">
+                <div class="panel-header d-flex align-items-center justify-content-between">
+                    <div class="fw-semibold"><i class="fa-solid fa-chart-line"></i> Pedidos (últimos 14 dias)</div>
+                    <div class="small text-muted" id="chart1Hint">carregando…</div>
+                </div>
+                <div class="panel-body">
+                    <div class="skeleton" id="skeleton-orders"></div>
+                    <canvas id="ordersChart" class="w-100" style="display:none;height:320px;"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gráfico 2 -->
+        <div class="col-12 col-xl-4">
+            <div class="panel h-100">
+                <div class="panel-header d-flex align-items-center justify-content-between">
+                    <div class="fw-semibold"><i class="fa-solid fa-chart-simple"></i> Top Categorias por Jogos</div>
+                    <div class="small text-muted" id="chart2Hint">carregando…</div>
+                </div>
+                <div class="panel-body">
+                    <div class="skeleton" id="skeleton-cats"></div>
+                    <canvas id="catsChart" class="w-100" style="display:none;height:320px;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ÚLTIMAS AÇÕES + RESUMO DO DIA -->
+    <div class="row g-4">
+        <div class="col-12 col-xxl-8">
+            <div class="panel">
+                <div class="panel-header d-flex align-items-center justify-content-between flex-wrap gap-2">
+                    <div class="fw-semibold"><i class="fa-solid fa-clock"></i> Últimas Ações do Admin</div>
+                    <div class="d-flex align-items-center gap-2">
+                        <input id="filterAcoes" class="form-control form-control-sm search-input" placeholder="Filtrar por usuário/ação…" />
+                        <a asp-action="ExportarAcoesCsv" class="btn btn-outline-light btn-sm"><i class="fa-solid fa-download"></i> CSV</a>
+                    </div>
+                </div>
+                <div class="panel-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-dark-custom table-hover m-0 align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Usuário</th>
+                                    <th>Ação</th>
+                                    <th style="width:160px;">Data</th>
+                                    <th class="text-end" style="width:90px;">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="acoesBody">
+                                @foreach (var acao in Model)
+                                {
+                                    var idModal = $"confirmModal{modalId++}";
+                                    <tr>
+                                        <td class="text-truncate" style="max-width:220px;">@acao.Usuario?.UserName</td>
+                                        <td>@acao.Acao</td>
+                                        <td>@acao.DataHora.ToString("dd/MM/yyyy HH:mm")</td>
+                                        <td class="text-end">
+                                            <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#@idModal" title="Excluir">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+
+                                            <!-- Modal -->
+                                            <div class="modal fade" id="@idModal" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered">
+                                                    <div class="modal-content bg-dark text-white border border-danger">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title"><i class="fas fa-exclamation-triangle text-danger"></i> Confirmar Exclusão</h5>
+                                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            Tem certeza que deseja excluir esta ação?
+                                                            <div class="mt-2 text-warning"><strong>@acao.Acao</strong></div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <form asp-action="ExcluirAcao" asp-route-id="@acao.Id" method="post">
+                                                                <button type="submit" class="btn btn-danger">Confirmar</button>
+                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resumo do Dia -->
+        <div class="col-12 col-xxl-4">
+            <div class="panel">
+                <div class="panel-header d-flex justify-content-between align-items-center">
+                    <div class="fw-semibold"><i class="fa-solid fa-calendar-day"></i> Resumo do Dia</div>
+                </div>
+                <div class="panel-body">
+                    <p class="mb-3 text-muted">Veja cadastros, pedidos, perguntas e ações em uma data específica.</p>
+                    <form method="get" asp-action="ResumoDoDia" class="d-flex align-items-center gap-2">
+                        <input type="date" name="data" class="form-control" value="@DateTime.Today.ToString("yyyy-MM-dd")" />
+                        <button type="submit" class="btn btn-light"><i class="fa-solid fa-magnifying-glass"></i> Ver</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    (() => {
+        // ---- filtro rápido da tabela de ações
+        const input = document.getElementById('filterAcoes');
+        const tbody = document.getElementById('acoesBody');
+        if(input && tbody){
+            input.addEventListener('input', () => {
+                const q = input.value.toLowerCase();
+                [...tbody.querySelectorAll('tr')].forEach(tr => {
+                    const text = tr.innerText.toLowerCase();
+                    tr.style.display = text.includes(q) ? '' : 'none';
+                });
+            });
+        }
+
+        // ---- charts
+        const ordersEl = document.getElementById('ordersChart');
+        const catsEl   = document.getElementById('catsChart');
+
+        fetch('@Url.Action("DashboardData", "Admin", new { area = "Admin", days = 14 })')
+            .then(r => r.json())
+            .then(data => {
+                // esconde skeletons
+                document.getElementById('skeleton-orders').style.display='none';
+                document.getElementById('skeleton-cats').style.display='none';
+                ordersEl.style.display='block';
+                catsEl.style.display='block';
+                document.getElementById('chart1Hint').innerText = 'últimos 14 dias';
+                document.getElementById('chart2Hint').innerText = 'top categorias';
+
+                // Pedidos por dia
+                new Chart(ordersEl, {
+                    type: 'line',
+                    data: {
+                        labels: data.labels,
+                        datasets: [
+                            {
+                                label: 'Pedidos',
+                                data: data.orders,
+                                tension: .35,
+                                fill: false
+                            },
+                            {
+                                label: 'Cadastros',
+                                data: data.users,
+                                tension: .35,
+                                borderDash: [5,5],
+                                fill: false
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive:true,
+                        plugins:{ legend:{ labels:{ color:'#e9e9f1'} } },
+                        scales:{
+                            x:{ ticks:{ color:'#98a2b3'} , grid:{ color:'rgba(255,255,255,.06)'} },
+                            y:{ ticks:{ color:'#98a2b3'} , grid:{ color:'rgba(255,255,255,.06)'} }
+                        }
+                    }
+                });
+
+                // Top categorias
+                new Chart(catsEl, {
+                    type: 'bar',
+                    data: {
+                        labels: data.topCategorias.labels,
+                        datasets: [{ label: 'Jogos', data: data.topCategorias.values }]
+                    },
+                    options: {
+                        responsive:true,
+                        plugins:{ legend:{ display:false }, tooltip:{ enabled:true } },
+                        scales:{
+                            x:{ ticks:{ color:'#98a2b3'} , grid:{ display:false } },
+                            y:{ ticks:{ color:'#98a2b3'} , grid:{ color:'rgba(255,255,255,.06)'} }
+                        }
+                    }
+                });
+            })
+            .catch(() => {
+                document.getElementById('chart1Hint').innerText = 'falha ao carregar';
+                document.getElementById('chart2Hint').innerText = 'falha ao carregar';
+            });
+    })();
+</script>

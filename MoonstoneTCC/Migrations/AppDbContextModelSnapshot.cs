@@ -22,7 +22,7 @@ namespace MoonstoneTCC.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Comunicado", b =>
+            modelBuilder.Entity("ComentarioCurtida", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -30,28 +30,20 @@ namespace MoonstoneTCC.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("DataCriacao")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Mensagem")
-                        .IsRequired()
-                        .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
-
-                    b.Property<string>("OpcoesEnquete")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Tipo")
+                    b.Property<int>("ComentarioId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Titulo")
+                    b.Property<string>("UsuarioId")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Comunicados");
+                    b.HasIndex("ComentarioId");
+
+                    b.HasIndex("UsuarioId");
+
+                    b.ToTable("ComentarioCurtidas");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -252,6 +244,352 @@ namespace MoonstoneTCC.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("MoonstoneTCC.Models.AcaoAdmin", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Acao")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DataHora")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UsuarioId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UsuarioId");
+
+                    b.ToTable("AcoesAdmin");
+                });
+
+            modelBuilder.Entity("MoonstoneTCC.Models.Acessorio", b =>
+                {
+                    b.Property<int>("AcessorioId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AcessorioId"));
+
+                    b.Property<double?>("AvaliacaoMedia")
+                        .HasColumnType("float");
+
+                    b.Property<string>("Bateria")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CategoriaId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ClassificacaoUso")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Compatibilidade")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Conectividade")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Cor")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DataCadastro")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DescricaoCurta")
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<string>("DescricaoDetalhada")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Dimensoes")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("EstoqueMinimoAlerta")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Garantia")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImagemThumbnailUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImagemUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImagensAdicionais")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImagensAdicionais2")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImagensAdicionais3")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("InformacoesExtras")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("InformacoesTecnicas")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsAcessorioDestaque")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ItensInclusos")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Marca")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Material")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Modelo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Peso")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Preco")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("PrecoPromocional")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<bool>("ProdutoMaisVendido")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("ProdutoNovo")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("QuantidadeEstoque")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Tipo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TotalAvaliacoes")
+                        .HasColumnType("int");
+
+                    b.HasKey("AcessorioId");
+
+                    b.HasIndex("CategoriaId");
+
+                    b.ToTable("Acessorios");
+                });
+
+            modelBuilder.Entity("MoonstoneTCC.Models.AjudaPedido", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("DataEnvio")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DataResposta")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Descricao")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<int>("PedidoId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("Resolvido")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("RespostaAdmin")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TipoProblema")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("UsuarioId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PedidoId");
+
+                    b.HasIndex("UsuarioId");
+
+                    b.ToTable("AjudasPedidos");
+                });
+
+            modelBuilder.Entity("MoonstoneTCC.Models.AvaliacaoJogo", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool?>("Gostou")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("JogoId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UsuarioId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("JogoId");
+
+                    b.HasIndex("UsuarioId");
+
+                    b.ToTable("AvaliacoesJogos");
+                });
+
+            modelBuilder.Entity("MoonstoneTCC.Models.AvisoEstoque", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("AcessorioId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("Avisado")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("JogoId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UsuarioId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AcessorioId");
+
+                    b.HasIndex("JogoId");
+
+                    b.HasIndex("UsuarioId");
+
+                    b.ToTable("AvisosEstoque");
+                });
+
+            modelBuilder.Entity("MoonstoneTCC.Models.CancelamentoPedido", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("DataCancelamento")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Motivo")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<int>("PedidoId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UsuarioId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PedidoId")
+                        .IsUnique();
+
+                    b.HasIndex("UsuarioId");
+
+                    b.ToTable("CancelamentosPedidos");
+                });
+
+            modelBuilder.Entity("MoonstoneTCC.Models.Candidatura", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CPF")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Cancelada")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ComentarioInterno")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DataCancelamento")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DataEnvio")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Endereco")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Feedback")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MotivoCancelamento")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NomeCompleto")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("RG")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Telefone")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UsuarioId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("VagaEmpregoId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UsuarioId");
+
+                    b.HasIndex("VagaEmpregoId");
+
+                    b.ToTable("Candidaturas");
+                });
+
             modelBuilder.Entity("MoonstoneTCC.Models.CarrinhoCompraItem", b =>
                 {
                     b.Property<int>("CarrinhoCompraItemId")
@@ -260,6 +598,9 @@ namespace MoonstoneTCC.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CarrinhoCompraItemId"));
 
+                    b.Property<int?>("AcessorioId")
+                        .HasColumnType("int");
+
                     b.Property<string>("CarrinhoCompraId")
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
@@ -267,14 +608,88 @@ namespace MoonstoneTCC.Migrations
                     b.Property<int?>("JogoId")
                         .HasColumnType("int");
 
+                    b.Property<decimal>("PrecoUnitario")
+                        .HasColumnType("decimal(10,2)");
+
                     b.Property<int>("Quantidade")
                         .HasColumnType("int");
 
                     b.HasKey("CarrinhoCompraItemId");
 
+                    b.HasIndex("AcessorioId");
+
                     b.HasIndex("JogoId");
 
                     b.ToTable("CarrinhoCompraItens");
+                });
+
+            modelBuilder.Entity("MoonstoneTCC.Models.CartaoCredito", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("CartaoPadrao")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("CodigoVerificacao")
+                        .IsRequired()
+                        .HasMaxLength(6)
+                        .HasColumnType("nvarchar(6)");
+
+                    b.Property<string>("NomeTitular")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("NumeroParcial")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Validade")
+                        .IsRequired()
+                        .HasMaxLength(5)
+                        .HasColumnType("nvarchar(5)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("CartoesCredito");
+                });
+
+            modelBuilder.Entity("MoonstoneTCC.Models.CarteiraUsuario", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.Property<decimal>("Saldo")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("Carteiras");
                 });
 
             modelBuilder.Entity("MoonstoneTCC.Models.Categoria", b =>
@@ -298,6 +713,375 @@ namespace MoonstoneTCC.Migrations
                     b.HasKey("CategoriaId");
 
                     b.ToTable("Categorias");
+                });
+
+            modelBuilder.Entity("MoonstoneTCC.Models.ComentarioJogo", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Avaliacao")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Data")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("JogoId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Texto")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<string>("UsuarioId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("JogoId");
+
+                    b.HasIndex("UsuarioId");
+
+                    b.ToTable("ComentariosJogo");
+                });
+
+            modelBuilder.Entity("MoonstoneTCC.Models.Comunicado", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("DataCriacao")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Mensagem")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<string>("OpcoesEnquete")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Tipo")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Titulo")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Comunicados");
+                });
+
+            modelBuilder.Entity("MoonstoneTCC.Models.Desenvolvedora", b =>
+                {
+                    b.Property<int>("DesenvolvedoraId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DesenvolvedoraId"));
+
+                    b.Property<string>("Curiosidades")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Descricao")
+                        .HasMaxLength(1500)
+                        .HasColumnType("nvarchar(1500)");
+
+                    b.Property<string>("FotoPerfilUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SlideImagens")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("DesenvolvedoraId");
+
+                    b.ToTable("Desenvolvedoras");
+                });
+
+            modelBuilder.Entity("MoonstoneTCC.Models.EnderecoEntrega", b =>
+                {
+                    b.Property<int>("EnderecoEntregaId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EnderecoEntregaId"));
+
+                    b.Property<string>("Cep")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<string>("Cidade")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Endereco1")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Endereco2")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<bool>("EnderecoPadrao")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Estado")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Sobrenome")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Telefone")
+                        .IsRequired()
+                        .HasMaxLength(25)
+                        .HasColumnType("nvarchar(25)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("EnderecoEntregaId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("EnderecosEntrega");
+                });
+
+            modelBuilder.Entity("MoonstoneTCC.Models.EntrevistaAgendada", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CandidaturaId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("DataHoraEntrevista")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Observacoes")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CandidaturaId")
+                        .IsUnique();
+
+                    b.ToTable("EntrevistasAgendadas");
+                });
+
+            modelBuilder.Entity("MoonstoneTCC.Models.EtapaProcessoSeletivo", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CandidaturaId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Data")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("NomeEtapa")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Observacoes")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CandidaturaId");
+
+                    b.ToTable("EtapasProcessoSeletivo");
+                });
+
+            modelBuilder.Entity("MoonstoneTCC.Models.ExclusaoConta", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("DataHora")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Motivo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UsuarioId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ExclusoesConta");
+                });
+
+            modelBuilder.Entity("MoonstoneTCC.Models.Favorito", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("EPublico")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("JogoId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TagFavorito")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UsuarioId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("JogoId");
+
+                    b.HasIndex("UsuarioId");
+
+                    b.ToTable("Favoritos");
+                });
+
+            modelBuilder.Entity("MoonstoneTCC.Models.HistoricoStatusCandidatura", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CandidaturaId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("DataHora")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeStatus")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ParaStatus")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CandidaturaId");
+
+                    b.ToTable("HistoricoStatusCandidaturas");
+                });
+
+            modelBuilder.Entity("MoonstoneTCC.Models.HistoricoVisualizacao", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("DataVisualizacao")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("JogoId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UsuarioId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("JogoId");
+
+                    b.HasIndex("UsuarioId");
+
+                    b.ToTable("HistoricoVisualizacoes");
+                });
+
+            modelBuilder.Entity("MoonstoneTCC.Models.InteresseUsuario", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Interesse")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("UsuarioId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UsuarioId");
+
+                    b.ToTable("InteressesUsuario");
+                });
+
+            modelBuilder.Entity("MoonstoneTCC.Models.ItemListaJogo", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("JogoId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ListaJogoId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("JogoId");
+
+                    b.HasIndex("ListaJogoId");
+
+                    b.ToTable("ItensListaJogos");
                 });
 
             modelBuilder.Entity("MoonstoneTCC.Models.Jogo", b =>
@@ -328,8 +1112,14 @@ namespace MoonstoneTCC.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
+                    b.Property<int?>("DesenvolvedoraId")
+                        .HasColumnType("int");
+
                     b.Property<bool>("EmEstoque")
                         .HasColumnType("bit");
+
+                    b.Property<int>("EstoqueMinimoAlerta")
+                        .HasColumnType("int");
 
                     b.Property<string>("Genero")
                         .IsRequired()
@@ -370,8 +1160,17 @@ namespace MoonstoneTCC.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
+                    b.Property<int?>("PorcentagemDesconto")
+                        .HasColumnType("int");
+
                     b.Property<decimal>("Preco")
                         .HasColumnType("decimal(10,2)");
+
+                    b.Property<decimal?>("PrecoPromocional")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("QuantidadeEstoque")
+                        .HasColumnType("int");
 
                     b.Property<string>("TrailerYoutubeUrl")
                         .HasMaxLength(1000)
@@ -381,7 +1180,126 @@ namespace MoonstoneTCC.Migrations
 
                     b.HasIndex("CategoriaId");
 
+                    b.HasIndex("DesenvolvedoraId");
+
                     b.ToTable("Jogos");
+                });
+
+            modelBuilder.Entity("MoonstoneTCC.Models.ListaJogo", b =>
+                {
+                    b.Property<int>("ListaJogoId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ListaJogoId"));
+
+                    b.Property<bool>("EPublica")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("UsuarioId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("ListaJogoId");
+
+                    b.HasIndex("UsuarioId");
+
+                    b.ToTable("ListasJogos");
+                });
+
+            modelBuilder.Entity("MoonstoneTCC.Models.MensagemCandidatura", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CandidaturaId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("DataHora")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Remetente")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Texto")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CandidaturaId");
+
+                    b.ToTable("MensagensCandidatura");
+                });
+
+            modelBuilder.Entity("MoonstoneTCC.Models.NotificacaoEstoque", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("DataCriacao")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("JogoId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("Lida")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Mensagem")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UsuarioId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("JogoId");
+
+                    b.HasIndex("UsuarioId");
+
+                    b.ToTable("NotificacoesEstoque");
+                });
+
+            modelBuilder.Entity("MoonstoneTCC.Models.NotificacaoPedido", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("DataCriacao")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("Lida")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Mensagem")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PedidoId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UsuarioId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PedidoId");
+
+                    b.HasIndex("UsuarioId");
+
+                    b.ToTable("NotificacoesPedido");
                 });
 
             modelBuilder.Entity("MoonstoneTCC.Models.Pedido", b =>
@@ -401,6 +1319,12 @@ namespace MoonstoneTCC.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<string>("CodigoPedido")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DataCancelamento")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -419,6 +1343,12 @@ namespace MoonstoneTCC.Migrations
                         .HasMaxLength(10)
                         .HasColumnType("nvarchar(10)");
 
+                    b.Property<int?>("FormaPagamento")
+                        .HasColumnType("int");
+
+                    b.Property<string>("MotivoCancelamento")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Nome")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -433,10 +1363,16 @@ namespace MoonstoneTCC.Migrations
                     b.Property<decimal>("PedidoTotal")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<int>("PrazoEntregaDias")
+                        .HasColumnType("int");
+
                     b.Property<string>("Sobrenome")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("StatusPedido")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Telefone")
                         .IsRequired()
@@ -446,7 +1382,18 @@ namespace MoonstoneTCC.Migrations
                     b.Property<int>("TotalItensPedido")
                         .HasColumnType("int");
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<decimal>("ValorFrete")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("ValorPagoCarteira")
+                        .HasColumnType("decimal(18,2)");
+
                     b.HasKey("PedidoId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Pedidos");
                 });
@@ -459,7 +1406,10 @@ namespace MoonstoneTCC.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PedidoDetalheId"));
 
-                    b.Property<int>("JogoId")
+                    b.Property<int?>("AcessorioId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("JogoId")
                         .HasColumnType("int");
 
                     b.Property<int>("PedidoId")
@@ -472,6 +1422,8 @@ namespace MoonstoneTCC.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("PedidoDetalheId");
+
+                    b.HasIndex("AcessorioId");
 
                     b.HasIndex("JogoId");
 
@@ -522,6 +1474,9 @@ namespace MoonstoneTCC.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
+                    b.Property<int?>("PedidoId")
+                        .HasColumnType("int");
+
                     b.Property<bool>("Respondido")
                         .HasColumnType("bit");
 
@@ -539,9 +1494,58 @@ namespace MoonstoneTCC.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("PedidoId");
+
                     b.HasIndex("UsuarioId");
 
                     b.ToTable("PerguntasUsuarios");
+                });
+
+            modelBuilder.Entity("MoonstoneTCC.Models.PerguntaVaga", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Texto")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("VagaEmpregoId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("VagaEmpregoId");
+
+                    b.ToTable("PerguntasVaga");
+                });
+
+            modelBuilder.Entity("MoonstoneTCC.Models.RespostaCandidatura", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CandidaturaId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PerguntaVagaId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("RespostaTexto")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CandidaturaId");
+
+                    b.HasIndex("PerguntaVagaId");
+
+                    b.ToTable("RespostasCandidatura");
                 });
 
             modelBuilder.Entity("MoonstoneTCC.Models.RespostaUsuario", b =>
@@ -575,6 +1579,147 @@ namespace MoonstoneTCC.Migrations
                     b.HasIndex("UsuarioId");
 
                     b.ToTable("RespostasUsuarios");
+                });
+
+            modelBuilder.Entity("MoonstoneTCC.Models.SeguidorDesenvolvedora", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("DesenvolvedoraId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UsuarioId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DesenvolvedoraId");
+
+                    b.HasIndex("UsuarioId");
+
+                    b.ToTable("SeguidoresDesenvolvedoras");
+                });
+
+            modelBuilder.Entity("MoonstoneTCC.Models.SeguidorUsuario", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("Data")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("SeguidoId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("SeguidorId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SeguidoId");
+
+                    b.HasIndex("SeguidorId");
+
+                    b.ToTable("SeguidoresUsuarios");
+                });
+
+            modelBuilder.Entity("MoonstoneTCC.Models.TransacaoCarteira", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CarteiraUsuarioId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Data")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("PedidoId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Referencia")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<decimal>("SaldoApos")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("Tipo")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Valor")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CarteiraUsuarioId");
+
+                    b.ToTable("TransacoesCarteira");
+                });
+
+            modelBuilder.Entity("MoonstoneTCC.Models.VagaEmprego", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Cargo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DataCriacao")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DataEncerramento")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Descricao")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Requisitos")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Salario")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Titulo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("VagasEmprego");
+                });
+
+            modelBuilder.Entity("ComentarioCurtida", b =>
+                {
+                    b.HasOne("MoonstoneTCC.Models.ComentarioJogo", "Comentario")
+                        .WithMany()
+                        .HasForeignKey("ComentarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Comentario");
+
+                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -628,13 +1773,270 @@ namespace MoonstoneTCC.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("MoonstoneTCC.Models.CarrinhoCompraItem", b =>
+            modelBuilder.Entity("MoonstoneTCC.Models.AcaoAdmin", b =>
                 {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("MoonstoneTCC.Models.Acessorio", b =>
+                {
+                    b.HasOne("MoonstoneTCC.Models.Categoria", "Categoria")
+                        .WithMany()
+                        .HasForeignKey("CategoriaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Categoria");
+                });
+
+            modelBuilder.Entity("MoonstoneTCC.Models.AjudaPedido", b =>
+                {
+                    b.HasOne("MoonstoneTCC.Models.Pedido", "Pedido")
+                        .WithMany()
+                        .HasForeignKey("PedidoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Pedido");
+
+                    b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("MoonstoneTCC.Models.AvaliacaoJogo", b =>
+                {
+                    b.HasOne("MoonstoneTCC.Models.Jogo", "Jogo")
+                        .WithMany()
+                        .HasForeignKey("JogoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Jogo");
+
+                    b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("MoonstoneTCC.Models.AvisoEstoque", b =>
+                {
+                    b.HasOne("MoonstoneTCC.Models.Acessorio", "Acessorio")
+                        .WithMany()
+                        .HasForeignKey("AcessorioId");
+
                     b.HasOne("MoonstoneTCC.Models.Jogo", "Jogo")
                         .WithMany()
                         .HasForeignKey("JogoId");
 
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId");
+
+                    b.Navigation("Acessorio");
+
                     b.Navigation("Jogo");
+
+                    b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("MoonstoneTCC.Models.CancelamentoPedido", b =>
+                {
+                    b.HasOne("MoonstoneTCC.Models.Pedido", "Pedido")
+                        .WithOne("Cancelamento")
+                        .HasForeignKey("MoonstoneTCC.Models.CancelamentoPedido", "PedidoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Pedido");
+
+                    b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("MoonstoneTCC.Models.Candidatura", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId");
+
+                    b.HasOne("MoonstoneTCC.Models.VagaEmprego", "Vaga")
+                        .WithMany("Candidaturas")
+                        .HasForeignKey("VagaEmpregoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Usuario");
+
+                    b.Navigation("Vaga");
+                });
+
+            modelBuilder.Entity("MoonstoneTCC.Models.CarrinhoCompraItem", b =>
+                {
+                    b.HasOne("MoonstoneTCC.Models.Acessorio", "Acessorio")
+                        .WithMany()
+                        .HasForeignKey("AcessorioId");
+
+                    b.HasOne("MoonstoneTCC.Models.Jogo", "Jogo")
+                        .WithMany()
+                        .HasForeignKey("JogoId");
+
+                    b.Navigation("Acessorio");
+
+                    b.Navigation("Jogo");
+                });
+
+            modelBuilder.Entity("MoonstoneTCC.Models.CartaoCredito", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("MoonstoneTCC.Models.ComentarioJogo", b =>
+                {
+                    b.HasOne("MoonstoneTCC.Models.Jogo", "Jogo")
+                        .WithMany("Comentarios")
+                        .HasForeignKey("JogoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId");
+
+                    b.Navigation("Jogo");
+
+                    b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("MoonstoneTCC.Models.EnderecoEntrega", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("MoonstoneTCC.Models.EntrevistaAgendada", b =>
+                {
+                    b.HasOne("MoonstoneTCC.Models.Candidatura", "Candidatura")
+                        .WithOne("EntrevistaAgendada")
+                        .HasForeignKey("MoonstoneTCC.Models.EntrevistaAgendada", "CandidaturaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Candidatura");
+                });
+
+            modelBuilder.Entity("MoonstoneTCC.Models.EtapaProcessoSeletivo", b =>
+                {
+                    b.HasOne("MoonstoneTCC.Models.Candidatura", "Candidatura")
+                        .WithMany("Etapas")
+                        .HasForeignKey("CandidaturaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Candidatura");
+                });
+
+            modelBuilder.Entity("MoonstoneTCC.Models.Favorito", b =>
+                {
+                    b.HasOne("MoonstoneTCC.Models.Jogo", "Jogo")
+                        .WithMany()
+                        .HasForeignKey("JogoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId");
+
+                    b.Navigation("Jogo");
+
+                    b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("MoonstoneTCC.Models.HistoricoStatusCandidatura", b =>
+                {
+                    b.HasOne("MoonstoneTCC.Models.Candidatura", "Candidatura")
+                        .WithMany("HistoricoStatus")
+                        .HasForeignKey("CandidaturaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Candidatura");
+                });
+
+            modelBuilder.Entity("MoonstoneTCC.Models.HistoricoVisualizacao", b =>
+                {
+                    b.HasOne("MoonstoneTCC.Models.Jogo", "Jogo")
+                        .WithMany()
+                        .HasForeignKey("JogoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Jogo");
+
+                    b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("MoonstoneTCC.Models.InteresseUsuario", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("MoonstoneTCC.Models.ItemListaJogo", b =>
+                {
+                    b.HasOne("MoonstoneTCC.Models.Jogo", "Jogo")
+                        .WithMany()
+                        .HasForeignKey("JogoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MoonstoneTCC.Models.ListaJogo", "ListaJogo")
+                        .WithMany("Jogos")
+                        .HasForeignKey("ListaJogoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Jogo");
+
+                    b.Navigation("ListaJogo");
                 });
 
             modelBuilder.Entity("MoonstoneTCC.Models.Jogo", b =>
@@ -645,10 +2047,36 @@ namespace MoonstoneTCC.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("MoonstoneTCC.Models.Desenvolvedora", "Desenvolvedora")
+                        .WithMany("Jogos")
+                        .HasForeignKey("DesenvolvedoraId");
+
                     b.Navigation("Categoria");
+
+                    b.Navigation("Desenvolvedora");
                 });
 
-            modelBuilder.Entity("MoonstoneTCC.Models.PedidoDetalhe", b =>
+            modelBuilder.Entity("MoonstoneTCC.Models.ListaJogo", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId");
+
+                    b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("MoonstoneTCC.Models.MensagemCandidatura", b =>
+                {
+                    b.HasOne("MoonstoneTCC.Models.Candidatura", "Candidatura")
+                        .WithMany("Mensagens")
+                        .HasForeignKey("CandidaturaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Candidatura");
+                });
+
+            modelBuilder.Entity("MoonstoneTCC.Models.NotificacaoEstoque", b =>
                 {
                     b.HasOne("MoonstoneTCC.Models.Jogo", "Jogo")
                         .WithMany()
@@ -656,11 +2084,58 @@ namespace MoonstoneTCC.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId");
+
+                    b.Navigation("Jogo");
+
+                    b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("MoonstoneTCC.Models.NotificacaoPedido", b =>
+                {
+                    b.HasOne("MoonstoneTCC.Models.Pedido", "Pedido")
+                        .WithMany()
+                        .HasForeignKey("PedidoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId");
+
+                    b.Navigation("Pedido");
+
+                    b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("MoonstoneTCC.Models.Pedido", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("MoonstoneTCC.Models.PedidoDetalhe", b =>
+                {
+                    b.HasOne("MoonstoneTCC.Models.Acessorio", "Acessorio")
+                        .WithMany()
+                        .HasForeignKey("AcessorioId");
+
+                    b.HasOne("MoonstoneTCC.Models.Jogo", "Jogo")
+                        .WithMany()
+                        .HasForeignKey("JogoId");
+
                     b.HasOne("MoonstoneTCC.Models.Pedido", "Pedido")
                         .WithMany("PedidoItens")
                         .HasForeignKey("PedidoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Acessorio");
 
                     b.Navigation("Jogo");
 
@@ -669,7 +2144,7 @@ namespace MoonstoneTCC.Migrations
 
             modelBuilder.Entity("MoonstoneTCC.Models.PerguntaComunicado", b =>
                 {
-                    b.HasOne("Comunicado", "Comunicado")
+                    b.HasOne("MoonstoneTCC.Models.Comunicado", "Comunicado")
                         .WithMany()
                         .HasForeignKey("ComunicadoId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -680,18 +2155,54 @@ namespace MoonstoneTCC.Migrations
 
             modelBuilder.Entity("MoonstoneTCC.Models.PerguntaUsuario", b =>
                 {
+                    b.HasOne("MoonstoneTCC.Models.Pedido", "Pedido")
+                        .WithMany()
+                        .HasForeignKey("PedidoId");
+
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Usuario")
                         .WithMany()
                         .HasForeignKey("UsuarioId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Pedido");
+
                     b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("MoonstoneTCC.Models.PerguntaVaga", b =>
+                {
+                    b.HasOne("MoonstoneTCC.Models.VagaEmprego", "Vaga")
+                        .WithMany("Perguntas")
+                        .HasForeignKey("VagaEmpregoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Vaga");
+                });
+
+            modelBuilder.Entity("MoonstoneTCC.Models.RespostaCandidatura", b =>
+                {
+                    b.HasOne("MoonstoneTCC.Models.Candidatura", "Candidatura")
+                        .WithMany("Respostas")
+                        .HasForeignKey("CandidaturaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MoonstoneTCC.Models.PerguntaVaga", "Pergunta")
+                        .WithMany()
+                        .HasForeignKey("PerguntaVagaId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Candidatura");
+
+                    b.Navigation("Pergunta");
                 });
 
             modelBuilder.Entity("MoonstoneTCC.Models.RespostaUsuario", b =>
                 {
-                    b.HasOne("Comunicado", "Comunicado")
+                    b.HasOne("MoonstoneTCC.Models.Comunicado", "Comunicado")
                         .WithMany()
                         .HasForeignKey("ComunicadoId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -708,14 +2219,105 @@ namespace MoonstoneTCC.Migrations
                     b.Navigation("Usuario");
                 });
 
+            modelBuilder.Entity("MoonstoneTCC.Models.SeguidorDesenvolvedora", b =>
+                {
+                    b.HasOne("MoonstoneTCC.Models.Desenvolvedora", "Desenvolvedora")
+                        .WithMany("Seguidores")
+                        .HasForeignKey("DesenvolvedoraId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId");
+
+                    b.Navigation("Desenvolvedora");
+
+                    b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("MoonstoneTCC.Models.SeguidorUsuario", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Seguido")
+                        .WithMany()
+                        .HasForeignKey("SeguidoId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Seguidor")
+                        .WithMany()
+                        .HasForeignKey("SeguidorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Seguido");
+
+                    b.Navigation("Seguidor");
+                });
+
+            modelBuilder.Entity("MoonstoneTCC.Models.TransacaoCarteira", b =>
+                {
+                    b.HasOne("MoonstoneTCC.Models.CarteiraUsuario", "Carteira")
+                        .WithMany("Transacoes")
+                        .HasForeignKey("CarteiraUsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Carteira");
+                });
+
+            modelBuilder.Entity("MoonstoneTCC.Models.Candidatura", b =>
+                {
+                    b.Navigation("EntrevistaAgendada");
+
+                    b.Navigation("Etapas");
+
+                    b.Navigation("HistoricoStatus");
+
+                    b.Navigation("Mensagens");
+
+                    b.Navigation("Respostas");
+                });
+
+            modelBuilder.Entity("MoonstoneTCC.Models.CarteiraUsuario", b =>
+                {
+                    b.Navigation("Transacoes");
+                });
+
             modelBuilder.Entity("MoonstoneTCC.Models.Categoria", b =>
+                {
+                    b.Navigation("Jogos");
+                });
+
+            modelBuilder.Entity("MoonstoneTCC.Models.Desenvolvedora", b =>
+                {
+                    b.Navigation("Jogos");
+
+                    b.Navigation("Seguidores");
+                });
+
+            modelBuilder.Entity("MoonstoneTCC.Models.Jogo", b =>
+                {
+                    b.Navigation("Comentarios");
+                });
+
+            modelBuilder.Entity("MoonstoneTCC.Models.ListaJogo", b =>
                 {
                     b.Navigation("Jogos");
                 });
 
             modelBuilder.Entity("MoonstoneTCC.Models.Pedido", b =>
                 {
+                    b.Navigation("Cancelamento");
+
                     b.Navigation("PedidoItens");
+                });
+
+            modelBuilder.Entity("MoonstoneTCC.Models.VagaEmprego", b =>
+                {
+                    b.Navigation("Candidaturas");
+
+                    b.Navigation("Perguntas");
                 });
 #pragma warning restore 612, 618
         }

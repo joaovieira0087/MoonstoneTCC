@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MoonstoneTCC.Context;
 using Microsoft.EntityFrameworkCore;
+using MoonstoneTCC.Services;
 
 
 [Area("Admin")]
@@ -9,11 +10,15 @@ using Microsoft.EntityFrameworkCore;
 public class AdminPerguntasController : Controller
 {
     private readonly AppDbContext _context;
+    private readonly LoggerAdminService _logger;
 
-    public AdminPerguntasController(AppDbContext context)
+
+    public AdminPerguntasController(AppDbContext context, LoggerAdminService logger)
     {
         _context = context;
+        _logger = logger;
     }
+
 
     public async Task<IActionResult> Index()
     {
@@ -40,6 +45,7 @@ public class AdminPerguntasController : Controller
 
         _context.Update(pergunta);
         await _context.SaveChangesAsync();
+        await _logger.RegistrarAcaoAsync($"Respondeu à pergunta de: {pergunta.Usuario?.UserName}");
 
         return RedirectToAction("Index");
     }
