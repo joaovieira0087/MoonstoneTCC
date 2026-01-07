@@ -48,6 +48,7 @@ builder.Services.AddScoped<ICarteiraService, CarteiraService>();
 builder.Services.AddSingleton<ICepFreteService, CepFreteServiceLocal>();
 builder.Services.AddScoped(sp => CarrinhoCompra.GetCarrinho(sp));
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IGamificacaoService, GamificacaoService>();
 
 builder.Services.AddAuthorization(opts =>
 {
