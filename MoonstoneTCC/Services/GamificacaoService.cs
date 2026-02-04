@@ -1,4 +1,4 @@
-﻿// Services/GamificacaoService.cs
+﻿using Microsoft.EntityFrameworkCore;
 using MoonstoneTCC.Context;
 using MoonstoneTCC.Models;
 using MoonstoneTCC.Services;

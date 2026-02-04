@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MoonstoneTCC.Context;
 using MoonstoneTCC.Models;
+using MoonstoneTCC.Services; // Namespace onde está o seu IGamificacaoService
 
 namespace MoonstoneTCC.Controllers
 {
@@ -12,25 +13,30 @@ namespace MoonstoneTCC.Controllers
     {
         private readonly AppDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly IGamificacaoService _gamificacao; // Injeção do serviço de XP
 
-        public ComentarioController(AppDbContext context, UserManager<IdentityUser> userManager)
+        public ComentarioController(
+            AppDbContext context,
+            UserManager<IdentityUser> userManager,
+            IGamificacaoService gamificacao)
         {
             _context = context;
             _userManager = userManager;
+            _gamificacao = gamificacao;
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Comentar(int jogoId, string texto, int avaliacao)
         {
-            // Validação da nota
+            // 1. Validação da nota (estrelas)
             if (avaliacao < 1 || avaliacao > 5)
             {
                 TempData["Erro"] = "Avaliação inválida. Selecione entre 1 e 5 estrelas.";
                 return RedirectToAction("Details", "Jogo", new { jogoId });
             }
 
-            // Verifica se o usuário está autenticado
+            // 2. Verifica se o usuário está autenticado
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
@@ -38,7 +44,7 @@ namespace MoonstoneTCC.Controllers
                 return RedirectToAction("Login", "Account");
             }
 
-            // Verifica se o jogo existe
+            // 3. Verifica se o jogo existe
             var jogoExiste = await _context.Jogos.AnyAsync(j => j.JogoId == jogoId);
             if (!jogoExiste)
             {
@@ -46,7 +52,7 @@ namespace MoonstoneTCC.Controllers
                 return RedirectToAction("Index", "Jogo");
             }
 
-            // Verifica se o usuário já comentou esse jogo
+            // 4. Verifica se o usuário já comentou esse jogo (Evita duplicidade e farm de XP)
             var comentarioExistente = await _context.ComentariosJogo
                 .AnyAsync(c => c.UsuarioId == user.Id && c.JogoId == jogoId);
 
@@ -56,7 +62,7 @@ namespace MoonstoneTCC.Controllers
                 return RedirectToAction("Details", "Jogo", new { jogoId });
             }
 
-            // Verifica se o usuário comentou recentemente (últimos 5 minutos)
+            // 5. Verifica cooldown (Anti-spam: último comentário nos últimos 5 min)
             var comentarioRecente = await _context.ComentariosJogo
                 .Where(c => c.UsuarioId == user.Id)
                 .OrderByDescending(c => c.Data)
@@ -64,11 +70,11 @@ namespace MoonstoneTCC.Controllers
 
             if (comentarioRecente != null && comentarioRecente.Data > DateTime.Now.AddMinutes(-5))
             {
-                TempData["Erro"] = "Você pode comentar novamente após 5 minutos.";
+                TempData["Erro"] = "Você pode comentar novamente apenas após 5 minutos.";
                 return RedirectToAction("Details", "Jogo", new { jogoId });
             }
 
-            // Cria o novo comentário
+            // 6. Criação e salvamento do comentário
             var novoComentario = new ComentarioJogo
             {
                 JogoId = jogoId,
@@ -81,19 +87,18 @@ namespace MoonstoneTCC.Controllers
             _context.ComentariosJogo.Add(novoComentario);
             await _context.SaveChangesAsync();
 
-            TempData["MensagemSucesso"] = "Comentário enviado com sucesso!";
+            // 7. LÓGICA DE XP: Adiciona o XP e verifica recompensas de saldo
+            await _gamificacao.AdicionarXPPorAvaliacaoAsync(user.Id);
+
+            TempData["MensagemSucesso"] = "Comentário enviado com sucesso! Você ganhou XP pelo seu feedback.";
             return RedirectToAction("Details", "Jogo", new { jogoId });
         }
-
-
-
 
         [HttpPost]
         public async Task<IActionResult> Excluir(int id)
         {
             var comentario = await _context.ComentariosJogo.FindAsync(id);
-            if (comentario == null)
-                return NotFound();
+            if (comentario == null) return NotFound();
 
             var usuarioLogado = await _userManager.GetUserAsync(User);
             var isAdmin = User.IsInRole("Admin");
@@ -107,7 +112,6 @@ namespace MoonstoneTCC.Controllers
             return RedirectToAction("Details", "Jogo", new { jogoId = comentario.JogoId });
         }
 
-        // comentarios gerados 
         public async Task<IActionResult> Realizadas()
         {
             var user = await _userManager.GetUserAsync(User);
@@ -118,7 +122,6 @@ namespace MoonstoneTCC.Controllers
                 .OrderByDescending(c => c.Data)
                 .ToListAsync();
 
-            // Dicionário de curtidas por comentário
             var curtidas = await _context.ComentarioCurtidas
                 .Where(cc => comentarios.Select(c => c.Id).Contains(cc.ComentarioId))
                 .GroupBy(cc => cc.ComentarioId)
@@ -129,7 +132,6 @@ namespace MoonstoneTCC.Controllers
             return View("~/Views/MeusPedidos/Realizadas.cshtml", comentarios);
         }
 
-
         [HttpGet]
         public async Task<IActionResult> Editar(int id)
         {
@@ -137,8 +139,7 @@ namespace MoonstoneTCC.Controllers
                 .Include(c => c.Jogo)
                 .FirstOrDefaultAsync(c => c.Id == id);
 
-            if (comentario == null)
-                return NotFound();
+            if (comentario == null) return NotFound();
 
             var usuario = await _userManager.GetUserAsync(User);
             var isAdmin = User.IsInRole("Admin");
@@ -149,7 +150,6 @@ namespace MoonstoneTCC.Controllers
             return View("~/Views/MeusPedidos/Editar.cshtml", comentario);
         }
 
-        // ✅ Método POST chamado quando o formulário da edição é enviado
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Editar(ComentarioJogo model)
@@ -162,8 +162,7 @@ namespace MoonstoneTCC.Controllers
             }
 
             var comentario = await _context.ComentariosJogo.FindAsync(model.Id);
-            if (comentario == null)
-                return NotFound();
+            if (comentario == null) return NotFound();
 
             var usuario = await _userManager.GetUserAsync(User);
             var isAdmin = User.IsInRole("Admin");
@@ -173,7 +172,7 @@ namespace MoonstoneTCC.Controllers
 
             comentario.Texto = string.IsNullOrWhiteSpace(model.Texto) ? null : model.Texto.Trim();
             comentario.Avaliacao = model.Avaliacao;
-            comentario.Data = DateTime.Now;
+            comentario.Data = DateTime.Now; // Atualiza a data da edição
 
             _context.ComentariosJogo.Update(comentario);
             await _context.SaveChangesAsync();
@@ -191,21 +190,13 @@ namespace MoonstoneTCC.Controllers
 
             if (curtidaExistente != null)
             {
-                // DESCURTIR
                 _context.ComentarioCurtidas.Remove(curtidaExistente);
                 await _context.SaveChangesAsync();
 
                 var totalCurtidas = await _context.ComentarioCurtidas.CountAsync(c => c.ComentarioId == id);
-
-                return Json(new
-                {
-                    sucesso = true,
-                    curtido = false,
-                    curtidas = totalCurtidas
-                });
+                return Json(new { sucesso = true, curtido = false, curtidas = totalCurtidas });
             }
 
-            // CURTIR
             var novaCurtida = new ComentarioCurtida
             {
                 ComentarioId = id,
@@ -216,20 +207,7 @@ namespace MoonstoneTCC.Controllers
             await _context.SaveChangesAsync();
 
             var novasCurtidas = await _context.ComentarioCurtidas.CountAsync(c => c.ComentarioId == id);
-
-
-
-            return Json(new
-            {
-                sucesso = true,
-                curtido = true,
-                curtidas = novasCurtidas
-            });
+            return Json(new { sucesso = true, curtido = true, curtidas = novasCurtidas });
         }
-
-
     }
-
 }
-
-

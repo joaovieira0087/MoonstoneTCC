@@ -83,6 +83,7 @@ namespace MoonstoneTCC.Context
         public DbSet<NotificacaoEstoque> NotificacoesEstoque { get; set; }
         public DbSet<NotificacaoPedido> NotificacoesPedido { get; set; }
         public DbSet<ExclusaoConta> ExclusoesConta { get; set; }
+        public DbSet<GamificacaoUsuario> GamificacaoUsuarios { get; set; }
 
 
 
