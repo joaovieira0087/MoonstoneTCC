@@ -18,79 +18,54 @@
             font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
-            height: 100%;
+            min-height: 100vh;
             width: 100%;
             display: flex;
             justify-content: center;
             align-items: center;
             background: linear-gradient(135deg, #1e1e2f, #4b0082);
             color: #fff;
-            overflow: hidden;
-            position: relative;
+            box-sizing: border-box;
         }
 
         .register-container {
-            max-width: 500px;
-            width: 100%;
-            padding: 20px;
+            max-width: 450px;
+            width: 90%;
+            padding: 25px 30px;
             background: #2c2c44;
-            border-radius: 10px;
-            margin-left: 400px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+            border-radius: 12px;
+            margin: 30px auto; 
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
             text-align: center;
             position: relative;
             z-index: 1;
         }
 
         .register-header img {
-            max-width: 180px;
-            margin-bottom: 15px;
+            max-width: 150px;
+            margin-bottom: 10px;
         }
 
         h4 {
             color: #a64bd9;
-            font-size: 24px;
+            font-size: 22px;
+            font-weight: bold;
+            margin-top: 0;
             margin-bottom: 20px;
         }
 
-        .register-form .form-control {
-            background: #3b3b55;
-            border: 1px solid #4b0082;
-            border-radius: 5px;
-            color: #fff;
-            padding: 10px;
-            width: 100%;
-            margin-bottom: 15px;
-            transition: all 0.3s;
+        .register-form .form-group {
+            text-align: left;
+            margin-bottom: 12px; 
         }
-
-            .register-form .form-control:focus {
-                border-color: #a64bd9;
-                outline: none;
-                box-shadow: 0 0 8px #a64bd9;
-            }
-
-        .btn-register {
-            background-color: #a64bd9;
-            border: none;
-            border-radius: 5px;
-            color: #fff;
-            cursor: pointer;
-            padding: 10px 20px;
-            font-size: 16px;
-            transition: background 0.3s ease;
-            width: 100%;
-        }
-
-            .btn-register:hover {
-                background-color: #932dba;
-            }
 
         .form-group label {
             display: flex;
             align-items: center;
-            font-size: 14px;
+            font-size: 13px;
+            font-weight: 600;
             margin-bottom: 5px;
+            color: #e0e0e0;
         }
 
             .form-group label i {
@@ -98,33 +73,38 @@
                 color: #a64bd9;
             }
 
-        .text-danger {
-            color: #ff4c4c;
-            font-size: 12px;
+        .register-form .form-control {
+            background: #3b3b55;
+            border: 1px solid #4b0082;
+            border-radius: 6px;
+            color: #fff;
+            padding: 10px 12px;
+            width: 100%;
+            box-sizing: border-box;
+            font-size: 14px;
+            margin-bottom: 0;
+            transition: all 0.3s ease;
         }
 
-        .register-footer {
-            margin-top: 20px;
-            font-size: 12px;
-            color: #aaa;
-        }
+            .register-form .form-control:focus {
+                border-color: #a64bd9;
+                outline: none;
+                box-shadow: 0 0 8px rgba(166, 75, 217, 0.6);
+                background: #424260;
+            }
 
-        .register-footer a {
-            color: #a64bd9;
-            text-decoration: none;
-        }
-
-        .register-footer a:hover {
-            text-decoration: underline;
-        }
+            .register-form .form-control::placeholder {
+                color: #8888a0;
+            }
 
         .password-wrapper {
             position: relative;
+            width: 100%;
         }
 
-        .password-wrapper input {
-            padding-right: 40px;
-        }
+            .password-wrapper input {
+                padding-right: 40px !important;
+            }
 
         .toggle-password-icon {
             position: absolute;
@@ -134,11 +114,58 @@
             cursor: pointer;
             color: #aaa;
             z-index: 5;
+            font-size: 14px;
         }
 
-        .toggle-password-icon:hover {
+            .toggle-password-icon:hover {
+                color: #a64bd9;
+            }
+
+        .btn-register {
+            background-color: #a64bd9;
+            border: none;
+            border-radius: 6px;
             color: #fff;
+            cursor: pointer;
+            padding: 12px;
+            font-size: 15px;
+            font-weight: bold;
+            transition: background 0.3s ease;
+            width: 100%;
+            margin-top: 15px;
         }
+
+            .btn-register:hover:not(:disabled) {
+                background-color: #932dba;
+            }
+
+            .btn-register:disabled {
+                background-color: #5a4b6e;
+                cursor: not-allowed;
+                opacity: 0.6;
+            }
+
+        .text-danger {
+            color: #ff4c4c;
+            font-size: 12px;
+            text-align: left;
+        }
+
+        .register-footer {
+            margin-top: 18px;
+            font-size: 13px;
+            color: #aaa;
+        }
+
+            .register-footer a {
+                color: #a64bd9;
+                text-decoration: none;
+                font-weight: bold;
+            }
+
+                .register-footer a:hover {
+                    text-decoration: underline;
+                }
     </style>
 </head>
 <body>
