@@ -273,7 +273,6 @@
 
 @section Scripts {
     <script>
-        // Carrossel infinito: mostra 4 por vez; seta → avança 4; quando passa do fim, preenche com o começo (ex.: 9,10,1,2)
         (function () {
             function initSection(root) {
                 const size = parseInt(root.getAttribute('data-size') || '4', 10);
@@ -285,9 +284,8 @@
                 const nextBtn = root.querySelector('.nav-next');
                 const total = items.length;
 
-                let cursor = 0; // índice do primeiro item visível
+                let cursor = 0;
 
-                // <=4: mostra todos e some com setas
                 if (total <= size) {
                     items.forEach((el, i) => { el.style.display = ''; el.style.order = i; });
                     if (prevBtn) prevBtn.style.display = 'none';
@@ -295,37 +293,34 @@
                     return;
                 }
 
-                // garanta que nunca fiquem desabilitados (carrossel infinito)
                 if (prevBtn) prevBtn.disabled = false;
                 if (nextBtn) nextBtn.disabled = false;
 
                 function render() {
-                    // esconde todos
                     for (const el of items) { el.style.display = 'none'; el.style.order = ''; }
-                    // mostra janela de 4 com wrap
                     for (let k = 0; k < size; k++) {
                         const idx = (cursor + k) % total;
                         const el = items[idx];
-                        el.style.display = '';
-                        el.style.order = String(k); // mantém ordem 0..3 no layout flex
+                        if (el) {
+                            el.style.display = '';
+                            el.style.order = String(k);
+                        }
                     }
                 }
 
                 function step(delta) {
-                    // avança/volta em blocos de 4 com wrap infinito
-                    cursor = (cursor + delta * size) % total;
+                    // Avança 1 item por clique para uma transição fluida sem repetir o 1º item repentinamente
+                    cursor = (cursor + delta) % total;
                     if (cursor < 0) cursor += total;
                     render();
                 }
 
-                prevBtn && prevBtn.addEventListener('click', () => step(-1));
-                nextBtn && nextBtn.addEventListener('click', () => step(1));
+                if (prevBtn) prevBtn.addEventListener('click', () => step(-1));
+                if (nextBtn) nextBtn.addEventListener('click', () => step(1));
 
-                // primeira renderização (sobrescreve o fallback CSS)
                 render();
             }
 
-            // Inicializa todos os carrosséis renderizados
             document.querySelectorAll('.sec-carousel').forEach(initSection);
         })();
     </script>
