@@ -23,35 +23,35 @@ namespace MoonstoneTCC.Controllers
         }
 
 
-        public IActionResult List(string categoria)
-        {
-            IEnumerable<Jogo> jogos;
-            string categoriaAtual;
+        //public IActionResult List(string categoria)
+        //{
+        //    IEnumerable<Jogo> jogos;
+        //    string categoriaAtual;
 
-            if (string.IsNullOrEmpty(categoria))
-            {
-                jogos = _jogoRepository.Jogos.OrderBy(j => j.JogoId);
-                categoriaAtual = "Jogos"; // Nome padrão
-            }
-            else
-            {
-                jogos = _jogoRepository.Jogos
-                    .Where(j => j.Categoria.CategoriaNome.Equals(categoria))
-                    .OrderBy(j => j.Nome);
-                categoriaAtual = categoria; // Nome da categoria atual
-            }
+        //    if (string.IsNullOrEmpty(categoria))
+        //    {
+        //        jogos = _jogoRepository.Jogos.OrderBy(j => j.JogoId);
+        //        categoriaAtual = "Jogos"; // Nome padrão
+        //    }
+        //    else
+        //    {
+        //        jogos = _jogoRepository.Jogos
+        //            .Where(j => j.Categoria.CategoriaNome.Equals(categoria))
+        //            .OrderBy(j => j.Nome);
+        //        categoriaAtual = categoria; // Nome da categoria atual
+        //    }
 
-            // Atualizar o título dinâmico no dropdown
-            ViewData["CategoriaAtual"] = categoriaAtual;
+        //    // Atualizar o título dinâmico no dropdown
+        //    ViewData["CategoriaAtual"] = categoriaAtual;
 
-            var jogosListViewModel = new JogoListViewModel
-            {
-                Jogos = jogos,
-                CategoriaAtual = categoriaAtual
-            };
+        //    var jogosListViewModel = new JogoListViewModel
+        //    {
+        //        Jogos = jogos,
+        //        CategoriaAtual = categoriaAtual
+        //    };
 
-            return View(jogosListViewModel);
-        }
+        //    return View(jogosListViewModel);
+        //}
 
         public async Task<IActionResult> Details(int jogoId)
         {
@@ -134,43 +134,90 @@ namespace MoonstoneTCC.Controllers
             return View(jogo);
         }
 
-
-
-
         public IActionResult Search(string searchString)
         {
-            searchString = searchString?.Trim().ToLower();
+            if (string.IsNullOrWhiteSpace(searchString))
+                return RedirectToAction("List");
+
+            string termoBusca = searchString.Trim().ToLower();
 
             var jogos = _jogoRepository.Jogos
-                .Where(p =>
-                    p.Nome.ToLower().Contains(searchString) ||
-                    (p.Categoria != null && p.Categoria.CategoriaNome.ToLower().Contains(searchString)) ||
-                    (!string.IsNullOrEmpty(p.DescricaoCurta) && p.DescricaoCurta.ToLower().Contains(searchString)) ||
-                    (!string.IsNullOrEmpty(p.DescricaoDetalhada) && p.DescricaoDetalhada.ToLower().Contains(searchString)) ||
-                    (!string.IsNullOrEmpty(p.Genero) && p.Genero.ToLower().Contains(searchString)) ||
-                    (p.Preco.ToString("F2").Contains(searchString)) ||
-                    (!string.IsNullOrEmpty(p.Plataformas) && p.Plataformas.ToLower().Contains(searchString)))
-                .OrderBy(p => p.Nome)
+                .Where(p => p.Nome.ToLower().Contains(termoBusca) ||
+                            (p.Categoria != null && p.Categoria.CategoriaNome.ToLower().Contains(termoBusca)) ||
+                            (!string.IsNullOrEmpty(p.Genero) && p.Genero.ToLower().Contains(termoBusca)))
                 .ToList();
 
             var acessorios = _context.Acessorios
-                .Where(a =>
-                    a.Nome.ToLower().Contains(searchString) ||
-                    (!string.IsNullOrEmpty(a.DescricaoCurta) && a.DescricaoCurta.ToLower().Contains(searchString)) ||
-                    (!string.IsNullOrEmpty(a.DescricaoDetalhada) && a.DescricaoDetalhada.ToLower().Contains(searchString)))
-                .OrderBy(a => a.Nome)
+                .Where(a => a.Nome.ToLower().Contains(termoBusca))
                 .ToList();
 
-            var categoriaAtual = (jogos.Any() || acessorios.Any())
-                ? $"Resultados para '{searchString}'"
-                : "Nenhum item encontrado";
+            var sugestoes = new List<string>();
 
-            return View("~/Views/Jogo/List.cshtml", new JogoListViewModel
+            if (jogos.Any())
+            {
+                var categoriasIds = jogos.Select(j => j.CategoriaId).Distinct().ToList();
+                sugestoes.AddRange(_context.Categorias.Where(c => categoriasIds.Contains(c.CategoriaId)).Select(c => c.CategoriaNome));
+                sugestoes.AddRange(_context.Jogos.Where(j => categoriasIds.Contains(j.CategoriaId) && !j.Nome.ToLower().Contains(termoBusca)).Take(3).Select(j => j.Nome));
+            }
+            else
+            {
+                     var categoriasPrincipais = _context.Categorias
+                    .OrderBy(c => c.CategoriaNome)
+                    .Take(3)
+                    .Select(c => c.CategoriaNome)
+                    .ToList();
+                sugestoes.AddRange(categoriasPrincipais);
+
+                
+                var jogosAleatorios = _context.Jogos
+                    .OrderBy(x => Guid.NewGuid()) 
+                    .Take(3)
+                    .Select(j => j.Nome)
+                    .ToList();
+                sugestoes.AddRange(jogosAleatorios);
+            }
+
+            var termosFinais = sugestoes.Distinct().Where(s => s.ToLower() != termoBusca).Take(6).ToList();
+
+            var viewModel = new JogoListViewModel
             {
                 Jogos = jogos,
                 Acessorios = acessorios,
-                CategoriaAtual = categoriaAtual
-            });
+                CategoriaAtual = (jogos.Any() || acessorios.Any()) ? $"Resultados para '{searchString}'" : "Nenhum item encontrado",
+                SugestoesTermos = termosFinais
+            };
+
+            return View("~/Views/Jogo/List.cshtml", viewModel);
+        }
+
+        public IActionResult List(string categoria)
+        {
+            IEnumerable<Jogo> jogos;
+            string categoriaAtual;
+
+            if (string.IsNullOrEmpty(categoria))
+            {
+                jogos = _jogoRepository.Jogos.OrderBy(j => j.JogoId);
+                categoriaAtual = "Jogos";
+            }
+            else
+            {
+                jogos = _jogoRepository.Jogos
+                    .Where(j => j.Categoria.CategoriaNome.Equals(categoria))
+                    .OrderBy(j => j.Nome);
+                categoriaAtual = categoria;
+            }
+
+            ViewData["CategoriaAtual"] = categoriaAtual;
+
+            var jogosListViewModel = new JogoListViewModel
+            {
+                Jogos = jogos,
+                CategoriaAtual = categoriaAtual,
+                SugestoesTermos = new List<string>()
+            };
+
+            return View(jogosListViewModel);
         }
 
 

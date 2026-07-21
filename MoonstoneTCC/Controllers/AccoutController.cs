@@ -69,10 +69,12 @@ namespace MoonstoneTCC.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new IdentityUser
+                var user = new ApplicationUser
                 {
                     UserName = model.UserName,
-                    Email = model.Email
+                    Email = model.Email,
+                    PhoneNumber = model.Telefone,
+                    Nome = model.Nome            
                 };
 
                 var result = await _userManager.CreateAsync(user, model.Password);

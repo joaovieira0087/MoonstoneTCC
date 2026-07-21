@@ -109,14 +109,36 @@
             color: #aaa;
         }
 
-            .register-footer a {
-                color: #a64bd9;
-                text-decoration: none;
-            }
+        .register-footer a {
+            color: #a64bd9;
+            text-decoration: none;
+        }
 
-                .register-footer a:hover {
-                    text-decoration: underline;
-                }
+        .register-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .password-wrapper {
+            position: relative;
+        }
+
+        .password-wrapper input {
+            padding-right: 40px;
+        }
+
+        .toggle-password-icon {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #aaa;
+            z-index: 5;
+        }
+
+        .toggle-password-icon:hover {
+            color: #fff;
+        }
     </style>
 </head>
 <body>
@@ -125,90 +147,122 @@
             <img src="~/img/userlmn_190a820892874567a91071d0542da791.png" alt="Registrar Usuário">
         </div>
         <h4>REGISTRAR USUÁRIO</h4>
-        <form asp-controller="Account" asp-action="Register" method="post" class="register-form">
-            <div asp-validation-summary="All" class="text-danger"></div>
 
-            <div class="form-group">
+        <form asp-controller="Account" asp-action="Register" method="post" class="register-form">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <!-- 1. GMAIL -->
+            <div class="form-group mb-3">
+                <label asp-for="Email"><i class="fas fa-envelope"></i> Gmail</label>
+                <input asp-for="Email" class="form-control" placeholder="exemplo@gmail.com" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <!-- 2. TELEFONE -->
+            <div class="form-group mb-3">
+                <label asp-for="Telefone"><i class="fas fa-phone"></i> Telefone</label>
+                <input asp-for="Telefone" class="form-control" placeholder="(00) 00000-0000" />
+                <span asp-validation-for="Telefone" class="text-danger"></span>
+            </div>
+
+            <!-- 3. NOME -->
+            <div class="form-group mb-3">
+                <label asp-for="Nome"><i class="fas fa-id-card"></i> Nome</label>
+                <input asp-for="Nome" class="form-control" placeholder="Seu nome completo" />
+                <span asp-validation-for="Nome" class="text-danger"></span>
+            </div>
+
+            <!-- 4. NOME DE USUÁRIO -->
+            <div class="form-group mb-3">
                 <label asp-for="UserName"><i class="fas fa-user"></i> Nome de Usuário</label>
                 <input asp-for="UserName" class="form-control" id="UserName" />
                 <span asp-validation-for="UserName" class="text-danger"></span>
                 <small id="erroUserName" class="text-danger d-block mt-1"></small>
             </div>
 
-            <div class="form-group">
-                <label asp-for="Email"><i class="fas fa-envelope"></i> Gmail</label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
+            <!-- 5. SENHA -->
+            <div class="form-group mb-3">
                 <label asp-for="Password"><i class="fas fa-lock"></i> Senha</label>
-                <input asp-for="Password" type="password" class="form-control" />
+                <div class="password-wrapper">
+                    <input asp-for="Password" type="password" class="form-control" id="Password" />
+                    <i class="fas fa-eye toggle-password-icon" onclick="togglePasswordVisibility('Password', this)"></i>
+                </div>
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
+            <!-- 6. CONFIRMAR SENHA -->
+            <div class="form-group mb-3">
                 <label asp-for="ConfirmPassword"><i class="fas fa-lock"></i> Confirmar Senha</label>
-                <input asp-for="ConfirmPassword" type="password" class="form-control" />
+                <div class="password-wrapper">
+                    <input asp-for="ConfirmPassword" type="password" class="form-control" id="ConfirmPassword" />
+                    <i class="fas fa-eye toggle-password-icon" onclick="togglePasswordVisibility('ConfirmPassword', this)"></i>
+                </div>
                 <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
             </div>
 
             <button type="submit" class="btn-register" id="btnRegistrar" disabled>Registrar</button>
         </form>
-        <div class="register-footer">
+
+        <div class="register-footer mt-3">
             <p>Já tem uma conta? <a asp-controller="Account" asp-action="Login">Faça Login</a></p>
         </div>
     </div>
 
-@section Scripts {
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const userInput = document.getElementById("UserName");
-            const btn = document.getElementById("btnRegistrar");
-            const erroPersonalizado = document.getElementById("erroUserName");
+    @section Scripts {
+        <script>
+            function togglePasswordVisibility(inputId, icon) {
+                const input = document.getElementById(inputId);
+                if (!input) return;
 
-            if (!userInput || !btn || !erroPersonalizado) return;
-
-            function validarNomeUsuario() {
-                const valor = userInput.value.trim();
-                const regex = /^[a-zA-Z0-9_]{3,20}$/;
-
-                if (!regex.test(valor)) {
-                    erroPersonalizado.textContent = "❌ Use apenas letras, números e underline (_). Evite , !, ., etc.";
-                    btn.disabled = true;
+                if (input.type === "password") {
+                    input.type = "text";
+                    icon.classList.remove("fa-eye");
+                    icon.classList.add("fa-eye-slash");
                 } else {
-                    erroPersonalizado.textContent = "";
-                    verificarCamposPreenchidos(); // chama a verificação geral de preenchimento
+                    input.type = "password";
+                    icon.classList.remove("fa-eye-slash");
+                    icon.classList.add("fa-eye");
                 }
             }
 
-            function verificarCamposPreenchidos() {
+            document.addEventListener("DOMContentLoaded", function () {
+                const userInput = document.getElementById("UserName");
+                const btn = document.getElementById("btnRegistrar");
+                const erroPersonalizado = document.getElementById("erroUserName");
                 const form = document.querySelector('form');
-                const inputs = form.querySelectorAll('input');
-                let allFilled = true;
 
-                inputs.forEach(input => {
-                    if (input.type !== "hidden" && input.value.trim() === "") {
-                        allFilled = false;
+                if (!userInput || !btn || !erroPersonalizado) return;
+
+                function validarNomeUsuario() {
+                    const valor = userInput.value.trim();
+                    const regex = /^[a-zA-Z0-9_]{3,20}$/;
+
+                    if (valor !== "" && !regex.test(valor)) {
+                        erroPersonalizado.textContent = "❌ Use apenas letras, números e underline (_). Evite , !, ., etc.";
+                    } else {
+                        erroPersonalizado.textContent = "";
                     }
-                });
-
-                // Habilita o botão apenas se tudo estiver preenchido e o nome for válido
-                if (erroPersonalizado.textContent === "") {
-                    btn.disabled = !allFilled;
+                    verificarCamposPreenchidos();
                 }
-            }
 
-            userInput.addEventListener("input", validarNomeUsuario);
+                function verificarCamposPreenchidos() {
+                    const inputs = form.querySelectorAll('input');
+                    let allFilled = true;
 
-            const form = document.querySelector('form');
-            const inputs = form.querySelectorAll('input');
-            form.addEventListener('input', verificarCamposPreenchidos);
+                    inputs.forEach(input => {
+                        if (input.type !== "hidden" && input.value.trim() === "") {
+                            allFilled = false;
+                        }
+                    });
+                    btn.disabled = !(allFilled && erroPersonalizado.textContent === "");
+                }
 
-            validarNomeUsuario(); // já valida ao carregar
-        });
-    </script>
-}
+                userInput.addEventListener("input", validarNomeUsuario);
+                form.addEventListener('input', verificarCamposPreenchidos);
 
+                validarNomeUsuario();
+            });
+        </script>
+    }
 </body>
 </html>

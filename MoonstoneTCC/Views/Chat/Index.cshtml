@@ -1,0 +1,59 @@
+﻿@{
+    ViewData["Title"] = "Suporte Moonstone";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-dark text-white d-flex align-items-center">
+                    <span class="p-2">🎮 Assistente Moonstone</span>
+                </div>
+                <div id="chatBody" class="card-body bg-light" style="height: 400px; overflow-y: auto;">
+                    <div class="mb-2 text-muted small">Olá! Como posso te ajudar hoje?</div>
+                </div>
+                <div class="card-footer bg-white border-0">
+                    <div class="input-group">
+                        <input type="text" id="userInput" class="form-control border-0 bg-light" placeholder="Pergunte sobre jogos ou suporte...">
+                        <button class="btn btn-dark px-4" onclick="enviar()">Enviar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const chatBody = document.getElementById('chatBody');
+    const userInput = document.getElementById('userInput');
+
+    // Permitir enviar com o Enter
+    userInput.addEventListener("keypress", (e) => { if(e.key === "Enter") enviar(); });
+
+    async function enviar() {
+        const msg = userInput.value.trim();
+        if(!msg) return;
+
+        // Mostra sua mensagem
+        chatBody.innerHTML += `<div class="text-end mb-3"><span class="bg-primary text-white p-2 rounded-3 d-inline-block">${msg}</span></div>`;
+        userInput.value = "";
+        chatBody.scrollTop = chatBody.scrollHeight;
+
+        try {
+            const response = await fetch('/Chat/EnviarMensagem', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ mensagem: msg })
+            });
+
+            const data = await response.json();
+
+            // Mostra resposta da IA
+            chatBody.innerHTML += `<div class="mb-3 text-start"><span class="bg-white border p-2 rounded-3 d-inline-block text-dark shadow-sm">${data.resposta}</span></div>`;
+        } catch (e) {
+            chatBody.innerHTML += `<div class="text-danger small">Erro na conexão.</div>`;
+        }
+
+        chatBody.scrollTop = chatBody.scrollHeight;
+    }
+</script>
